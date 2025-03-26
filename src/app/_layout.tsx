@@ -20,7 +20,7 @@ const RootLayout = () => {
     <PaperProvider theme={theme}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <Drawer>
-          <Drawer.Screen name="(stacks)" options={{ headerShown: false  }}/>
+          <Drawer.Screen name="(stacks)" options={{ headerShown: false, drawerLabel: 'Ir a Venta'  }}/>
           <Drawer.Screen name='+not-found' options={{ drawerItemStyle: { display: 'none' }}}/>
           <Drawer.Screen name='about' />
         </Drawer>

@@ -1,7 +1,7 @@
 import { Text, View, StyleSheet } from 'react-native';
 import { Link } from 'expo-router'; 
 
-export default function SalesScreen() {
+export default function AddProductScreen() {
   return (
     <View style={styles.container}>
       <Link href="/addProduct" style={styles.button}>
