@@ -10,17 +10,10 @@ function TicketScreen() {
   const theme = useTheme(); 
 
   return (
-    <View style={{ flex: 1, padding: 20 }}>
+    <View style={{ flex: 1, padding: 10 }}>
       <Surface style={styles.surface} elevation={4}>
         <Text variant="displayMedium">Total: $200.00</Text>    
       </Surface>
-      <Text
-        onPress={() => {
-          router.push("/(stacks)/users");
-        }}
-      >
-        Go to users page
-      </Text>
       <ProductList/>
       <Button mode="contained"
         style={styles.cobrar} onPress={() => console.log("Cobrar")}>
@@ -39,7 +32,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   cobrar:{
-    padding:10
+    padding:10,
+    marginTop: 10
   }
 });
 export default TicketScreen;
