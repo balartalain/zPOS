@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
-import { Card, TextInput, Text } from 'react-native-paper';
+import { Card, TextInput, Text, Button } from 'react-native-paper';
 
 // Lista de productos
 const productos = [
-  { id: '1', nombre: 'Cerveza', precio: 25 },
-  { id: '2', nombre: 'Coca Cola', precio: 20 },
-  { id: '3', nombre: 'Agua Mineral', precio: 15 },
-  { id: '4', nombre: 'Hamburguesa', precio: 50 },
-  { id: '5', nombre: 'Papas Fritas', precio: 30 },
-  { id: '6', nombre: 'Malta', precio: 15 },
-  { id: '7', nombre: 'Chupa Chupa', precio: 50 },
-  { id: '8', nombre: 'Café', precio: 30 },
+  { id: '1', nombre: 'Cerveza', precio: 25, inStock: 10 },
+  { id: '2', nombre: 'Coca Cola', precio: 20, inStock: 1 },
+  { id: '3', nombre: 'Agua Mineral', precio: 15, inStock: 2 },
+  { id: '4', nombre: 'Hamburguesa', precio: 50, inStock: 10 },
+  { id: '5', nombre: 'Papas Fritas', precio: 30, inStock: 8 },
+  { id: '6', nombre: 'Malta', precio: 15, inStock: 14 },
+  { id: '7', nombre: 'Chupa Chupa', precio: 50, inStock: 10 },
+  { id: '8', nombre: 'Café', precio: 30, inStock: 10 },
 ];
 
 export default function ProductList() {
@@ -31,7 +31,7 @@ export default function ProductList() {
       );
     }
   };
-
+  const LeftContentCard = props => <Avatar.Icon {...props} icon="folder" />
   return (
     <View style={styles.container}>
       {/* Campo de búsqueda */}
@@ -48,11 +48,11 @@ export default function ProductList() {
         data={productosFiltrados}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <Card style={styles.card}>
-            <Card.Title
-              title={item.nombre}
-              subtitle={`Precio: $${item.precio}`}
-            />
+          <Card style={styles.card} contentStyle={styles.innerCard} left={LeftContentCard}>                      
+            <Card.Content style={styles.contentCard}>
+              <Text variant="titleMedium">{item.nombre} - ${item.precio}</Text>
+              <Text variant="bodyMedium">stock: {item.inStock}</Text>
+            </Card.Content>
           </Card>
         )}
       />
@@ -75,6 +75,15 @@ const styles = StyleSheet.create({
   },
   card: {
     marginBottom: 10,
+    
+  },
+  innerCard: {
+    flex:1,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  contentCard:{
+    //addingTop: 5
   },
   emptyText: {
     textAlign: 'center',
