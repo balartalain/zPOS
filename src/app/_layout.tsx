@@ -1,30 +1,41 @@
 import React from "react";
 import Drawer from "expo-router/drawer";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { MD3LightTheme as DefaultTheme, PaperProvider } from 'react-native-paper';
+import { useColorScheme } from 'react-native';
+import { MD3LightTheme, MD3DarkTheme, PaperProvider, adaptNavigationTheme } from 'react-native-paper';
+import {
+  DarkTheme as NavigationDarkTheme,
+  DefaultTheme as NavigationDefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
+import merge from "deepmerge";
+import { Colors } from "@/src/themes/theme1/colors";
 
-const theme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    primary: '#3498db', // Color principal personalizado
-    accent: '#f1c40f',  // Color de acento
-    background: '#ecf0f1', // Fondo
-    surface: '#ffffff', // Superficie (por ejemplo, tarjetas)
-    text: '#2c3e50', // Texto
-  },
-  roundness: 1,
-};
+const customDarkTheme = { ...MD3DarkTheme, colors: Colors.dark };
+const customLightTheme = { ...MD3LightTheme, colors: Colors.light };
+
+const { LightTheme, DarkTheme } = adaptNavigationTheme({
+  reactNavigationLight: NavigationDefaultTheme,
+  reactNavigationDark: NavigationDarkTheme,
+});
+const CombinedLightTheme = merge(LightTheme, customLightTheme);
+const CombinedDarkTheme = merge(DarkTheme, customDarkTheme);
+
 const RootLayout = () => {
+  const colorScheme = useColorScheme();
+  const paperTheme =
+  colorScheme === "dark" ? CombinedDarkTheme : CombinedLightTheme;
+
   return (
-    <PaperProvider theme={theme}>
+    <PaperProvider theme={paperTheme}>
       <GestureHandlerRootView style={{ flex: 1 }}>
+      <ThemeProvider value={paperTheme}>
         <Drawer>
           <Drawer.Screen name="(stacks)" options={{ headerShown: false, drawerLabel: 'Ir a Venta'  }}/>
           <Drawer.Screen name='+not-found' options={{ drawerItemStyle: { display: 'none' }}}/>
           <Drawer.Screen name='about' />
-        </Drawer>
-        
+        </Drawer>        
+        </ThemeProvider>
       </GestureHandlerRootView>
     </PaperProvider>
   );
