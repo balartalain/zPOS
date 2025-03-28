@@ -23,7 +23,7 @@ export default function ShoppingCartScreen() {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <Card style={styles.card} onPress={() => {
-            router.push("/changeQty");
+            router.push(`/changeQty?productName=${item.nombre}&precio=${item.precio}`);
           }}>                      
             <Card.Content style={styles.contentCard}>
               <Text variant="titleMedium">{item.nombre} x {item.qty}</Text>

@@ -4,12 +4,14 @@ import { Stack, useNavigation, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { DrawerActions } from "@react-navigation/native";
 import { Button, Text, Surface, useTheme, Badge } from 'react-native-paper';
+import {ApprovalProvider} from '../../components/approvalContext';
 
 const StacksLayout = () => {
   const router = useRouter();
   const nav = useNavigation();
   const theme = useTheme(); 
   return (
+    <ApprovalProvider>
     <Stack>
       <Stack.Screen
         name="index"        
@@ -60,6 +62,7 @@ const StacksLayout = () => {
         }}
       />
     </Stack>
+    </ApprovalProvider>
   );
 };
 
