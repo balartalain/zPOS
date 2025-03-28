@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
-import { Card, TextInput, Text, Button } from 'react-native-paper';
+import { Card, TextInput, Text, Button, Badge } from 'react-native-paper';
 
 // Lista de productos
 const productos = [
@@ -52,8 +52,9 @@ export default function ProductList() {
             <Card.Content style={styles.contentCard}>
               <Text variant="titleMedium">{item.nombre} - ${item.precio}</Text>
               <Text variant="bodyMedium">stock: {item.inStock}</Text>
-            </Card.Content>
+            </Card.Content>            
           </Card>
+          
         )}
       />
 

@@ -22,6 +22,7 @@ function TicketScreen() {
     </View>
   );
 }
+ 
 const styles = StyleSheet.create({
   surface: {
     paddingTop: 20,

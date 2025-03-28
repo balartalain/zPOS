@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
+import { Stack, useNavigation, useRouter } from "expo-router";
 import { Card, TextInput, Text, Button } from 'react-native-paper';
 
 // Lista de productos
@@ -11,7 +12,7 @@ const _productos = [
 ];
 
 export default function ShoppingCartScreen() {
-  const [busqueda, setBusqueda] = useState(''); // Estado para el texto del buscador
+  const router = useRouter();
   const [productos] = useState(_productos);
 
   return (
@@ -21,7 +22,9 @@ export default function ShoppingCartScreen() {
         data={productos}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <Card style={styles.card}>                      
+          <Card style={styles.card} onPress={() => {
+            router.push("/changeQty");
+          }}>                      
             <Card.Content style={styles.contentCard}>
               <Text variant="titleMedium">{item.nombre} x {item.qty}</Text>
               <Text variant="titleMedium">${item.precio*item.qty}</Text>                         

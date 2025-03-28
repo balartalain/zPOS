@@ -44,7 +44,7 @@ const StacksLayout = () => {
                 name="cart"
                 size={24}
                 onPress={() => {
-                  router.push("/(stacks)/shoppingCart");
+                  router.push("/shoppingCart");
                 }}
                 style={{marginLeft:0, marginRight: 20, color: theme.colors.primary}}
               />              
