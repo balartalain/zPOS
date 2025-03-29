@@ -5,9 +5,10 @@ import { useApproval } from './approvalContext'; // Asegúrate de la ruta correc
 const withApproval = (WrappedComponent) => {
   const WithApproval = (props) => {
     const router = useRouter();
-    const { isGrantedApproval, setGrantedApproval, requestApproval } = useApproval();
+    const { isGrantedApproval, setGrantedApproval, requestApproval } =
+      useApproval();
     const [hasRequestedApproval, setHasRequestedApproval] = useState(false);
-    const params = useLocalSearchParams();    
+    const params = useLocalSearchParams();
     const currentRoute = usePathname();
     useEffect(() => {
       if (!isGrantedApproval && !hasRequestedApproval) {
@@ -15,7 +16,13 @@ const withApproval = (WrappedComponent) => {
         const queryString = new URLSearchParams(params).toString();
         requestApproval(`${currentRoute}?${queryString}`); // Pasa el nombre de la ruta actual
       }
-    }, [isGrantedApproval, hasRequestedApproval, router, setGrantedApproval, requestApproval]);
+    }, [
+      isGrantedApproval,
+      hasRequestedApproval,
+      router,
+      setGrantedApproval,
+      requestApproval,
+    ]);
 
     if (!isGrantedApproval) {
       // No renderizar el componente protegido hasta que esté autenticado

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { Button, useTheme } from 'react-native-paper';
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons } from '@expo/vector-icons';
 
 const NumericKeyboardGrid = () => {
   const [inputValue, setInputValue] = useState(''); // Estado del campo de entrada
@@ -47,9 +47,7 @@ const NumericKeyboardGrid = () => {
           style={styles.button}
           labelStyle={styles.buttonLabel}
           contentStyle={styles.contentStyle}
-        >
-           
-        </Button>
+        ></Button>
 
         {/* Número 0 (en la última fila) */}
         <Button
@@ -96,12 +94,12 @@ const styles = StyleSheet.create({
   button: {
     width: '30%', // Cada botón ocupa el 30% del ancho para ajustarse al grid
     margin: 5,
-    padding:0,
+    padding: 0,
   },
   buttonLabel: {
     fontSize: 20,
   },
   contentStyle: {
-    paddingVertical: 18
-  }
+    paddingVertical: 18,
+  },
 });

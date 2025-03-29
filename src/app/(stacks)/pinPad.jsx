@@ -20,7 +20,7 @@ export default function PinPadScreen() {
 
   const handleSubmitPin = () => {
     if (pin === CORRECT_PIN) {
-        setGrantedApproval(true); // Marca al usuario como autenticado
+      setGrantedApproval(true); // Marca al usuario como autenticado
       if (from) {
         router.replace(from); // Navega a la pantalla protegida original
       } else {

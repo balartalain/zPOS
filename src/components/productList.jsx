@@ -31,7 +31,7 @@ export default function ProductList() {
       );
     }
   };
-  const LeftContentCard = props => <Avatar.Icon {...props} icon="folder" />
+  const LeftContentCard = (props) => <Avatar.Icon {...props} icon="folder" />;
   return (
     <View style={styles.container}>
       {/* Campo de búsqueda */}
@@ -48,13 +48,18 @@ export default function ProductList() {
         data={productosFiltrados}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <Card style={styles.card} contentStyle={styles.innerCard} left={LeftContentCard}>                      
+          <Card
+            style={styles.card}
+            contentStyle={styles.innerCard}
+            left={LeftContentCard}
+          >
             <Card.Content style={styles.contentCard}>
-              <Text variant="titleMedium">{item.nombre} - ${item.precio}</Text>
+              <Text variant="titleMedium">
+                {item.nombre} - ${item.precio}
+              </Text>
               <Text variant="bodyMedium">stock: {item.inStock}</Text>
-            </Card.Content>            
+            </Card.Content>
           </Card>
-          
         )}
       />
 
@@ -76,20 +81,19 @@ const styles = StyleSheet.create({
   },
   card: {
     marginBottom: 10,
-    
   },
   innerCard: {
-    flex:1,
+    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
-  contentCard:{
+  contentCard: {
     //addingTop: 5
   },
   emptyText: {
     textAlign: 'center',
     marginTop: 20,
     fontSize: 16,
-   // color: '#999',
+    // color: '#999',
   },
 });
