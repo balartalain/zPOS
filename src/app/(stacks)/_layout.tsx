@@ -25,7 +25,7 @@ const StacksLayout = () => {
                   onPress={() => {
                     nav.dispatch(DrawerActions.openDrawer());
                   }}
-                  style={{ marginLeft: 0, marginRight: 20 }}
+                  style={{ marginLeft: 8, marginRight: 13 }}
                 />
               );
             },

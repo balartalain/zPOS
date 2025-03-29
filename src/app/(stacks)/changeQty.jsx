@@ -8,6 +8,7 @@ import withApproval from '../../components/withApproval';
 function ChangeQtyScreen() {
   const navigation = useNavigation();
   const { productName } = useLocalSearchParams();
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: productName,
