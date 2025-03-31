@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
-import { Card, TextInput, Text, Button, Badge } from 'react-native-paper';
+import { Card, TextInput, Text } from 'react-native-paper';
 
 // Lista de productos
 const productos = [
@@ -37,12 +37,12 @@ export default function ProductList() {
       {/* Campo de búsqueda */}
       <TextInput
         label="Buscar productos"
+        type="flat"
         value={busqueda}
         onChangeText={filtrarProductos}
         mode="outlined"
         style={styles.input}
       />
-
       {/* Lista de productos */}
       <FlatList
         data={productosFiltrados}

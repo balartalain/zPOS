@@ -8,7 +8,7 @@ import ProductList from '../../components/productList';
 function TicketScreen() {
   const router = useRouter();
   const theme = useTheme();
-  const isStoreClosed = true;
+  const isStoreClosed = false;
   return (
     <View style={{ flex: 1, padding: 10 }}>
       <Surface style={styles.surface} elevation={4}>
@@ -41,7 +41,9 @@ function StoreClosed() {
       <Button
         mode="contained"
         style={styles.cobrar}
-        onPress={() => console.log('Cobrar')}
+        onPress={() => {
+          router.push('/openStore');
+        }}
       >
         Abrir la tienda
       </Button>

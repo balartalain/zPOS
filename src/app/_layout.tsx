@@ -45,6 +45,10 @@ const RootLayout = () => {
               options={{ drawerItemStyle: { display: 'none' } }}
             />
             <Drawer.Screen name="about" />
+            <Drawer.Screen
+              name="products"
+              options={{ drawerLabel: 'Articulos' }}
+            />
           </Drawer>
         </ThemeProvider>
       </GestureHandlerRootView>
