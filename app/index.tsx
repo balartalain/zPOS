@@ -1,15 +1,6 @@
-import { Text, View } from "react-native";
+import { Redirect } from 'expo-router';
+import { Text } from 'react-native';
 
-export default function Index() {
-  return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
-    </View>
-  );
+export default function Page() {
+  return <Redirect href={"/(stacks)/pos"} />;
 }
