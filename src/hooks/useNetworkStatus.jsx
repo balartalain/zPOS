@@ -1,16 +1,33 @@
-import { useEffect, useState } from 'react';
-import NetInfo from '@react-native-community/netinfo';
+import { useState, useEffect } from 'react';
 
-export default function useNetworkStatus() {
-  const [isConnected, setIsConnected] = useState(false);
+export default function useNetWorkStatus() {
+  const [hasInternet, setHasInternet] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener((state) => {
-      setIsConnected(state.isConnected);
-    });
+    const checkInternetAccess = async () => {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 5000);
+      try {
+        const response = await fetch(
+          'https://jsonplaceholder.typicode.com/todos/1',
+          {
+            method: 'HEAD',
+            signal: controller.signal,
+          }
+        );
+        setHasInternet(response.ok);
+      } catch (error) {
+        setHasInternet(false);
+      } finally {
+        clearTimeout(timer);
+        setTimeout(checkInternetAccess, 5000);
+      }
+    };
 
-    return () => unsubscribe();
+    // Ejecuta la verificación inicial
+    checkInternetAccess();
+    return () => {};
   }, []);
 
-  return isConnected;
+  return hasInternet;
 }

@@ -39,7 +39,7 @@ const StacksLayout = () => {
   // Detectar conexión y sincronizar automáticamente
   useEffect(() => {
     if (isConnected && sales.some((sale) => !sale.synced)) {
-      syncSalesWithServer();
+      //syncSalesWithServer();
     }
   }, [isConnected, sales]);
 

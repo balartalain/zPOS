@@ -4,10 +4,12 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Button, Text, Surface, useTheme } from 'react-native-paper';
 import ProductList from '../../components/productList';
+import useNetworkStatus from '@/src/hooks/useNetworkStatus';
 
 function TicketScreen() {
   const router = useRouter();
   const theme = useTheme();
+  const isConnected = useNetworkStatus();
   const isStoreClosed = false;
   return (
     <View style={{ flex: 1, padding: 10 }}>
@@ -21,7 +23,7 @@ function TicketScreen() {
           style={styles.cobrar}
           onPress={() => console.log('Cobrar')}
         >
-          COBRAR
+          {`COBRAR - ${isConnected}`}
         </Button>
       )}
     </View>
