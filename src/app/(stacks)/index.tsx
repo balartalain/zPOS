@@ -5,24 +5,31 @@ import { Ionicons } from '@expo/vector-icons';
 import { Button, Text, Surface, useTheme } from 'react-native-paper';
 import ProductList from '../../components/productList';
 import useNetworkStatus from '@/src/hooks/useNetworkStatus';
+import useTicketStore from '@/src/store/useTicketStore';
+import { checkStoredState } from '@/src/utils/checkAsyncStorage';
 
 function TicketScreen() {
   const router = useRouter();
   const theme = useTheme();
+  const { ticket, addProductToTicket } = useTicketStore();
   const isConnected = useNetworkStatus();
   const isStoreClosed = false;
+
+  const addProduct = (product) => {
+    addProductToTicket(product);
+    //console.log(ticket.lines);
+  };
+  const cobrar = () => {
+    checkStoredState('ticket-store');
+  };
   return (
     <View style={{ flex: 1, padding: 10 }}>
       <Surface style={styles.surface} elevation={4}>
         <Text variant="displayMedium">Total: $200.00</Text>
       </Surface>
-      {isStoreClosed ? <StoreClosed /> : <ProductList />}
+      {isStoreClosed ? <StoreClosed /> : <ProductList onPress={addProduct} />}
       {!isStoreClosed && (
-        <Button
-          mode="contained"
-          style={styles.cobrar}
-          onPress={() => console.log('Cobrar')}
-        >
+        <Button mode="contained" style={styles.cobrar} onPress={cobrar}>
           {`COBRAR - ${isConnected}`}
         </Button>
       )}

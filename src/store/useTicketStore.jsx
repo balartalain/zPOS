@@ -2,20 +2,40 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const usePOSStore = create()(
+const useTicketStore = create(
   persist(
     (set, get) => ({
       ticket: { lines: [] }, // Ticket con líneas de productos
       sales: [], // Ventas almacenadas de los últimos 30 días
-
+      isClosedStore: true,
+      openShift: (initialCash) => {},
       // Agregar un producto al ticket
-      addProductToTicket: (product, quantity) =>
-        set((state) => ({
-          ticket: {
-            ...state.ticket,
-            lines: [...state.ticket.lines, { product, quantity }],
-          },
-        })),
+      addProductToTicket: (product) =>
+        set((state) => {
+          const existingProductIndex = state.ticket.lines.findIndex(
+            (line) => line.product.id === product.id
+          );
+
+          let updatedLines;
+          if (existingProductIndex !== -1) {
+            // Si el producto ya está, incrementa su cantidad
+            updatedLines = state.ticket.lines.map((line, index) =>
+              index === existingProductIndex
+                ? { ...line, qty: (line.qty || 1) + 1 }
+                : line
+            );
+          } else {
+            // Si no está, lo agrega con cantidad 1
+            updatedLines = [...state.ticket.lines, { product, qty: 1 }];
+          }
+
+          return {
+            ticket: {
+              ...state.ticket,
+              lines: updatedLines,
+            },
+          };
+        }),
 
       // Calcular el monto total del ticket
       getTotal: () => {
@@ -43,10 +63,10 @@ const usePOSStore = create()(
         })),
     }),
     {
-      name: 'pos-storage',
+      name: 'ticket-store',
       storage: createJSONStorage(() => AsyncStorage),
     }
   )
 );
 
-export default usePOSStore;
+export default useTicketStore;

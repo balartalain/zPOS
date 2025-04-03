@@ -5,15 +5,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { DrawerActions } from '@react-navigation/native';
 import { Button, Text, Surface, useTheme, Badge } from 'react-native-paper';
 import { ApprovalProvider } from '../../components/approvalContext';
-import usePOSStore from '@/src/store/usePOSStore';
+import useTicketStore from '@/src/store/useTicketStore';
 import useNetworkStatus from '@/src/hooks/useNetworkStatus';
 
 const StacksLayout = () => {
   const router = useRouter();
   const nav = useNavigation();
   const theme = useTheme();
-
-  const { sales, completeTicket, markSaleAsSynced } = usePOSStore();
+  const { sales, completeTicket, markSaleAsSynced } = useTicketStore();
   const isConnected = useNetworkStatus();
 
   // Función para enviar ventas no sincronizadas

@@ -14,7 +14,7 @@ const productos = [
   { id: '8', nombre: 'Café', precio: 30, inStock: 10 },
 ];
 
-export default function ProductList() {
+export default function ProductList({ onPress }) {
   const [busqueda, setBusqueda] = useState(''); // Estado para el texto del buscador
   const [productosFiltrados, setProductosFiltrados] = useState(productos);
 
@@ -52,6 +52,7 @@ export default function ProductList() {
             style={styles.card}
             contentStyle={styles.innerCard}
             left={LeftContentCard}
+            onPress={() => onPress(item)}
           >
             <Card.Content style={styles.contentCard}>
               <Text variant="titleMedium">

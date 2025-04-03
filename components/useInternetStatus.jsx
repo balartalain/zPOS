@@ -17,6 +17,7 @@ export default function useInternetStatus() {
         setIsConnected(false);
       } finally {
         clearTimeout(timer);
+        setTimeout
       }
     };
 
