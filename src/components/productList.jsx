@@ -1,31 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import { Card, TextInput, Text } from 'react-native-paper';
-
-// Lista de productos
-const productos = [
-  { id: '1', nombre: 'Cerveza', precio: 25, inStock: 10 },
-  { id: '2', nombre: 'Coca Cola', precio: 20, inStock: 1 },
-  { id: '3', nombre: 'Agua Mineral', precio: 15, inStock: 2 },
-  { id: '4', nombre: 'Hamburguesa', precio: 50, inStock: 10 },
-  { id: '5', nombre: 'Papas Fritas', precio: 30, inStock: 8 },
-  { id: '6', nombre: 'Malta', precio: 15, inStock: 14 },
-  { id: '7', nombre: 'Chupa Chupa', precio: 50, inStock: 10 },
-  { id: '8', nombre: 'Café', precio: 30, inStock: 10 },
-];
+import ProductManager from '../Masterdata/product';
 
 export default function ProductList({ onPress }) {
   const [busqueda, setBusqueda] = useState(''); // Estado para el texto del buscador
-  const [productosFiltrados, setProductosFiltrados] = useState(productos);
+  const [productosFiltrados, setProductosFiltrados] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      const products = await ProductManager.findAllProducts();
+      setProductosFiltrados(products);
+    })();
+  }, []);
 
   // Función para manejar la búsqueda y filtrar los productos
-  const filtrarProductos = (texto) => {
+  const filtrarProductos = async (texto) => {
+    const products = await ProductManager.findAllProducts();
     setBusqueda(texto);
     if (texto === '') {
-      setProductosFiltrados(productos); // Mostrar todos si el buscador está vacío
+      setProductosFiltrados(products); // Mostrar todos si el buscador está vacío
     } else {
       setProductosFiltrados(
-        productos.filter((producto) =>
+        products.filter((producto) =>
           producto.nombre.toLowerCase().includes(texto.toLowerCase())
         )
       );

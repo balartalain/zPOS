@@ -24,7 +24,10 @@ function TicketScreen() {
   };
   return (
     <View style={{ flex: 1, padding: 10 }}>
-      <Surface style={styles.surface} elevation={4}>
+      <Surface
+        style={[styles.surface, { backgroundColor: theme.colors.primary }]}
+        elevation={5}
+      >
         <Text variant="displayMedium">Total: $200.00</Text>
       </Surface>
       {isStoreClosed ? <StoreClosed /> : <ProductList onPress={addProduct} />}
