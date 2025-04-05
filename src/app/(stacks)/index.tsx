@@ -20,7 +20,7 @@ function TicketScreen() {
     //console.log(ticket.lines);
   };
   const cobrar = () => {
-    checkStoredState('ticket-store');
+    router.push('/payTicket');
   };
   return (
     <View style={{ flex: 1, padding: 10 }}>
