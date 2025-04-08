@@ -26,7 +26,10 @@ const useTicketStore = create(
             );
           } else {
             // Si no está, lo agrega con cantidad 1
-            updatedLines = [...state.ticket.lines, { product, qty: 1 }];
+            updatedLines = [
+              ...state.ticket.lines,
+              { product, qty: 1, id: state.ticket.lines.length + 1 },
+            ];
           }
 
           return {

@@ -40,6 +40,7 @@ const RootLayout = () => {
     colorScheme === 'dark' ? CombinedDarkTheme : CombinedLightTheme;
   //const paperTheme = CombinedDarkTheme;
   removeStoredStore('user-store');
+  removeStoredStore('ticket-store');
   const { isAuthenticated } = useUserStore();
   return (
     <PaperProvider theme={paperTheme}>
