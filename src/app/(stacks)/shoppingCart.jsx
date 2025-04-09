@@ -19,16 +19,16 @@ export default function ShoppingCartScreen() {
             style={styles.card}
             onPress={() => {
               router.push(
-                `/changeQty?productName=${item.product.nombre}&precio=${item.product.precio}`
+                `/changeQty?productName=${item.product.name}&price=${item.product.price}`
               );
             }}
           >
             <Card.Content style={styles.contentCard}>
               <Text variant="titleMedium">
-                {item.product.nombre} x {item.qty}
+                {item.product.name} x {item.qty}
               </Text>
               <Text variant="titleMedium">
-                ${item.product.precio * item.qty}
+                ${item.product.price * item.qty}
               </Text>
             </Card.Content>
           </Card>

@@ -43,7 +43,7 @@ const useTicketStore = create(
       // Calcular el monto total del ticket
       getTotal: () => {
         return get().ticket.lines.reduce(
-          (total, line) => total + line.product.price * line.quantity,
+          (total, line) => total + line.product.price * line.qty,
           0
         );
       },

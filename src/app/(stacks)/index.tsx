@@ -11,7 +11,7 @@ import { checkStoredState } from '@/src/utils/checkAsyncStorage';
 function TicketScreen() {
   const router = useRouter();
   const theme = useTheme();
-  const { ticket, addProductToTicket } = useTicketStore();
+  const { ticket, addProductToTicket, getTotal } = useTicketStore();
   const isConnected = useNetworkStatus();
   const isStoreClosed = false;
 
@@ -28,7 +28,7 @@ function TicketScreen() {
         style={[styles.surface, { backgroundColor: theme.colors.primary }]}
         elevation={5}
       >
-        <Text variant="displayMedium">Total: $200.00</Text>
+        <Text variant="displayMedium">{`Total: $${getTotal()}`}</Text>
       </Surface>
       {isStoreClosed ? <StoreClosed /> : <ProductList onPress={addProduct} />}
       {!isStoreClosed && (

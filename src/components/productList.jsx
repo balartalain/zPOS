@@ -9,21 +9,21 @@ export default function ProductList({ onPress }) {
 
   useEffect(() => {
     (async () => {
-      const products = await ProductManager.findAllProducts();
+      const products = await ProductManager.findAll();
       setProductosFiltrados(products);
     })();
   }, []);
 
   // Función para manejar la búsqueda y filtrar los productos
   const filtrarProductos = async (texto) => {
-    const products = await ProductManager.findAllProducts();
+    const products = await ProductManager.findAll();
     setBusqueda(texto);
     if (texto === '') {
       setProductosFiltrados(products); // Mostrar todos si el buscador está vacío
     } else {
       setProductosFiltrados(
-        products.filter((producto) =>
-          producto.nombre.toLowerCase().includes(texto.toLowerCase())
+        products.filter((product) =>
+          product.name.toLowerCase().includes(texto.toLowerCase())
         )
       );
     }
@@ -53,7 +53,7 @@ export default function ProductList({ onPress }) {
           >
             <Card.Content style={styles.contentCard}>
               <Text variant="titleMedium">
-                {item.nombre} - ${item.precio}
+                {item.name} - ${item.price}
               </Text>
               <Text variant="bodyMedium">stock: {item.inStock}</Text>
             </Card.Content>
