@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet, Image } from 'react-native';
 import { Card, TextInput, Text } from 'react-native-paper';
 import ProductManager from '../Masterdata/product';
+
+const NoImageIcon = require('@/assets/images/no-image.png');
 
 export default function ProductList({ onPress }) {
   const [busqueda, setBusqueda] = useState(''); // Estado para el texto del buscador
@@ -28,7 +30,9 @@ export default function ProductList({ onPress }) {
       );
     }
   };
-  const LeftContentCard = (props) => <Avatar.Icon {...props} icon="folder" />;
+  const LeftContentCard = (props) => (
+    <Image source={NoImageIcon} {...props} style={styles.productImage} />
+  );
   return (
     <View style={styles.container}>
       {/* Campo de búsqueda */}
@@ -48,9 +52,12 @@ export default function ProductList({ onPress }) {
           <Card
             style={styles.card}
             contentStyle={styles.innerCard}
-            left={LeftContentCard}
             onPress={() => onPress(item)}
           >
+            <Card.Title
+              style={{ paddingLeft: 5, minHeight: 0, paddingVertical: 10 }}
+              left={LeftContentCard}
+            />
             <Card.Content style={styles.contentCard}>
               <Text variant="titleMedium">
                 {item.name} - ${item.price}
@@ -80,13 +87,24 @@ const styles = StyleSheet.create({
   card: {
     marginBottom: 10,
   },
+  productImage: {
+    width: 50,
+    height: 50,
+    //marginRight: 12,
+    borderRadius: 4,
+    backgroundColor: '#ccc', // Color de fondo si la imagen no carga
+  },
   innerCard: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    //justifyContent: 'space-between',
+    //alignItems: 'center',
   },
   contentCard: {
-    //addingTop: 5
+    paddingLeft: 0,
+    paddingBottom: 0,
+    marginLeft: 10,
+    justifyContent: 'center',
   },
   emptyText: {
     textAlign: 'center',
