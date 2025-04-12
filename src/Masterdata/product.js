@@ -7,14 +7,96 @@ const asyncAwait = (timeout) => {
     setTimeout(resolve, timeout || 3000);
   });
 };
-
+const products = [
+  {
+    cost: 120,
+    createdAt: '2025-03-21T18:29:23.046+00:00',
+    id: '67ddb002003703237539',
+    inStock: 10,
+    name: 'Refresco Cola 1',
+    price: 180,
+    updatedAt: '2025-03-21T18:29:23.046+00:00',
+  },
+  {
+    cost: 120,
+    createdAt: '2025-03-21T18:29:23.046+00:00',
+    id: '67ddb002003703237538',
+    inStock: 10,
+    name: 'Refresco Cola 2',
+    price: 180,
+    updatedAt: '2025-03-21T18:29:23.046+00:00',
+  },
+  {
+    cost: 120,
+    createdAt: '2025-03-21T18:29:23.046+00:00',
+    id: '67ddb002003703237537',
+    inStock: 10,
+    name: 'Refresco Cola 3',
+    price: 180,
+    updatedAt: '2025-03-21T18:29:23.046+00:00',
+  },
+  {
+    cost: 120,
+    createdAt: '2025-03-21T18:29:23.046+00:00',
+    id: '67ddb002003703237536',
+    inStock: 10,
+    name: 'Refresco Cola 4',
+    price: 180,
+    updatedAt: '2025-03-21T18:29:23.046+00:00',
+  },
+  {
+    cost: 120,
+    createdAt: '2025-03-21T18:29:23.046+00:00',
+    id: '67ddb002003703237535',
+    inStock: 10,
+    name: 'Refresco Cola 5',
+    price: 180,
+    updatedAt: '2025-03-21T18:29:23.046+00:00',
+  },
+  {
+    cost: 120,
+    createdAt: '2025-03-21T18:29:23.046+00:00',
+    id: '67ddb002003703237534',
+    inStock: 10,
+    name: 'Refresco Cola 6',
+    price: 180,
+    updatedAt: '2025-03-21T18:29:23.046+00:00',
+  },
+  {
+    cost: 120,
+    createdAt: '2025-03-21T18:29:23.046+00:00',
+    id: '67ddb002003703237533',
+    inStock: 10,
+    name: 'Refresco Cola 7',
+    price: 180,
+    updatedAt: '2025-03-21T18:29:23.046+00:00',
+  },
+  {
+    cost: 120,
+    createdAt: '2025-03-21T18:29:23.046+00:00',
+    id: '67ddb002003703237532',
+    inStock: 10,
+    name: 'Refresco Cola 8',
+    price: 180,
+    updatedAt: '2025-03-21T18:29:23.046+00:00',
+  },
+  {
+    cost: 200,
+    createdAt: '2025-04-09T11:21:22.248+00:00',
+    id: '67f65832000571c696d7',
+    inStock: 10,
+    name: 'Cerveza cristal',
+    price: 250,
+    updatedAt: '2025-04-09T11:21:22.248+00:00',
+  },
+];
 const ProductManager = {
   // 🔄 Cargar productos desde el servidor (solo primera vez)
   async loadProductsFromServer() {
     try {
       const backend = BackendFactory.getBackend();
-      const products = await backend.fetchProducts();
-      console.log(products);
+      //const products = await backend.fetchProducts();
+
       await AsyncStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
       console.log('✅ Productos almacenados en AsyncStorage.');
     } catch (error) {

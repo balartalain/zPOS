@@ -1,8 +1,22 @@
 import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { OnMeasure } from '../components/onMeasure';
-import { Button } from 'react-native-paper';
 
+const componentB = () => {
+  const [measurements, setMeasurements] = React.useState({
+    width: 0,
+    height: 0,
+    x: 0,
+    y: 0,
+    pageX: 0,
+    pageY: 0,
+  });
+  <View style={[styles.square]}>
+    <Text>
+      {pageX} {pageY}
+    </Text>
+  </View>;
+};
 export default function ProfileScreen() {
   const [measurements, setMeasurements] = React.useState({
     width: 0,
