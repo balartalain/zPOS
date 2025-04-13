@@ -49,8 +49,13 @@ const useTicketStore = create(
       },
 
       // Guardar venta en el historial (con fecha y sincronización pendiente)
-      completeTicket: () => {
-        const newSale = { ...get().ticket, date: new Date(), synced: false };
+      completeTicket: (paymentMethod) => {
+        const newSale = {
+          ...get().ticket,
+          date: new Date(),
+          paymentMethod,
+          synced: false,
+        };
         set((state) => ({
           sales: [...state.sales, newSale], // Se guarda en la lista de ventas
           ticket: { lines: [] }, // Vacía el ticket después de finalizar la venta
