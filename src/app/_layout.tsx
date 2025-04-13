@@ -19,6 +19,8 @@ import Login from '@/src/components/login';
 import useUserStore from '@/src/store/useUserStore';
 import LoadingModal from '@/src/components/loadingModal';
 import { removeStoredStore } from '@/src/utils/checkAsyncStorage';
+import ProductAnim from '@/src/components/productAnim';
+
 const customDarkTheme = {
   ...MD3DarkTheme,
   colors: { ...MD3DarkTheme.colors, ...Colors.dark },
@@ -68,8 +70,8 @@ const RootLayout = () => {
         </GestureHandlerRootView>
       )}
       <LoadingModal />
+      <ProductAnim />
     </PaperProvider>
   );
 };
-
 export default RootLayout;

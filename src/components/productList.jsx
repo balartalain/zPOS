@@ -1,13 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, FlatList, StyleSheet, Image } from 'react-native';
 import { Card, TextInput, Text } from 'react-native-paper';
 import ProductManager from '../Masterdata/product';
+import useProductAnimStore from '../store/useProductAnimStore';
+
+const NoImageIcon = require('@/assets/images/no-image.png');
 
 const NoImageIcon = require('@/assets/images/no-image.png');
 
 export default function ProductList({ onPress }) {
   const [busqueda, setBusqueda] = useState(''); // Estado para el texto del buscador
   const [productosFiltrados, setProductosFiltrados] = useState([]);
+  const productRefs = useRef({});
+  const productMeasure = useRef({});
+  const { runAnimation } = useProductAnimStore();
 
   useEffect(() => {
     (async () => {
@@ -16,6 +22,25 @@ export default function ProductList({ onPress }) {
     })();
   }, []);
 
+  useEffect(() => {
+    calculateProductMeasure();
+  }, [productosFiltrados]);
+  const onMyPress = (item) => {
+    const { x, y } = productMeasure.current[item.id];
+    const to = { x: 60, y: 10 };
+    runAnimation({ from: { x, y }, to });
+    onPress(item);
+  };
+  const calculateProductMeasure = () => {
+    productosFiltrados.forEach((p) => {
+      productRefs.current[p.id].measureInWindow((x, y, width, height) => {
+        productMeasure.current[p.id] = { x, y, width, height };
+      });
+    });
+  };
+  const setProductRef = useCallback((ref, id) => {
+    productRefs.current[id] = ref;
+  }, []);
   // Función para manejar la búsqueda y filtrar los productos
   const filtrarProductos = async (texto) => {
     const products = await ProductManager.findAll();
@@ -31,7 +56,12 @@ export default function ProductList({ onPress }) {
     }
   };
   const LeftContentCard = (props) => (
-    <Image source={NoImageIcon} {...props} style={styles.productImage} />
+    <Image
+      ref={(ref) => setProductRef(ref, props.id)}
+      source={NoImageIcon}
+      {...props}
+      style={styles.productImage}
+    />
   );
   return (
     <View style={styles.container}>
@@ -56,16 +86,18 @@ export default function ProductList({ onPress }) {
           >
             <Card.Title
               style={{ paddingLeft: 5, minHeight: 0, paddingVertical: 10 }}
-              left={LeftContentCard}
+              left={() => <LeftContentCard id={item.id} />}
             />
             <Card.Content style={styles.contentCard}>
               <Text variant="titleMedium">
-                {item.name} - ${item.price}
+                {item.name} - ${item.price} -{' '}
+                {productMeasure.current[item.id]?.y}
               </Text>
               <Text variant="bodyMedium">stock: {item.inStock}</Text>
             </Card.Content>
           </Card>
         )}
+        onMomentumScrollEnd={calculateProductMeasure}
       />
 
       {/* Mensaje si no hay productos */}
@@ -111,5 +143,5 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 16,
     // color: '#999',
-  },
+  }
 });

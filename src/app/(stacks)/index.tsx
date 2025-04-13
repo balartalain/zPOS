@@ -19,7 +19,7 @@ function TicketScreen() {
     addProductToTicket(product);
     //console.log(ticket.lines);
   };
-  const cobrar = () => {
+  const payTicket = () => {
     router.push('/payTicket');
   };
   return (
@@ -32,8 +32,8 @@ function TicketScreen() {
       </Surface>
       {isStoreClosed ? <StoreClosed /> : <ProductList onPress={addProduct} />}
       {!isStoreClosed && (
-        <Button mode="contained" style={styles.cobrar} onPress={cobrar}>
-          {`COBRAR - ${isConnected}`}
+        <Button mode="contained" style={styles.pay} onPress={payTicket}>
+          {`Pagar - ${isConnected}`}
         </Button>
       )}
     </View>
@@ -52,7 +52,7 @@ function StoreClosed() {
       />
       <Button
         mode="contained"
-        style={styles.cobrar}
+        style={styles.pay}
         onPress={() => {
           router.push('/openStore');
         }}
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  cobrar: {
+  pay: {
     padding: 10,
     marginTop: 10,
   },

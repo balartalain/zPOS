@@ -1,16 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import { Stack, useNavigation, useRouter } from 'expo-router';
-import { Card, TextInput, Text, Button } from 'react-native-paper';
+import {
+  Card,
+  TextInput,
+  Text,
+  Button,
+  Surface,
+  useTheme,
+} from 'react-native-paper';
 import useTicketStore from '@/src/store/useTicketStore';
 
 export default function ShoppingCartScreen() {
   const router = useRouter();
-  const { ticket } = useTicketStore();
+  const theme = useTheme();
+  const { ticket, getTotal } = useTicketStore();
 
   return (
     <View style={{ flex: 1, padding: 10 }}>
-      {/* Lista de productos */}
+      <Surface
+        style={[styles.surface, { backgroundColor: theme.colors.primary }]}
+        elevation={5}
+      >
+        <Text variant="displayMedium">{`Total: $${getTotal()}`}</Text>
+      </Surface>
       <FlatList
         data={ticket.lines}
         keyExtractor={(item) => item.id}
@@ -46,6 +59,14 @@ export default function ShoppingCartScreen() {
 }
 
 const styles = StyleSheet.create({
+  surface: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    marginBottom: 10,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   card: {
     marginBottom: 10,
   },
