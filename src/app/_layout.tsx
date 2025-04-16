@@ -17,6 +17,7 @@ import merge from 'deepmerge';
 import { Colors } from '@/src/themes/theme1/colors';
 import Login from '@/src/components/login';
 import useUserStore from '@/src/store/useUserStore';
+import Toast from 'react-native-toast-message';
 import LoadingModal from '@/src/components/loadingModal';
 import { removeStoredStore } from '@/src/utils/checkAsyncStorage';
 import ProductAnim from '@/src/components/productAnim';
@@ -66,7 +67,7 @@ const RootLayout = () => {
                 options={{ drawerLabel: 'Articulos' }}
               />
               <Drawer.Screen
-                name="addProducts"
+                name="addProduct"
                 options={{ drawerItemStyle: { display: 'none' } }}
               />
             </Drawer>
@@ -75,6 +76,7 @@ const RootLayout = () => {
       )}
       <LoadingModal />
       <ProductAnim />
+      <Toast />
     </PaperProvider>
   );
 };

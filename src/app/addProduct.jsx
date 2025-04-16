@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { TextInput, Button, Card, Avatar } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
+import Toast from 'react-native-toast-message';
 import SharedView from '@/src/components/shared/sharedView';
 
 const newProduct = () => {
@@ -60,6 +61,11 @@ function AddProductScreen() {
 
   // Función para guardar el producto
   const saveProduct = () => {
+    Toast.show({
+      type: 'success',
+      text1: 'Operación exitosa',
+      text2: 'Se guardaron los cambios correctamente',
+    });
     setProduct(newProduct());
   };
 
