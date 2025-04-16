@@ -7,7 +7,7 @@ const asyncAwait = (timeout) => {
     setTimeout(resolve, timeout || 3000);
   });
 };
-const products = [
+const products1 = [
   {
     cost: 120,
     createdAt: '2025-03-21T18:29:23.046+00:00',
@@ -95,7 +95,7 @@ const ProductManager = {
   async loadProductsFromServer() {
     try {
       const backend = BackendFactory.getBackend();
-      //const products = await backend.fetchProducts();
+      const products = await backend.fetchProducts();
 
       await AsyncStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
       console.log('✅ Productos almacenados en AsyncStorage.');

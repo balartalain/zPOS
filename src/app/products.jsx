@@ -24,8 +24,8 @@ function ProductScreen() {
       <ProductList />
       <Button
         mode="contained"
-        style={styles.cobrar}
-        onPress={() => console.log('Cobrar')}
+        style={styles.addBtn}
+        onPress={() => router.push('/addProduct')}
       >
         Agregar
       </Button>
@@ -33,15 +33,7 @@ function ProductScreen() {
   );
 }
 const styles = StyleSheet.create({
-  surface: {
-    paddingTop: 20,
-    paddingBottom: 20,
-    marginBottom: 10,
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  cobrar: {
+  addBtn: {
     padding: 10,
     marginTop: 10,
   },

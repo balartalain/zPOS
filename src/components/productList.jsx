@@ -6,8 +6,6 @@ import useProductAnimStore from '../store/useProductAnimStore';
 
 const NoImageIcon = require('@/assets/images/no-image.png');
 
-const NoImageIcon = require('@/assets/images/no-image.png');
-
 export default function ProductList({ onPress }) {
   const [busqueda, setBusqueda] = useState(''); // Estado para el texto del buscador
   const [productosFiltrados, setProductosFiltrados] = useState([]);
@@ -82,7 +80,7 @@ export default function ProductList({ onPress }) {
           <Card
             style={styles.card}
             contentStyle={styles.innerCard}
-            onPress={() => onPress(item)}
+            onPress={() => onMyPress(item)}
           >
             <Card.Title
               style={{ paddingLeft: 5, minHeight: 0, paddingVertical: 10 }}
@@ -90,8 +88,7 @@ export default function ProductList({ onPress }) {
             />
             <Card.Content style={styles.contentCard}>
               <Text variant="titleMedium">
-                {item.name} - ${item.price} -{' '}
-                {productMeasure.current[item.id]?.y}
+                {item.name} - ${item.price}
               </Text>
               <Text variant="bodyMedium">stock: {item.inStock}</Text>
             </Card.Content>
@@ -143,5 +140,5 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 16,
     // color: '#999',
-  }
+  },
 });
