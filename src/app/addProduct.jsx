@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { TextInput, Button, Card, Avatar } from 'react-native-paper';
+import { TextInput, Button, Menu, Divider } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import SharedView from '@/src/components/shared/sharedView';
+import ModalDropdown from '../components/modalDropdown';
+import ProductManager from '@/src/Masterdata/product';
+import BackendFactory from '../dal/backendFactory';
 
 const newProduct = () => {
   return {
@@ -21,6 +24,7 @@ const newProduct = () => {
 function AddProductScreen() {
   const router = useRouter();
   const navigation = useNavigation();
+  const [product, setProduct] = useState(newProduct());
 
   useEffect(() => {
     navigation.setOptions({
@@ -28,7 +32,6 @@ function AddProductScreen() {
     });
   }, [navigation]);
 
-  const [product, setProduct] = useState(newProduct());
   const takePhoto = async () => {
     const permission = await ImagePicker.requestCameraPermissionsAsync();
 
@@ -59,16 +62,19 @@ function AddProductScreen() {
     }
   };
 
-  // Función para guardar el producto
-  const saveProduct = () => {
+  const saveProduct = async () => {
     Toast.show({
       type: 'success',
       text1: 'Operación exitosa',
       text2: 'Se guardaron los cambios correctamente',
+      visibilityTime: 1500,
+      position: 'bottom',
     });
+    //await ProductManager.addProduct(product);
+    const backend = BackendFactory.getBackend();
+    await backend.addProduct(product);
     setProduct(newProduct());
   };
-
   return (
     <SharedView>
       <TextInput
@@ -77,6 +83,17 @@ function AddProductScreen() {
         value={product.name}
         onChangeText={(text) => setProduct({ ...product, name: text })}
       />
+      <ModalDropdown
+        data={['Bebidas', 'Miscelania']}
+        selectedValue={product?.category}
+        onSelect={(category) => setProduct({ ...product, category })}
+      />
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+        }}
+      ></View>
       <TextInput
         style={styles.field}
         label="Precio"
@@ -109,17 +126,18 @@ function AddProductScreen() {
             }
           />
         </View>
-        <View style={{ flex: 0.6, justifyContent: 'center', paddingRight: 10 }}>
-          <Button
-            style={{ marginBottom: 10 }}
-            mode="outlined"
-            onPress={pickImage}
-          >
+        <View
+          style={{
+            flex: 0.6,
+            justifyContent: 'center',
+            alignItems: 'flex-start',
+            paddingRight: 10,
+          }}
+        >
+          <Button style={{ marginBottom: 10 }} onPress={pickImage}>
             Elija una foto
           </Button>
-          <Button mode="outlined" onPress={takePhoto}>
-            Tomar una foto
-          </Button>
+          <Button onPress={takePhoto}>Tomar una foto</Button>
         </View>
       </View>
       <View style={{ flex: 1 }}></View>
