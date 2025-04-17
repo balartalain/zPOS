@@ -1,15 +1,20 @@
-class BackendService {
-  async fetchProducts() {
-    throw new Error('Método no implementado');
-  }
+import AppwriteService from './appWriteService';
+//import SupabaseService from './supabaseService'; // Implementación similar
 
-  async createOrder(orderData) {
-    throw new Error('Método no implementado');
+const backend = 'appwrite'; // Puedes cambiar esto según el backend activo
+let backendService;
+if (backend === 'appwrite') backendService = new AppwriteService();
+if (backend === 'firebase')
+  if (backend === 'supabase') {
+    //backendService = new FirebaseService();
+    //backendService = new SupabaseService();
   }
-
-  async getUserData(userId) {
-    throw new Error('Método no implementado');
-  }
-}
-
+const BackendService = {
+  fetchProducts: async function () {
+    return await backendService.fetchProducts();
+  },
+  addProduct: async function (product) {
+    await backendService.addProduct(product);
+  },
+};
 export default BackendService;

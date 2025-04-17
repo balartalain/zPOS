@@ -1,5 +1,4 @@
 import { Client, Databases } from 'appwrite';
-import BackendService from './backendService';
 
 const appwriteConfig = {
   endpoint: 'https://cloud.appwrite.io/v1',
@@ -13,11 +12,14 @@ const databases = new Databases(client);
 
 async function createDocument(collectionId, data) {
   try {
+    data.category = '67fb32da002978190dac';
+    const { id, ...newData } = data;
+    console.log(newData);
     const response = await databases.createDocument(
       databaseId,
       collectionId,
-      'unique()',
-      data
+      data.id,
+      newData
     );
     console.log('Document created:', response);
   } catch (error) {
@@ -70,7 +72,7 @@ async function deleteDocument(collectionId, documentId) {
   }
 }
 
-class AppwriteService extends BackendService {
+class AppwriteService {
   async fetchProducts() {
     const products = await listDocuments('67ddaeb40006089d52e7');
     return products.map((p) => ({
@@ -78,12 +80,15 @@ class AppwriteService extends BackendService {
       name: p.name,
       price: p.price,
       cost: p.cost,
-      inStock: p.in_stock,
+      inStock: p.inStock,
       createdAt: p.$createdAt,
       updatedAt: p.$updatedAt,
     }));
   }
-
+  async addProduct(p) {
+    const { image, ...newP } = p;
+    await createDocument('67ddaeb40006089d52e7', newP);
+  }
   async createOrder(orderData) {
     throw new Error('Método no implementado');
   }

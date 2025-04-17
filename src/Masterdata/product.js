@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import BackendFactory from '@/src/dal/backendFactory';
+import BackendService from '@/src/dal/backendService';
 
 const PRODUCTS_KEY = 'product-storage'; // Clave en AsyncStorage
 const asyncAwait = (timeout) => {
@@ -94,8 +94,7 @@ const ProductManager = {
   // 🔄 Cargar productos desde el servidor (solo primera vez)
   async loadProductsFromServer() {
     try {
-      const backend = BackendFactory.getBackend();
-      const products = await backend.fetchProducts();
+      const products = await BackendService.fetchProducts();
 
       await AsyncStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
       console.log('✅ Productos almacenados en AsyncStorage.');
