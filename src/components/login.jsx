@@ -4,7 +4,7 @@ import { TextInput, Button, useTheme, Text } from 'react-native-paper';
 import useUserStore from '../store/useUserStore';
 import useModalStore from '../store/useModalStore';
 
-import ProductManager from '@/src/Masterdata/product';
+import ProductModel from '../model/productModel';
 
 const { height } = Dimensions.get('window');
 
@@ -23,7 +23,7 @@ const Login = () => {
   };
   const loadProducts = async () => {
     showModal({ label: 'Desacargando masterdata' });
-    await ProductManager.loadProductsFromServer();
+    await ProductModel.fetchAll();
     hideModal();
   };
   return (

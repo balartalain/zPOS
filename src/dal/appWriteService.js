@@ -78,6 +78,7 @@ class AppwriteService {
     return products.map((p) => ({
       id: p.$id,
       name: p.name,
+      category: p.category?.$id,
       price: p.price,
       cost: p.cost,
       inStock: p.inStock,

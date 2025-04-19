@@ -7,9 +7,9 @@ import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import SharedView from '@/src/components/shared/sharedView';
 import * as FileSystem from 'expo-file-system';
+import { useSQLiteContext } from 'expo-sqlite';
 import ModalDropdown from '../components/modalDropdown';
-import ProductManager from '@/src/Masterdata/product';
-import BackendService from '../dal/backendService';
+import ProductModel from '../model/productModel';
 
 /*
 const uploadImageToAppwrite = async (imageUri) => {
@@ -64,6 +64,7 @@ const copyImageToLocalDir = async (fromUri, toUri, oldUri) => {
 function AddProductScreen() {
   const router = useRouter();
   const navigation = useNavigation();
+  const db = useSQLiteContext();
   const [product, setProduct] = useState(newProduct());
 
   useEffect(() => {
@@ -124,7 +125,8 @@ function AddProductScreen() {
       position: 'bottom',
     });
     //await ProductManager.addProduct(product);
-    await BackendService.addProduct(product);
+    //await BackendService.addProduct(product);
+    ProductModel.create(product, db);
     setProduct(newProduct());
   };
   return (
