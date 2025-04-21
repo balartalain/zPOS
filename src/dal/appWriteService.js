@@ -1,14 +1,16 @@
-import { Client, Databases } from 'appwrite';
+import { Client, Databases, Storage, ID } from 'appwrite';
 
 const appwriteConfig = {
   endpoint: 'https://cloud.appwrite.io/v1',
   project: '67ddae63002483677008',
 };
 const databaseId = '67ddae9d000dea8a9094';
+const storageId = '67fec66b0023f738b876';
 const client = new Client()
   .setEndpoint(appwriteConfig.endpoint)
   .setProject(appwriteConfig.project);
 const databases = new Databases(client);
+const storage = new Storage(client);
 
 async function createDocument(collectionId, data) {
   try {
@@ -74,17 +76,27 @@ async function deleteDocument(collectionId, documentId) {
 
 class AppwriteService {
   async fetchProducts() {
-    const products = await listDocuments('67ddaeb40006089d52e7');
-    return products.map((p) => ({
-      id: p.$id,
-      name: p.name,
-      category: p.category?.$id,
-      price: p.price,
-      cost: p.cost,
-      inStock: p.inStock,
-      createdAt: p.$createdAt,
-      updatedAt: p.$updatedAt,
-    }));
+    try {
+      const products = await listDocuments('67ddaeb40006089d52e7');
+      for (const p of products) {
+        if (p.image) {
+          p.image = storage.getFileView(storageId, p.image);
+        }
+      }
+      return products.map((p) => ({
+        id: p.$id,
+        name: p.name,
+        image: p.image,
+        category: p.category?.$id,
+        price: p.price,
+        cost: p.cost,
+        inStock: p.inStock,
+        createdAt: p.$createdAt,
+        updatedAt: p.$updatedAt,
+      }));
+    } catch (err) {
+      console.log('Error obteniendo producto: ', err);
+    }
   }
   async addProduct(p) {
     const { image, ...newP } = p;

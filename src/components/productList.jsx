@@ -54,11 +54,11 @@ export default function ProductList({ onPress }) {
       );
     }
   };
-  const LeftContentCard = (props) => (
+  const LeftContentCard = ({ product }) => (
     <Image
-      ref={(ref) => setProductRef(ref, props.id)}
-      source={NoImageIcon}
-      {...props}
+      ref={(ref) => setProductRef(ref, product.id)}
+      source={product.image ? { uri: product.image } : NoImageIcon}
+      //source={product.image}
       style={styles.productImage}
     />
   );
@@ -85,7 +85,7 @@ export default function ProductList({ onPress }) {
           >
             <Card.Title
               style={{ paddingLeft: 5, minHeight: 0, paddingVertical: 10 }}
-              left={() => <LeftContentCard id={item.id} />}
+              left={() => <LeftContentCard product={item} />}
             />
             <Card.Content style={styles.contentCard}>
               <Text variant="titleMedium">
@@ -122,7 +122,8 @@ const styles = StyleSheet.create({
     height: 50,
     //marginRight: 12,
     borderRadius: 4,
-    backgroundColor: '#ccc', // Color de fondo si la imagen no carga
+    backgroundColor: '#ccc',
+    resizeMode: 'cover',
   },
   innerCard: {
     flex: 1,

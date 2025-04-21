@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ModelRegistry from './modelRegistry';
 import BackendService from '@/src/dal/backendService';
 
-const registerPendingOperation = async (db, model, operation, data) => {
+export const registerPendingOperation = async (db, model, operation, data) => {
   console.log(data);
   const jsonData = JSON.stringify(data);
   await db.runAsync(
@@ -50,6 +50,16 @@ class ProductModel {
       console.error('❌ Error al agregar producto:', error);
     }
   }
+  static async findAll() {
+    try {
+      const storedProducts = await AsyncStorage.getItem('products');
+      const products = storedProducts ? JSON.parse(storedProducts) : [];
+      return products;
+    } catch (error) {
+      console.error('❌ Error en la búsqueda:', error);
+      return [];
+    }
+  }
   /* In Remote */
   static async fetchAll() {
     try {
@@ -64,17 +74,6 @@ class ProductModel {
   static async pushUpdate(data) {}
   static async pushDelete(data) {}
 
-  /* In AsyncStorage */
-  static async findAll() {
-    try {
-      const storedProducts = await AsyncStorage.getItem('products');
-      const products = storedProducts ? JSON.parse(storedProducts) : [];
-      return products;
-    } catch (error) {
-      console.error('❌ Error en la búsqueda:', error);
-      return [];
-    }
-  }
   static getName() {
     return 'product';
   }
