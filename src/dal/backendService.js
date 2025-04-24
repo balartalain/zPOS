@@ -16,5 +16,8 @@ const BackendService = {
   addProduct: async function (product) {
     await backendService.addProduct(product);
   },
+  uploadImage: async function (imageAsset) {
+    await backendService.uploadImage(imageAsset);
+  },
 };
 export default BackendService;

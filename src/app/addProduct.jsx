@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { TextInput, Button, Menu, Divider } from 'react-native-paper';
+import { TextInput, Button, Menu, Divider, useTheme } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
@@ -10,7 +10,8 @@ import * as FileSystem from 'expo-file-system';
 import { useSQLiteContext } from 'expo-sqlite';
 import ModalDropdown from '../components/modalDropdown';
 import ProductModel from '../model/productModel';
-
+import Utils from '../utils/utils';
+import AppwriteService from '@/src/dal/appWriteService';
 /*
 const uploadImageToAppwrite = async (imageUri) => {
   try {
@@ -36,7 +37,7 @@ const uploadImageToAppwrite = async (imageUri) => {
 */
 const newProduct = () => {
   return {
-    id: Date.now().toString(), // ID autogenerado
+    id: Utils.uniqueID(), // ID autogenerado
     name: '',
     image: null,
     category: '',
@@ -53,7 +54,7 @@ const copyImageToLocalDir = async (fromUri, toUri, oldUri) => {
         await FileSystem.deleteAsync(fileInfo.uri);
       }
     }
-    await FileSystem.moveAsync({
+    await FileSystem.copyAsync({
       from: fromUri,
       to: toUri,
     });
@@ -63,9 +64,11 @@ const copyImageToLocalDir = async (fromUri, toUri, oldUri) => {
 };
 function AddProductScreen() {
   const router = useRouter();
+  const theme = useTheme();
   const navigation = useNavigation();
   const db = useSQLiteContext();
   const [product, setProduct] = useState(newProduct());
+  const [openCategoryModal, setOpenCategoryModal] = useState(false);
 
   useEffect(() => {
     navigation.setOptions({
@@ -109,25 +112,43 @@ function AddProductScreen() {
       aspect: [4, 3],
     });
     if (!result.canceled) {
-      const newUri = `${FileSystem.documentDirectory}_prod_${product.id}_${Date.now()}.jpg`;
-      await copyImageToLocalDir(result.assets[0].uri, newUri, product.image);
-      setProduct({ ...product, image: newUri });
-      // TODO: guardalo en el local storage y subirlo a appWrite
+      const imageAsset = result.assets[0];
+      setProduct({
+        ...product,
+        image: result.assets[0].uri,
+        imageAsset,
+      });
     }
   };
 
   const saveProduct = async () => {
-    Toast.show({
-      type: 'success',
-      text1: 'Operación exitosa',
-      text2: 'Se guardaron los cambios correctamente',
-      visibilityTime: 1500,
-      position: 'bottom',
-    });
     //await ProductManager.addProduct(product);
     //await BackendService.addProduct(product);
-    ProductModel.create(product, db);
-    setProduct(newProduct());
+    try {
+      const newUri = `${FileSystem.documentDirectory}_prod_${product.id}_${Date.now()}.jpg`;
+      //await copyImageToLocalDir(product.image, newUri, product.oldImage);
+      //product.image = newUri;
+      //await ProductModel.create(product, db);
+      await new AppwriteService().uploadImage(product.imageAsset);
+
+      Toast.show({
+        type: 'success',
+        text1: 'Operación exitosa',
+        text2: 'Se guardaron los cambios correctamente',
+        visibilityTime: 1500,
+        position: 'bottom',
+      });
+      setProduct(newProduct());
+    } catch (err) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Hubo un error guardando el producto',
+        visibilityTime: 1500,
+        position: 'bottom',
+      });
+      console.log(err);
+    }
   };
   return (
     <SharedView>
@@ -137,10 +158,38 @@ function AddProductScreen() {
         value={product.name}
         onChangeText={(text) => setProduct({ ...product, name: text })}
       />
+      <Button
+        mode="outlined"
+        icon="chevron-down"
+        buttonColor={theme.colors.surfaceVariant}
+        textColor={theme.colors.onSurfaceVariant}
+        labelStyle={{ margin: 15 }}
+        contentStyle={{
+          justifyContent: 'space-between',
+          flexDirection: 'row-reverse',
+        }}
+        style={{
+          borderRadius: 0,
+          marginBottom: 20,
+          paddingVertical: 5,
+          borderWidth: 0,
+          borderBottomWidth: 1,
+          borderBottomColor: theme.colors.onSurfaceVariant,
+          justifyContent: 'left',
+        }}
+        onPress={() => setOpenCategoryModal(true)}
+      >
+        {product.category || 'Selecciona una Categoria'}
+      </Button>
       <ModalDropdown
         data={['Bebidas', 'Miscelania']}
         selectedValue={product?.category}
-        onSelect={(category) => setProduct({ ...product, category })}
+        onSelect={(category) => {
+          setProduct({ ...product, category });
+          setOpenCategoryModal(false);
+        }}
+        onCloseModal={() => setOpenCategoryModal(false)}
+        isModalVisible={openCategoryModal}
       />
       <View
         style={{

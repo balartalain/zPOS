@@ -14,12 +14,13 @@ export const registerPendingOperation = async (db, model, operation, data) => {
 class ProductModel {
   static async create(data, localDB) {
     try {
+      const { imageAsset: undefined, ...newProduct } = data;
       const storedProducts = await AsyncStorage.getItem('products');
       const products = storedProducts ? JSON.parse(storedProducts) : [];
-      products.push(data);
+      products.push(newProduct);
       await AsyncStorage.setItem('products', JSON.stringify(products));
-      registerPendingOperation(localDB, this.getName(), 'pushCreate', data);
-      console.log('✅ Producto agregado 1.');
+      this.pushCreate(data);
+      //registerPendingOperation(localDB, this.getName(), 'pushCreate', data);
     } catch (error) {
       console.error('❌ Error al agregar producto:', error);
     }
@@ -64,13 +65,19 @@ class ProductModel {
   static async fetchAll() {
     try {
       const products = await BackendService.fetchProducts();
-      await AsyncStorage.setItem('products', JSON.stringify(products));
+      await AsyncStorage.setItem(
+        'products',
+        products ? JSON.stringify(products) : []
+      );
       console.log('✅ Productos almacenados en AsyncStorage.');
     } catch (error) {
+      await AsyncStorage.setItem('products', []);
       console.error('❌ Error al cargar productos:', error);
     }
   }
-  static async pushCreate(data) {}
+  static async pushCreate(data) {
+    BackendService.addProduct(data);
+  }
   static async pushUpdate(data) {}
   static async pushDelete(data) {}
 

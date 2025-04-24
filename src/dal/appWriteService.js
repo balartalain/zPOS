@@ -1,4 +1,7 @@
 import { Client, Databases, Storage, ID } from 'appwrite';
+import { Platform } from 'react-native';
+import * as FileSystem from 'expo-file-system';
+import Utils from '../utils/utils';
 
 const appwriteConfig = {
   endpoint: 'https://cloud.appwrite.io/v1',
@@ -98,9 +101,12 @@ class AppwriteService {
       console.log('Error obteniendo producto: ', err);
     }
   }
-  async addProduct(p) {
-    const { image, ...newP } = p;
-    await createDocument('67ddaeb40006089d52e7', newP);
+  async addProduct(data) {
+    const { imageAsset: undefined, ...newProduct } = data;
+    if (imageAsset) {
+      newProduct.image = await this.uploadImage(imageAsset);
+    }
+    await createDocument('67ddaeb40006089d52e7', newProduct);
   }
   async createOrder(orderData) {
     throw new Error('Método no implementado');
@@ -108,6 +114,42 @@ class AppwriteService {
 
   async getUserData(userId) {
     throw new Error('Método no implementado');
+  }
+  async uploadImage(imageAsset) {
+    try {
+      const imageId = Utils.uniqueID();
+      const imageUri =
+        Platform.OS === 'web'
+          ? imageAsset.file
+          : await this.prepareNativeFile(imageAsset);
+      const response = await storage.createFile(storageId, imageId, imageUri);
+      console.log(response);
+      return response.$id;
+    } catch (error) {
+      console.error('Error al subir la imagen a Appwrite:', error);
+      return null;
+    }
+  }
+  async prepareNativeFile(imageAsset) {
+    try {
+      //console.log(imageAsset);
+      const url = new URL(imageAsset.uri);
+      const fileInfo = await FileSystem.getInfoAsync(url.href);
+      console.log('Información del archivo:', fileInfo);
+      // Handle native file preparation
+      return {
+        name: url.pathname.split('/').pop(),
+        size: imageAsset.fileSize,
+        type: imageAsset.mimeType,
+        uri: url.href,
+      };
+      //console.log(imageAsset);
+      console.log(result);
+      return result;
+    } catch (error) {
+      console.error('[prepareNativeFile] error ==>', error);
+      return Promise.reject(error);
+    }
   }
 }
 
