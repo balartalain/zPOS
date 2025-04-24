@@ -15,20 +15,42 @@ import {
   useTheme,
 } from 'react-native-paper';
 
-const ModalDropdown = ({
-  data,
-  onSelect,
-  isModalVisible = false,
-  onCloseModal,
-}) => {
+const ModalDropdown = ({ data, onSelect, selectedValue }) => {
   const theme = useTheme();
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => setModalVisible(!isModalVisible);
 
   const handleSelect = (item) => {
     onSelect(item);
+    toggleModal();
   };
 
   return (
     <View style={styles.container}>
+      <Button
+        mode="outlined"
+        icon="chevron-down"
+        buttonColor={theme.colors.surfaceVariant}
+        textColor={theme.colors.onSurfaceVariant}
+        labelStyle={{ margin: 15 }}
+        contentStyle={{
+          justifyContent: 'space-between',
+          flexDirection: 'row-reverse',
+        }}
+        style={{
+          borderRadius: 0,
+          marginBottom: 20,
+          paddingVertical: 5,
+          borderWidth: 0,
+          borderBottomWidth: 1,
+          borderBottomColor: theme.colors.onSurfaceVariant,
+          justifyContent: 'left',
+        }}
+        onPress={toggleModal}
+      >
+        {selectedValue || 'Selecciona una Categoria'}
+      </Button>
       <Modal visible={isModalVisible} transparent animationType="slide">
         <View style={styles.modalBackground}>
           <View style={styles.modalContent}>
@@ -44,7 +66,7 @@ const ModalDropdown = ({
                 </TouchableOpacity>
               )}
             />
-            <Button style={styles.closeButton} onPress={onCloseModal}>
+            <Button style={styles.closeButton} onPress={toggleModal}>
               Close
             </Button>
           </View>
