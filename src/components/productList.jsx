@@ -24,6 +24,7 @@ export default function ProductList({ onPress }) {
   useEffect(() => {
     calculateProductMeasure();
   }, [productosFiltrados]);
+
   const onMyPress = (item) => {
     const { x, y } = productMeasure.current[item.id];
     const to = { x: 60, y: 10 };
@@ -122,7 +123,7 @@ const styles = StyleSheet.create({
     height: 50,
     //marginRight: 12,
     borderRadius: 4,
-    backgroundColor: '#ccc',
+    //backgroundColor: '#ccc',
     resizeMode: 'cover',
   },
   innerCard: {

@@ -11,30 +11,7 @@ import { useSQLiteContext } from 'expo-sqlite';
 import ModalDropdown from '../components/modalDropdown';
 import ProductModel from '../model/productModel';
 import Utils from '../utils/utils';
-import AppwriteService from '@/src/dal/appWriteService';
-/*
-const uploadImageToAppwrite = async (imageUri) => {
-  try {
-    const response = await FileSystem.readAsStringAsync(imageUri, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
-    const file = await storage.createFile(
-      'YOUR_BUCKET_ID', // Reemplaza con el ID de tu bucket
-      'unique_' + Date.now() + '.jpg',
-      response
-    );
-    return file.$id;
-  } catch (error) {
-    console.error('Error al subir la imagen a Appwrite:', error);
-    Alert.alert(
-      'Error',
-      'Hubo un problema al subir la imagen. Inténtalo de nuevo.',
-      [{ text: 'OK' }]
-    );
-    return null;
-  }
-};
-*/
+
 const newProduct = () => {
   return {
     id: Utils.uniqueID(), // ID autogenerado
@@ -44,6 +21,7 @@ const newProduct = () => {
     price: '',
     cost: '',
     inStock: 0,
+    saveNewImage: false,
   };
 };
 const copyImageToLocalDir = async (fromUri, toUri, oldUri) => {
@@ -112,11 +90,11 @@ function AddProductScreen() {
       aspect: [4, 3],
     });
     if (!result.canceled) {
-      const imageAsset = result.assets[0];
+      console.log(result.assets[0].uri);
       setProduct({
         ...product,
         image: result.assets[0].uri,
-        imageAsset,
+        saveNewImage: true,
       });
     }
   };
@@ -125,11 +103,10 @@ function AddProductScreen() {
     //await ProductManager.addProduct(product);
     //await BackendService.addProduct(product);
     try {
-      const newUri = `${FileSystem.documentDirectory}_prod_${product.id}_${Date.now()}.jpg`;
+      //const newUri = `${FileSystem.documentDirectory}_prod_${product.id}_${Date.now()}.jpg`;
       //await copyImageToLocalDir(product.image, newUri, product.oldImage);
       //product.image = newUri;
-      //await ProductModel.create(product, db);
-      await new AppwriteService().uploadImage(product.imageAsset);
+      await ProductModel.create(product, db);
 
       Toast.show({
         type: 'success',
@@ -158,29 +135,6 @@ function AddProductScreen() {
         value={product.name}
         onChangeText={(text) => setProduct({ ...product, name: text })}
       />
-      <Button
-        mode="outlined"
-        icon="chevron-down"
-        buttonColor={theme.colors.surfaceVariant}
-        textColor={theme.colors.onSurfaceVariant}
-        labelStyle={{ margin: 15 }}
-        contentStyle={{
-          justifyContent: 'space-between',
-          flexDirection: 'row-reverse',
-        }}
-        style={{
-          borderRadius: 0,
-          marginBottom: 20,
-          paddingVertical: 5,
-          borderWidth: 0,
-          borderBottomWidth: 1,
-          borderBottomColor: theme.colors.onSurfaceVariant,
-          justifyContent: 'left',
-        }}
-        onPress={() => setOpenCategoryModal(true)}
-      >
-        {product.category || 'Selecciona una Categoria'}
-      </Button>
       <ModalDropdown
         data={['Bebidas', 'Miscelania']}
         selectedValue={product?.category}
@@ -191,12 +145,6 @@ function AddProductScreen() {
         onCloseModal={() => setOpenCategoryModal(false)}
         isModalVisible={openCategoryModal}
       />
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'center',
-        }}
-      ></View>
       <TextInput
         style={styles.field}
         label="Precio"
@@ -275,7 +223,6 @@ const styles = StyleSheet.create({
     height: 100,
     //marginRight: 12,
     borderRadius: 4,
-    backgroundColor: '#ccc', // Color de fondo si la imagen no carga
   },
 });
 

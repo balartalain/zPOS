@@ -1,23 +1,24 @@
-import AppwriteService from './appWriteService';
+import BackendlessService from './backendlessService';
 //import SupabaseService from './supabaseService'; // Implementación similar
 
-const backend = 'appwrite'; // Puedes cambiar esto según el backend activo
+const backend = 'backendless'; // Puedes cambiar esto según el backend activo
 let backendService;
-if (backend === 'appwrite') backendService = new AppwriteService();
-if (backend === 'firebase')
-  if (backend === 'supabase') {
-    //backendService = new FirebaseService();
-    //backendService = new SupabaseService();
-  }
+if (backend === 'appwrite') {
+  backendService = new AppwriteService();
+}
+if (backend === 'backendless') {
+  backendService = new BackendlessService();
+}
+if (backend === 'supabase') {
+  //backendService = new FirebaseService();
+  //backendService = new SupabaseService();
+}
 const BackendService = {
   fetchProducts: async function () {
     return await backendService.fetchProducts();
   },
   addProduct: async function (product) {
-    await backendService.addProduct(product);
-  },
-  uploadImage: async function (imageAsset) {
-    await backendService.uploadImage(imageAsset);
+    return await backendService.addProduct(product);
   },
 };
 export default BackendService;

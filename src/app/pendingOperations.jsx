@@ -6,7 +6,6 @@ import { useSQLiteContext } from 'expo-sqlite';
 export default PendingScreen = () => {
   const db = useSQLiteContext();
   const [pending, setPending] = useState([]);
-  console.log(Date.now());
   useFocusEffect(
     React.useCallback(() => {
       getPending();

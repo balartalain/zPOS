@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet, Image } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
@@ -11,6 +11,7 @@ import {
   TextInput,
   Card,
 } from 'react-native-paper';
+import ProductModel from '../model/productModel';
 
 import SharedView from '@/src/components/shared/sharedView';
 const NoImageIcon = require('@/assets/images/no-image.png');
@@ -48,13 +49,11 @@ function ProductScreen() {
   };
   const LeftContentCard = ({ product }) => (
     <Image
-      ref={(ref) => setProductRef(ref, product.id)}
       source={product.image ? { uri: product.image } : NoImageIcon}
       //source={product.image}
       style={styles.productImage}
     />
   );
-  console.log(productosFiltrados);
   return (
     <SharedView>
       <TextInput

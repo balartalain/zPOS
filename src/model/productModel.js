@@ -14,11 +14,12 @@ export const registerPendingOperation = async (db, model, operation, data) => {
 class ProductModel {
   static async create(data, localDB) {
     try {
-      const { imageAsset: undefined, ...newProduct } = data;
-      const storedProducts = await AsyncStorage.getItem('products');
-      const products = storedProducts ? JSON.parse(storedProducts) : [];
-      products.push(newProduct);
-      await AsyncStorage.setItem('products', JSON.stringify(products));
+      console.log('product model => addProduct');
+      const { saveNewImage, ...newProduct } = data;
+      // const storedProducts = await AsyncStorage.getItem('products');
+      // const products = storedProducts ? JSON.parse(storedProducts) : [];
+      // products.push(newProduct);
+      // await AsyncStorage.setItem('products', JSON.stringify(products));
       this.pushCreate(data);
       //registerPendingOperation(localDB, this.getName(), 'pushCreate', data);
     } catch (error) {

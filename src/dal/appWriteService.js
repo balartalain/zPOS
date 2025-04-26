@@ -118,15 +118,20 @@ class AppwriteService {
   async uploadImage(imageAsset) {
     try {
       const imageId = Utils.uniqueID();
-      const imageUri =
+      const imageFile =
         Platform.OS === 'web'
           ? imageAsset.file
           : await this.prepareNativeFile(imageAsset);
-      const response = await storage.createFile(storageId, imageId, imageUri);
-      console.log(response);
+
+      const rBlob = await fetch(imageAsset.uri);
+      const blob = await rBlob.blob();
+      //console.log(blob);
+      const file = new File([blob], 'image.jpg', { type: 'image/jpeg' });
+      console.log(file);
+      const response = await storage.createFile(storageId, imageId, file);
       return response.$id;
     } catch (error) {
-      console.error('Error al subir la imagen a Appwrite:', error);
+      console.log('Error al subir la imagen a Appwrite:', error);
       return null;
     }
   }
@@ -134,8 +139,8 @@ class AppwriteService {
     try {
       //console.log(imageAsset);
       const url = new URL(imageAsset.uri);
-      const fileInfo = await FileSystem.getInfoAsync(url.href);
-      console.log('Información del archivo:', fileInfo);
+      //const fileInfo = await FileSystem.getInfoAsync(url.href);
+      //console.log('Información del archivo:', fileInfo);
       // Handle native file preparation
       return {
         name: url.pathname.split('/').pop(),
@@ -143,9 +148,6 @@ class AppwriteService {
         type: imageAsset.mimeType,
         uri: url.href,
       };
-      //console.log(imageAsset);
-      console.log(result);
-      return result;
     } catch (error) {
       console.error('[prepareNativeFile] error ==>', error);
       return Promise.reject(error);
