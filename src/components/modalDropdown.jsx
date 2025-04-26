@@ -15,17 +15,17 @@ import {
   useTheme,
 } from 'react-native-paper';
 
-const ModalDropdown = ({ data, onSelect, selectedValue }) => {
+const ModalDropdown = ({ data, onSelect }) => {
   const theme = useTheme();
   const [isModalVisible, setModalVisible] = useState(false);
-
+  const [selectedValue, setSelectedValue] = useState(null);
   const toggleModal = () => setModalVisible(!isModalVisible);
 
   const handleSelect = (item) => {
     onSelect(item);
+    setSelectedValue(item.name);
     toggleModal();
   };
-  console.log('[data]=>', data);
   return (
     <View style={styles.container}>
       <Button

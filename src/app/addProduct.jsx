@@ -146,14 +146,11 @@ function AddProductScreen() {
         onChangeText={(text) => setProduct({ ...product, name: text })}
       />
       <ModalDropdown
+        key={product.id}
         data={categories}
-        selectedValue={product.category?.name || undefined}
         onSelect={(category) => {
           setProduct({ ...product, category });
-          setOpenCategoryModal(false);
         }}
-        onCloseModal={() => setOpenCategoryModal(false)}
-        isModalVisible={openCategoryModal}
       />
       <TextInput
         style={styles.field}
