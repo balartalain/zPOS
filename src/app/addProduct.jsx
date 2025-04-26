@@ -3,13 +3,13 @@ import { View, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { TextInput, Button, Menu, Divider, useTheme } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import SharedView from '@/src/components/shared/sharedView';
 import * as FileSystem from 'expo-file-system';
 import { useSQLiteContext } from 'expo-sqlite';
 import ModalDropdown from '../components/modalDropdown';
-import ProductModel from '../model/productModel';
+import CategoryModel from '../model/categoryModel';
 import Utils from '../utils/utils';
 
 const newProduct = () => {
@@ -17,7 +17,7 @@ const newProduct = () => {
     id: Utils.uniqueID(), // ID autogenerado
     name: '',
     image: null,
-    category: '',
+    category: null,
     price: '',
     cost: '',
     inStock: 0,
@@ -47,12 +47,22 @@ function AddProductScreen() {
   const db = useSQLiteContext();
   const [product, setProduct] = useState(newProduct());
   const [openCategoryModal, setOpenCategoryModal] = useState(false);
-
+  const [categories, setCategories] = useState([]);
   useEffect(() => {
     navigation.setOptions({
       headerTitle: 'Agregar artículo',
     });
   }, [navigation]);
+  useFocusEffect(
+    React.useCallback(() => {
+      (async () => {
+        const _categories = await CategoryModel.findAll();
+        console.log('[categories]=>', _categories);
+        setCategories(_categories);
+      })();
+    }, [])
+  );
+  console.log('[addProduct screen]');
 
   const takePhoto = async () => {
     const permission = await ImagePicker.requestCameraPermissionsAsync();
@@ -90,7 +100,6 @@ function AddProductScreen() {
       aspect: [4, 3],
     });
     if (!result.canceled) {
-      console.log(result.assets[0].uri);
       setProduct({
         ...product,
         image: result.assets[0].uri,
@@ -106,6 +115,7 @@ function AddProductScreen() {
       //const newUri = `${FileSystem.documentDirectory}_prod_${product.id}_${Date.now()}.jpg`;
       //await copyImageToLocalDir(product.image, newUri, product.oldImage);
       //product.image = newUri;
+      product.category = product.category.id;
       await ProductModel.create(product, db);
 
       Toast.show({
@@ -136,8 +146,8 @@ function AddProductScreen() {
         onChangeText={(text) => setProduct({ ...product, name: text })}
       />
       <ModalDropdown
-        data={['Bebidas', 'Miscelania']}
-        selectedValue={product?.category}
+        data={categories}
+        selectedValue={product.category?.name || undefined}
         onSelect={(category) => {
           setProduct({ ...product, category });
           setOpenCategoryModal(false);

@@ -16,21 +16,33 @@ class BackendlessService {
       }));
     } catch (err) {
       console.log('Error obteniendo producto: ', err);
+      throw err;
+    }
+  }
+  async fetchCategories() {
+    try {
+      const response = await axios.get(`${BACKENDLESS_API_URL}/data/category`);
+
+      return response.data;
+    } catch (err) {
+      console.log('Error obteniendo categorias: ', err);
+      throw err;
     }
   }
   async addProduct(data) {
-    if (data.saveNewImage) {
-      const imageUri = await this.uploadImage(
-        data.image,
-        data.name.replaceAll(' ', '_') + '.jpeg'
-      );
-      data.image = imageUri;
-    }
-    //Guardar el producto
     try {
+      if (data.saveNewImage) {
+        const imageUri = await this.uploadImage(
+          data.image,
+          data.name.replaceAll(' ', '_') + '.jpeg'
+        );
+        data.image = imageUri;
+      }
+      //Guardar el producto
       await axios.post(`${BACKENDLESS_API_URL}/data/product`, data);
     } catch (err) {
-      console.log('Error obteniendo producto: ', err);
+      console.log('Error adicionando producto: ', err);
+      throw err;
     }
   }
   async createOrder(orderData) {
@@ -52,28 +64,5 @@ class BackendlessService {
     );
     return response.data.fileURL;
   }
-  // async getUserData(userId) {
-  //   throw new Error('Método no implementado');
-  // }
-  // async uploadImage(imageAsset) {
-  //   try {
-  //     const imageId = Utils.uniqueID();
-  //     const imageFile =
-  //       Platform.OS === 'web'
-  //         ? imageAsset.file
-  //         : await this.prepareNativeFile(imageAsset);
-
-  //     const rBlob = await fetch(imageAsset.uri);
-  //     const blob = await rBlob.blob();
-  //     //console.log(blob);
-  //     const file = new File([blob], 'image.jpg', { type: 'image/jpeg' });
-  //     console.log(file);
-  //     const response = await storage.createFile(storageId, imageId, file);
-  //     return response.$id;
-  //   } catch (error) {
-  //     console.log('Error al subir la imagen a Appwrite:', error);
-  //     return null;
-  //   }
-  // }
 }
 export default BackendlessService;

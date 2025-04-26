@@ -25,7 +25,7 @@ const ModalDropdown = ({ data, onSelect, selectedValue }) => {
     onSelect(item);
     toggleModal();
   };
-
+  console.log('[data]=>', data);
   return (
     <View style={styles.container}>
       <Button
@@ -54,18 +54,20 @@ const ModalDropdown = ({ data, onSelect, selectedValue }) => {
       <Modal visible={isModalVisible} transparent animationType="slide">
         <View style={styles.modalBackground}>
           <View style={styles.modalContent}>
-            <FlatList
-              data={data}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={styles.option}
-                  onPress={() => handleSelect(item)}
-                >
-                  <Text style={styles.optionText}>{item}</Text>
-                </TouchableOpacity>
-              )}
-            />
+            {data && data.length > 0 && (
+              <FlatList
+                data={data}
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={styles.option}
+                    onPress={() => handleSelect(item)}
+                  >
+                    <Text style={styles.optionText}>{item.name}</Text>
+                  </TouchableOpacity>
+                )}
+              />
+            )}
             <Button style={styles.closeButton} onPress={toggleModal}>
               Close
             </Button>

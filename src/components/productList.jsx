@@ -13,7 +13,7 @@ export default function ProductList({ onPress }) {
   const productRefs = useRef({});
   const productMeasure = useRef({});
   const { runAnimation } = useProductAnimStore();
-
+  console.log('[Product List]');
   useEffect(() => {
     (async () => {
       const products = await ProductModel.findAll();

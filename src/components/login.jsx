@@ -5,6 +5,7 @@ import useUserStore from '../store/useUserStore';
 import useModalStore from '../store/useModalStore';
 
 import ProductModel from '../model/productModel';
+import CategoryModel from '../model/categoryModel';
 
 const { height } = Dimensions.get('window');
 
@@ -18,11 +19,12 @@ const Login = () => {
   const handleLogin = async () => {
     // Aquí iría la lógica de autenticación
     console.log('Login pressed with:', username, password);
-    await loadProducts();
+    //await loadMasterdata();
     setUser(username);
   };
-  const loadProducts = async () => {
+  const loadMasterdata = async () => {
     showModal({ label: 'Desacargando masterdata' });
+    await CategoryModel.fetchAll();
     await ProductModel.fetchAll();
     hideModal();
   };

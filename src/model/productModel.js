@@ -14,14 +14,13 @@ export const registerPendingOperation = async (db, model, operation, data) => {
 class ProductModel {
   static async create(data, localDB) {
     try {
-      console.log('product model => addProduct');
       const { saveNewImage, ...newProduct } = data;
       // const storedProducts = await AsyncStorage.getItem('products');
       // const products = storedProducts ? JSON.parse(storedProducts) : [];
       // products.push(newProduct);
       // await AsyncStorage.setItem('products', JSON.stringify(products));
-      this.pushCreate(data);
-      //registerPendingOperation(localDB, this.getName(), 'pushCreate', data);
+      this.syncCreate(data);
+      //registerPendingOperation(localDB, this.getName(), 'syncCreate', data);
     } catch (error) {
       console.error('❌ Error al agregar producto:', error);
     }
@@ -29,7 +28,9 @@ class ProductModel {
   static async update(id, data, localDB) {
     try {
       const storedProducts = await AsyncStorage.getItem('products');
-      let products = storedProducts ? JSON.parse(storedProducts) : [];
+      let products = storedProducts
+        ? JSON.parse(storedProducts)
+        : JSON.stringify([]);
       products = products.map((prod) =>
         prod.id === id ? { ...prod, ...data } : prod
       );
@@ -37,6 +38,7 @@ class ProductModel {
       registerPendingOperation(localDB, this.getName(), 'pushUpdate', data);
       console.log('✅ Producto agregado.');
     } catch (error) {
+      await AsyncStorage.setItem('products', JSON.stringify([]));
       console.error('❌ Error al agregar producto:', error);
     }
   }
@@ -76,7 +78,7 @@ class ProductModel {
       console.error('❌ Error al cargar productos:', error);
     }
   }
-  static async pushCreate(data) {
+  static async syncCreate(data) {
     BackendService.addProduct(data);
   }
   static async pushUpdate(data) {}

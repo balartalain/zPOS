@@ -20,5 +20,8 @@ const BackendService = {
   addProduct: async function (product) {
     return await backendService.addProduct(product);
   },
+  fetchCategories: async function () {
+    return await backendService.fetchCategories();
+  },
 };
 export default BackendService;
