@@ -30,8 +30,8 @@ const ProductsLayout = () => {
           },
         }}
       />
-      <Stack.Screen name="addProduct" />
-      <Stack.Screen name="editProduct" />
+      <Stack.Screen name="add" />
+      <Stack.Screen name="edit" />
     </Stack>
   );
 };

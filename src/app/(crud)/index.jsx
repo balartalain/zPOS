@@ -24,11 +24,6 @@ function ProductScreen() {
   const [productosFiltrados, setProductosFiltrados] = useState([]);
 
   useEffect(() => {
-    navigation.setOptions({
-      headerTitle: 'Artículos',
-    });
-  }, [navigation]);
-  useEffect(() => {
     (async () => {
       const products = await ProductModel.findAll();
       setProductosFiltrados(products);
@@ -73,7 +68,7 @@ function ProductScreen() {
             style={styles.card}
             contentStyle={styles.innerCard}
             onPress={() => {
-              router.push('/addProduct?productId=' + item.id);
+              router.push('/add?productId=' + item.id);
             }}
           >
             <Card.Title

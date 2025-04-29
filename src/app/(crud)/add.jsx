@@ -59,7 +59,6 @@ function AddProductScreen() {
 
   useEffect(() => {
     (async () => {
-      console.log('effect', productId);
       if (productId) {
         const p = await ProductModel.findById(productId);
         setProduct(p);
