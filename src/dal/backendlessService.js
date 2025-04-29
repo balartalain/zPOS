@@ -1,48 +1,61 @@
-import axios from 'axios';
-
-const BACKENDLESS_APP_ID = '<TU_APP_ID>';
-const BACKENDLESS_API_KEY = '<TU_API_KEY>';
-const BACKENDLESS_API_URL = `https://suasivesugar-us.backendless.app/api`;
-
+import apiAxios from './apiAxios';
 class BackendlessService {
+  async get(table, query) {
+    const encodedQuery = encodeURIComponent(query);
+    const response = await apiAxios.post(
+      `/data/${table}?where=${encodedQuery}`
+    );
+    return response.data;
+  }
   async fetchProducts() {
-    try {
-      const response = await axios.get(
-        `${BACKENDLESS_API_URL}/data/product?loadRelations=category`
-      );
-      return response.data.map((p) => ({
-        ...p,
-        category: p.category?.id,
-      }));
-    } catch (err) {
-      console.log('Error obteniendo producto: ', err);
-      throw err;
-    }
+    const response = await apiAxios.get(`/data/product?loadRelations=category`);
+    return response.data;
+    // return response.data.map((p) => ({
+    //   ...p,
+    //   category: p.category?.id || null,
+    // }));
   }
   async fetchCategories() {
-    try {
-      const response = await axios.get(`${BACKENDLESS_API_URL}/data/category`);
+    const response = await apiAxios.get(`/data/category`);
 
-      return response.data;
-    } catch (err) {
-      console.log('Error obteniendo categorias: ', err);
-      throw err;
-    }
+    return response.data;
   }
-  async addProduct(data) {
-    try {
-      if (data.saveNewImage) {
-        const imageUri = await this.uploadImage(
-          data.image,
-          data.name.replaceAll(' ', '_') + '.jpeg'
-        );
-        data.image = imageUri;
-      }
-      //Guardar el producto
-      await axios.post(`${BACKENDLESS_API_URL}/data/product`, data);
-    } catch (err) {
-      console.log('Error adicionando producto: ', err);
-      throw err;
+  async addOrUpdateProduct(data) {
+    if (data.saveNewImage) {
+      const imageUri = await this.uploadImage(
+        data.image,
+        data.name.replaceAll(' ', '_') + '.jpeg'
+      );
+      data.image = imageUri;
+    }
+    if (data.category) {
+      await this.setCategory(data);
+    }
+    const {
+      saveNewImage,
+      ___class,
+      created,
+      updated,
+      ownerId,
+      category,
+      ...product
+    } = data;
+    console.log(product);
+    await apiAxios.put('/data/product/upsert', product);
+  }
+  async updateProduct(data) {
+    await this.addOrUpdateProduct(data);
+  }
+  async setCategory(product) {
+    if (product.category) {
+      const whereClause = `id='${product.category.id}'`;
+      const encodedParams = encodeURIComponent(whereClause).replaceAll(
+        "'",
+        '%27'
+      );
+      await apiAxios.post(
+        `/data/product/${product.objectId}/category?whereClause=${encodedParams}`
+      );
     }
   }
   async createOrder(orderData) {
@@ -55,8 +68,8 @@ class BackendlessService {
       name: imageName,
       type: 'image/jpeg',
     });
-    const response = await axios.post(
-      `${BACKENDLESS_API_URL}/files/${imageName}?overwrite=true`,
+    const response = await apiAxios.post(
+      `/files/${imageName}?overwrite=true`,
       formData,
       {
         headers: { 'Content-Type': 'multipart/form-data' },

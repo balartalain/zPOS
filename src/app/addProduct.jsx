@@ -1,26 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
+import { View, StyleSheet, Image, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { TextInput, Button, Menu, Divider, useTheme } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
-import { useRouter, useFocusEffect } from 'expo-router';
+import { useRouter, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import SharedView from '@/src/components/shared/sharedView';
 import * as FileSystem from 'expo-file-system';
 import { useSQLiteContext } from 'expo-sqlite';
 import ModalDropdown from '../components/modalDropdown';
 import CategoryModel from '../model/categoryModel';
+import ProductModel from '../model/productModel';
 import Utils from '../utils/utils';
 
 const newProduct = () => {
   return {
+    objectId: Utils.uniqueID(),
     id: Utils.uniqueID(), // ID autogenerado
     name: '',
     image: null,
     category: null,
     price: '',
     cost: '',
-    inStock: 0,
+    inStock: '',
     saveNewImage: false,
   };
 };
@@ -45,24 +47,35 @@ function AddProductScreen() {
   const theme = useTheme();
   const navigation = useNavigation();
   const db = useSQLiteContext();
-  const [product, setProduct] = useState(newProduct());
-  const [openCategoryModal, setOpenCategoryModal] = useState(false);
+  const [product, setProduct] = useState({});
   const [categories, setCategories] = useState([]);
-  useEffect(() => {
+  const { productId } = useLocalSearchParams();
+
+  useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: 'Agregar artículo',
+      headerTitle: productId ? 'Edita el artículo' : 'Adiciona un artículo',
     });
-  }, [navigation]);
+  }, [navigation, productId]); // Actualiza cuando el estado cambia
+
+  useEffect(() => {
+    (async () => {
+      console.log('effect', productId);
+      if (productId) {
+        const p = await ProductModel.findById(productId);
+        setProduct(p);
+      } else {
+        setProduct(newProduct());
+      }
+    })();
+  }, [productId]);
   useFocusEffect(
     React.useCallback(() => {
       (async () => {
         const _categories = await CategoryModel.findAll();
-        console.log('[categories]=>', _categories);
         setCategories(_categories);
       })();
-    }, [])
+    }, [setCategories])
   );
-  console.log('[addProduct screen]');
 
   const takePhoto = async () => {
     const permission = await ImagePicker.requestCameraPermissionsAsync();
@@ -115,9 +128,12 @@ function AddProductScreen() {
       //const newUri = `${FileSystem.documentDirectory}_prod_${product.id}_${Date.now()}.jpg`;
       //await copyImageToLocalDir(product.image, newUri, product.oldImage);
       //product.image = newUri;
-      product.category = product.category.id;
-      await ProductModel.create(product, db);
-
+      if (productId) {
+        await ProductModel.update(product, db);
+        router.push('/products');
+      } else {
+        await ProductModel.create(product, db);
+      }
       Toast.show({
         type: 'success',
         text1: 'Operación exitosa',
@@ -137,17 +153,25 @@ function AddProductScreen() {
       console.log(err);
     }
   };
+  const { id, name, category, price, cost, inStock } = product;
   return (
     <SharedView>
       <TextInput
         style={styles.field}
         label="Nombre"
-        value={product.name}
-        onChangeText={(text) => setProduct({ ...product, name: text })}
+        //keyboardType="numeric"
+        value={name}
+        onChangeText={(text) =>
+          setProduct({
+            ...product,
+            name: text,
+          })
+        }
       />
       <ModalDropdown
-        key={product.id}
+        key={id}
         data={categories}
+        initialValue={category?.name || 'Seleccione una catergoría'}
         onSelect={(category) => {
           setProduct({ ...product, category });
         }}
@@ -155,8 +179,8 @@ function AddProductScreen() {
       <TextInput
         style={styles.field}
         label="Precio"
-        keyboardType="numeric"
-        value={product.price}
+        //keyboardType="numeric"
+        value={String(price)}
         onChangeText={(text) =>
           setProduct({
             ...product,
@@ -168,7 +192,7 @@ function AddProductScreen() {
         style={styles.field}
         label="Coste"
         keyboardType="numeric"
-        value={product.cost}
+        value={String(cost)}
         onChangeText={(text) =>
           setProduct({
             ...product,
@@ -180,7 +204,7 @@ function AddProductScreen() {
         style={styles.field}
         label="En stock"
         keyboardType="numeric"
-        value={product.inStock}
+        value={String(inStock)}
         onChangeText={(text) =>
           setProduct({
             ...product,
@@ -215,7 +239,7 @@ function AddProductScreen() {
       </View>
       <View style={{ flex: 1 }}></View>
       <Button mode="contained" onPress={saveProduct}>
-        Agregar
+        {productId ? 'Actualizar' : 'Aceptar'}
       </Button>
     </SharedView>
   );

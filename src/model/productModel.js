@@ -15,31 +15,30 @@ class ProductModel {
   static async create(data, localDB) {
     try {
       const { saveNewImage, ...newProduct } = data;
-      // const storedProducts = await AsyncStorage.getItem('products');
-      // const products = storedProducts ? JSON.parse(storedProducts) : [];
-      // products.push(newProduct);
-      // await AsyncStorage.setItem('products', JSON.stringify(products));
+      const storedProducts = await AsyncStorage.getItem('products');
+      const products = storedProducts ? JSON.parse(storedProducts) : [];
+      products.push(newProduct);
+      await AsyncStorage.setItem('products', JSON.stringify(products));
       this.syncCreate(data);
       //registerPendingOperation(localDB, this.getName(), 'syncCreate', data);
     } catch (error) {
       console.error('❌ Error al agregar producto:', error);
     }
   }
-  static async update(id, data, localDB) {
+  static async update(data, localDB) {
     try {
+      const { saveNewImage, ...product } = data;
+
       const storedProducts = await AsyncStorage.getItem('products');
-      let products = storedProducts
-        ? JSON.parse(storedProducts)
-        : JSON.stringify([]);
+      let products = storedProducts ? JSON.parse(storedProducts) : [];
       products = products.map((prod) =>
-        prod.id === id ? { ...prod, ...data } : prod
+        prod.id === data.id ? { ...prod, ...product } : prod
       );
       await AsyncStorage.setItem('products', JSON.stringify(products));
-      registerPendingOperation(localDB, this.getName(), 'pushUpdate', data);
-      console.log('✅ Producto agregado.');
+      this.syncCreate(data);
+      //registerPendingOperation(localDB, this.getName(), 'pushUpdate', data);
     } catch (error) {
-      await AsyncStorage.setItem('products', JSON.stringify([]));
-      console.error('❌ Error al agregar producto:', error);
+      console.error('❌ Error al actualizar el producto:', error);
     }
   }
   static async delete(id, localDB) {
@@ -64,13 +63,24 @@ class ProductModel {
       return [];
     }
   }
+  static async findById(productId) {
+    try {
+      const storedProducts = await AsyncStorage.getItem('products');
+      const products = storedProducts ? JSON.parse(storedProducts) : [];
+      const p = products.find((p) => p.id === productId);
+      return p;
+    } catch (error) {
+      console.error('❌ Error en la búsqueda:', error);
+      return [];
+    }
+  }
   /* In Remote */
   static async fetchAll() {
     try {
       const products = await BackendService.fetchProducts();
       await AsyncStorage.setItem(
         'products',
-        products ? JSON.stringify(products) : []
+        products ? JSON.stringify(products) : JSON.stringify([])
       );
       console.log('✅ Productos almacenados en AsyncStorage.');
     } catch (error) {
@@ -79,7 +89,10 @@ class ProductModel {
     }
   }
   static async syncCreate(data) {
-    BackendService.addProduct(data);
+    await BackendService.addOrUpdateProduct(data);
+  }
+  static async syncUpdate(data) {
+    await BackendService.updateProduct(data);
   }
   static async pushUpdate(data) {}
   static async pushDelete(data) {}

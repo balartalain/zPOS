@@ -17,8 +17,11 @@ const BackendService = {
   fetchProducts: async function () {
     return await backendService.fetchProducts();
   },
-  addProduct: async function (product) {
-    return await backendService.addProduct(product);
+  addOrUpdateProduct: async function (product) {
+    return await backendService.addOrUpdateProduct(product);
+  },
+  updateProduct: async function (product) {
+    return await backendService.updateProduct(product);
   },
   fetchCategories: async function () {
     return await backendService.fetchCategories();

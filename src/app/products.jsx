@@ -72,7 +72,9 @@ function ProductScreen() {
           <Card
             style={styles.card}
             contentStyle={styles.innerCard}
-            onPress={() => {}}
+            onPress={() => {
+              router.push('/addProduct?productId=' + item.id);
+            }}
           >
             <Card.Title
               style={{ paddingLeft: 5, minHeight: 0, paddingVertical: 10 }}
