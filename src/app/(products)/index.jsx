@@ -11,7 +11,7 @@ import {
   TextInput,
   Card,
 } from 'react-native-paper';
-import ProductModel from '../model/productModel';
+import ProductModel from '../../model/productModel';
 
 import SharedView from '@/src/components/shared/sharedView';
 const NoImageIcon = require('@/assets/images/no-image.png');

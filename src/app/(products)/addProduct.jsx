@@ -8,10 +8,10 @@ import Toast from 'react-native-toast-message';
 import SharedView from '@/src/components/shared/sharedView';
 import * as FileSystem from 'expo-file-system';
 import { useSQLiteContext } from 'expo-sqlite';
-import ModalDropdown from '../components/modalDropdown';
-import CategoryModel from '../model/categoryModel';
-import ProductModel from '../model/productModel';
-import Utils from '../utils/utils';
+import ModalDropdown from '../../components/modalDropdown';
+import CategoryModel from '../../model/categoryModel';
+import ProductModel from '../../model/productModel';
+import Utils from '../../utils/utils';
 
 const newProduct = () => {
   return {
@@ -239,7 +239,7 @@ function AddProductScreen() {
       </View>
       <View style={{ flex: 1 }}></View>
       <Button mode="contained" onPress={saveProduct}>
-        {productId ? 'Actualizar' : 'Aceptar'}
+        Guardar
       </Button>
     </SharedView>
   );
