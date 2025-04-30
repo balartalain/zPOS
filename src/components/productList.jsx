@@ -77,7 +77,7 @@ export default function ProductList({ onPress }) {
       {/* Lista de productos */}
       <FlatList
         data={productosFiltrados}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => index}
         renderItem={({ item }) => (
           <Card
             style={styles.card}

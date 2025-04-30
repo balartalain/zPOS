@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Modal,
@@ -14,14 +14,29 @@ import {
   Divider,
   useTheme,
 } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ModalDropdown = ({ data, initialValue, onSelect }) => {
+const ModalDropdown = ({ table, initialId, onSelect }) => {
   const theme = useTheme();
   const [isModalVisible, setModalVisible] = useState(false);
-  const [selectedValue, setSelectedValue] = useState(initialValue);
+  const [selectedValue, setSelectedValue] = useState('Seleccione una opción');
+  const [data, setData] = useState([]);
   const toggleModal = () => setModalVisible(!isModalVisible);
+
+  useEffect(() => {
+    (async () => {
+      const storedData = await AsyncStorage.getItem(table);
+      const _data = storedData ? JSON.parse(storedData) : [];
+      const _initialValue = _data.find((d) => d.objectId === initialId);
+      if (_initialValue) {
+        setSelectedValue(_initialValue.name);
+      }
+      setData(storedData ? JSON.parse(storedData) : []);
+    })();
+  }, [table, initialId]);
+
   const handleSelect = (item) => {
-    onSelect(item);
+    onSelect(item.objectId);
     setSelectedValue(item.name);
     toggleModal();
   };

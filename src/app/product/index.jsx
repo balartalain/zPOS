@@ -16,7 +16,7 @@ import ProductModel from '../../model/productModel';
 import SharedView from '@/src/components/shared/sharedView';
 const NoImageIcon = require('@/assets/images/no-image.png');
 
-function ProductScreen() {
+function ProductListScreen() {
   const router = useRouter();
   const navigation = useNavigation();
   const theme = useTheme();
@@ -62,13 +62,13 @@ function ProductScreen() {
       {/* Lista de productos */}
       <FlatList
         data={productosFiltrados}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => index}
         renderItem={({ item }) => (
           <Card
             style={styles.card}
             contentStyle={styles.innerCard}
             onPress={() => {
-              router.push('/add?productId=' + item.id);
+              router.push('/product/edit?id=' + item.objectId);
             }}
           >
             <Card.Title
@@ -92,7 +92,7 @@ function ProductScreen() {
       <Button
         mode="contained"
         style={styles.addBtn}
-        onPress={() => router.push('/addProduct')}
+        onPress={() => router.push('/product/add')}
       >
         Agregar
       </Button>
@@ -137,4 +137,4 @@ const styles = StyleSheet.create({
     // color: '#999',
   },
 });
-export default ProductScreen;
+export default ProductListScreen;

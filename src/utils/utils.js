@@ -1,3 +1,4 @@
+import uuid from 'react-native-uuid';
 export default Utils = {
-  uniqueID: () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+  uniqueID: () => uuid.v4(),
 };

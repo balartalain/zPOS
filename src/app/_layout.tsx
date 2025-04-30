@@ -64,15 +64,8 @@ const RootLayout = () => {
                   options={{ drawerItemStyle: { display: 'none' } }}
                 />
                 <Drawer.Screen
-                  name="products"
+                  name="product"
                   options={{ headerShown: false, drawerLabel: 'Artículos' }}
-                />
-                <Drawer.Screen
-                  name="(crud)"
-                  options={{
-                    headerShown: false,
-                    drawerItemStyle: { display: 'none' },
-                  }}
                 />
               </Drawer>
             </ThemeProvider>

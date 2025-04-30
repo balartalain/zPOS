@@ -6,10 +6,10 @@ import { registerPendingOperation } from './productModel';
 class CategoryModel {
   static async create(data, localDB) {
     try {
-      const storedCategories = await AsyncStorage.getItem('categories');
+      const storedCategories = await AsyncStorage.getItem('category');
       const categories = storedCategories ? JSON.parse(storedCategories) : [];
       categories.push(data);
-      await AsyncStorage.setItem('categories', JSON.stringify(categories));
+      await AsyncStorage.setItem('category', JSON.stringify(categories));
       this.syncCreate(data);
       //registerPendingOperation(localDB, this.getName(), 'syncCreate', data);
     } catch (error) {
@@ -44,7 +44,7 @@ class CategoryModel {
   // }
   static async findAll() {
     try {
-      const storedCategories = await AsyncStorage.getItem('categories');
+      const storedCategories = await AsyncStorage.getItem('category');
       return storedCategories ? JSON.parse(storedCategories) : [];
     } catch (error) {
       console.error('❌ Error en la búsqueda:', error);
@@ -57,12 +57,12 @@ class CategoryModel {
       const categories = await BackendService.fetchCategories();
       //console.log('[categories] => ', categories);
       await AsyncStorage.setItem(
-        'categories',
+        'category',
         categories ? JSON.stringify(categories) : JSON.stringify([])
       );
       console.log('✅ Categorias almacenados en AsyncStorage.');
     } catch (error) {
-      await AsyncStorage.setItem('categories', JSON.stringify([]));
+      await AsyncStorage.setItem('category', JSON.stringify([]));
       console.error('❌ Error al cargar las categorias:', error);
     }
   }

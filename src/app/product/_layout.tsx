@@ -15,7 +15,7 @@ const ProductsLayout = () => {
       <Stack.Screen
         name="index"
         options={{
-          headerTitle: 'Articulos',
+          headerTitle: 'Artículos',
           headerLeft: () => {
             return (
               <Ionicons
@@ -30,8 +30,18 @@ const ProductsLayout = () => {
           },
         }}
       />
-      <Stack.Screen name="add" />
-      <Stack.Screen name="edit" />
+      <Stack.Screen
+        name="add"
+        options={{
+          headerTitle: 'Agregar un producto',
+        }}
+      />
+      <Stack.Screen
+        name="edit"
+        options={{
+          headerTitle: 'Editar el producto',
+        }}
+      />
     </Stack>
   );
 };

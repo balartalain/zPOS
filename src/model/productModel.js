@@ -15,10 +15,10 @@ class ProductModel {
   static async create(data, localDB) {
     try {
       const { saveNewImage, ...newProduct } = data;
-      const storedProducts = await AsyncStorage.getItem('products');
+      const storedProducts = await AsyncStorage.getItem('product');
       const products = storedProducts ? JSON.parse(storedProducts) : [];
       products.push(newProduct);
-      await AsyncStorage.setItem('products', JSON.stringify(products));
+      await AsyncStorage.setItem('product', JSON.stringify(products));
       this.syncCreate(data);
       //registerPendingOperation(localDB, this.getName(), 'syncCreate', data);
     } catch (error) {
@@ -29,12 +29,12 @@ class ProductModel {
     try {
       const { saveNewImage, ...product } = data;
 
-      const storedProducts = await AsyncStorage.getItem('products');
+      const storedProducts = await AsyncStorage.getItem('product');
       let products = storedProducts ? JSON.parse(storedProducts) : [];
       products = products.map((prod) =>
         prod.id === data.id ? { ...prod, ...product } : prod
       );
-      await AsyncStorage.setItem('products', JSON.stringify(products));
+      await AsyncStorage.setItem('product', JSON.stringify(products));
       this.syncCreate(data);
       //registerPendingOperation(localDB, this.getName(), 'pushUpdate', data);
     } catch (error) {
@@ -43,10 +43,10 @@ class ProductModel {
   }
   static async delete(id, localDB) {
     try {
-      const storedProducts = await AsyncStorage.getItem('products');
+      const storedProducts = await AsyncStorage.getItem('product');
       const products = storedProducts ? JSON.parse(storedProducts) : [];
       const newProducts = products.filter((prod) => prod.id !== id);
-      await AsyncStorage.setItem('products', JSON.stringify(newProducts));
+      await AsyncStorage.setItem('product', JSON.stringify(newProducts));
       registerPendingOperation(localDB, this.getName(), 'pushDelete', { id });
       console.log('✅ Producto eliminado.');
     } catch (error) {
@@ -55,7 +55,7 @@ class ProductModel {
   }
   static async findAll() {
     try {
-      const storedProducts = await AsyncStorage.getItem('products');
+      const storedProducts = await AsyncStorage.getItem('product');
       const products = storedProducts ? JSON.parse(storedProducts) : [];
       return products;
     } catch (error) {
@@ -65,9 +65,9 @@ class ProductModel {
   }
   static async findById(productId) {
     try {
-      const storedProducts = await AsyncStorage.getItem('products');
+      const storedProducts = await AsyncStorage.getItem('product');
       const products = storedProducts ? JSON.parse(storedProducts) : [];
-      const p = products.find((p) => p.id === productId);
+      const p = products.find((p) => p.objectId === productId);
       return p;
     } catch (error) {
       console.error('❌ Error en la búsqueda:', error);
@@ -79,12 +79,12 @@ class ProductModel {
     try {
       const products = await BackendService.fetchProducts();
       await AsyncStorage.setItem(
-        'products',
+        'product',
         products ? JSON.stringify(products) : JSON.stringify([])
       );
       console.log('✅ Productos almacenados en AsyncStorage.');
     } catch (error) {
-      await AsyncStorage.setItem('products', []);
+      await AsyncStorage.setItem('product', []);
       console.error('❌ Error al cargar productos:', error);
     }
   }

@@ -28,9 +28,6 @@ class BackendlessService {
       );
       data.image = imageUri;
     }
-    if (data.category) {
-      await this.setCategory(data);
-    }
     const {
       saveNewImage,
       ___class,
@@ -40,22 +37,22 @@ class BackendlessService {
       category,
       ...product
     } = data;
-    console.log(product);
     await apiAxios.put('/data/product/upsert', product);
+    if (data.category) {
+      await this.setCategory(data.objectId, data.category);
+    }
   }
   async updateProduct(data) {
     await this.addOrUpdateProduct(data);
   }
-  async setCategory(product) {
-    if (product.category) {
-      const whereClause = `id='${product.category.id}'`;
-      const encodedParams = encodeURIComponent(whereClause).replaceAll(
-        "'",
-        '%27'
-      );
-      await apiAxios.post(
-        `/data/product/${product.objectId}/category?whereClause=${encodedParams}`
-      );
+  async setCategory(productId, category) {
+    if (category) {
+      //const whereClause = `id='${product.category.id}'`;
+      // const encodedParams = encodeURIComponent(whereClause).replaceAll(
+      //   "'",
+      //   '%27'
+      // );
+      await apiAxios.post(`/data/product/${productId}/category`, [category]);
     }
   }
   async createOrder(orderData) {
