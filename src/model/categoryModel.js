@@ -51,6 +51,17 @@ class CategoryModel {
       return [];
     }
   }
+  static async findById(id) {
+    try {
+      const storedCategories = await AsyncStorage.getItem('category');
+      const categories = storedCategories ? JSON.parse(storedCategories) : [];
+      const p = categories.find((p) => p.objectId === id);
+      return p;
+    } catch (error) {
+      console.error('❌ Error en la búsqueda:', error);
+      return [];
+    }
+  }
   /* In Remote */
   static async fetchAll() {
     try {

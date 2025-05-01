@@ -19,7 +19,7 @@ const Login = () => {
   const handleLogin = async () => {
     // Aquí iría la lógica de autenticación
     console.log('Login pressed with:', username, password);
-    await loadMasterdata();
+    //await loadMasterdata();
     setUser(username);
   };
   const loadMasterdata = async () => {

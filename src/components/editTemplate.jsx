@@ -11,19 +11,6 @@ import { useSQLiteContext } from 'expo-sqlite';
 import ModalDropdown from '@/src/components/modalDropdown';
 import Utils from '@/src/utils/utils';
 
-const newProduct = () => {
-  return {
-    objectId: Utils.uniqueID(),
-    id: Utils.uniqueID(), // ID autogenerado
-    name: '',
-    image: null,
-    category: null,
-    price: '',
-    cost: '',
-    inStock: '',
-    saveNewImage: false,
-  };
-};
 const copyImageToLocalDir = async (fromUri, toUri, oldUri) => {
   try {
     if (oldUri) {
@@ -57,7 +44,6 @@ function Edit({ fields, modelClass, id = null, handleSave = null }) {
   //       headerTitle: id ? 'Edita el artículo' : 'Adiciona un artículo',
   //     });
   //   }, [id]); // Actualiza cuando el estado cambia
-
   useEffect(() => {
     (async () => {
       if (id) {
@@ -221,7 +207,7 @@ function Edit({ fields, modelClass, id = null, handleSave = null }) {
       })}
 
       <View style={{ flex: 1 }}></View>
-      <Button mode="contained" onPress={save}>
+      <Button style={styles.btn} mode="contained" onPress={save}>
         Guardar
       </Button>
     </SharedView>
@@ -237,6 +223,9 @@ const styles = StyleSheet.create({
     height: 100,
     //marginRight: 12,
     borderRadius: 4,
+  },
+  btn: {
+    padding: 10,
   },
 });
 

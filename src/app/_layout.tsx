@@ -67,6 +67,10 @@ const RootLayout = () => {
                   name="product"
                   options={{ headerShown: false, drawerLabel: 'Artículos' }}
                 />
+                <Drawer.Screen
+                  name="category"
+                  options={{ headerShown: false, drawerLabel: 'Categorías' }}
+                />
               </Drawer>
             </ThemeProvider>
           </GestureHandlerRootView>
