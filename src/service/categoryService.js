@@ -6,14 +6,16 @@ class CategoryService {
     try {
       await BackendFactory.getInstance().addCategory(data);
     } catch (error) {
-      console.log(error);
+      console.log('Error in CategoryService->add ', error);
+      throw error;
     }
   }
   static async update(data) {
     try {
       await BackendFactory.getInstance().updateCategory(data);
     } catch (error) {
-      console.log(error);
+      console.log('Error in CategoryService->update ', error);
+      throw error;
     }
   }
   static async fetchAll() {
@@ -21,15 +23,16 @@ class CategoryService {
       console.log('fetch categ');
       return await BackendFactory.getInstance().fetchCategories();
     } catch (error) {
-      console.log(error);
-      return [];
+      console.log('Error in CategoryService->fetchAll ', error);
+      throw error;
     }
   }
   static async delete(id) {
     try {
       await BackendFactory.getInstance().deleteCategory(id);
     } catch (error) {
-      console.log(error);
+      console.log('Error in CategoryService->delete ', error);
+      throw error;
     }
   }
   static getName() {

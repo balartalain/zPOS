@@ -8,6 +8,12 @@ const apiAxios = axios.create({
   },
   timeout: 10000,
 });
+// handle timeout error
+// if (error.code === 'ECONNABORTED') {
+//   console.error('La solicitud excedió el tiempo límite.');
+// } else {
+//   console.error('Error general:', error.message);
+// }
 
 // Interceptor para manejar respuestas con errores
 apiAxios.interceptors.response.use(
@@ -19,13 +25,13 @@ apiAxios.interceptors.response.use(
     if (error.response) {
       // Error en la respuesta del servidor
       // console.error('Código de estado:', error.response.status);
-      console.error(error.response.data);
+      console.log(error.response.data);
     } else if (error.request) {
       // No hubo respuesta del servidor
-      console.error('No se recibió respuesta del servidor:', error.request);
+      console.log('No se recibió respuesta del servidor:', error.request);
     } else {
       // Otro error relacionado con la configuración
-      console.error('Error al configurar la solicitud:', error.message);
+      console.log('Error al configurar la solicitud:', error.message);
     }
 
     // Lanza el error si necesitas manejarlo en otros lugares

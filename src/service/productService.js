@@ -14,14 +14,16 @@ class ProductService {
     try {
       await BackendFactory.getInstance().addProduct(data);
     } catch (error) {
-      console.log(error);
+      console.log('Error in ProductService->add ', error);
+      throw error;
     }
   }
   static async update(data) {
     try {
       await BackendFactory.getInstance().updateProduct(data);
     } catch (error) {
-      console.log(error);
+      console.log('Error in ProductService->update ', error);
+      throw error;
     }
   }
   static async fetchAll() {
@@ -29,15 +31,16 @@ class ProductService {
       const products = await BackendFactory.getInstance().fetchProducts();
       return products;
     } catch (error) {
-      console.log(error);
-      return [];
+      console.log('Error in ProductService->fetchAll ', error);
+      throw error;
     }
   }
   static async delete(id) {
     try {
       await BackendFactory.getInstance().deleteProduct(id);
     } catch (error) {
-      console.log(error);
+      console.log('Error in ProductService->delete ', error);
+      throw error;
     }
   }
   static getName() {

@@ -22,13 +22,17 @@ const Login = () => {
     setUser(username);
   };
   const loadMasterdata = async () => {
-    showModal({ label: 'Desacargando masterdata' });
-    const categories = await CategoryService.fetchAll();
-    const products = await ProductService.fetchAll();
-    AsyncStorageUtils.set('category', categories);
-    AsyncStorageUtils.set('product', products);
-
-    hideModal();
+    try {
+      showModal({ label: 'Descargando masterdata' });
+      const categories = await CategoryService.fetchAll();
+      const products = await ProductService.fetchAll();
+      AsyncStorageUtils.set('category', categories);
+      AsyncStorageUtils.set('product', products);
+      hideModal();
+    } catch (error) {
+      console.log(error);
+      hideModal();
+    }
   };
   return (
     <View style={styles.container}>
