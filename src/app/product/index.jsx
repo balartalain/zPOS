@@ -11,7 +11,7 @@ import {
   TextInput,
   Card,
 } from 'react-native-paper';
-import ProductModel from '../../model/productModel';
+import AsyncStorageUtils from '../../utils/AsyncStorageUtils';
 
 import SharedView from '@/src/components/shared/sharedView';
 const NoImageIcon = require('@/assets/images/no-image.png');
@@ -25,12 +25,12 @@ function ProductListScreen() {
 
   useEffect(() => {
     (async () => {
-      const products = await ProductModel.findAll();
+      const products = await AsyncStorageUtils.findAll('product');
       setProductosFiltrados(products);
     })();
   }, []);
   const filtrarProductos = async (texto) => {
-    const products = await ProductModel.findAll();
+    const products = await AsyncStorageUtils.findAll('product');
     setBusqueda(texto);
     if (texto === '') {
       setProductosFiltrados(products); // Mostrar todos si el buscador está vacío

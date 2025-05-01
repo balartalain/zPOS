@@ -3,10 +3,9 @@ import { View, StyleSheet, Image, Dimensions } from 'react-native';
 import { TextInput, Button, useTheme, Text } from 'react-native-paper';
 import useUserStore from '../store/useUserStore';
 import useModalStore from '../store/useModalStore';
-
-import ProductModel from '../model/productModel';
-import CategoryModel from '../model/categoryModel';
-
+import ProductService from '../service/productService';
+import CategoryService from '../service/categoryService';
+import AsyncStorageUtils from '@/src/utils/AsyncStorageUtils';
 const { height } = Dimensions.get('window');
 
 const Login = () => {
@@ -19,13 +18,16 @@ const Login = () => {
   const handleLogin = async () => {
     // Aquí iría la lógica de autenticación
     console.log('Login pressed with:', username, password);
-    //await loadMasterdata();
+    await loadMasterdata();
     setUser(username);
   };
   const loadMasterdata = async () => {
     showModal({ label: 'Desacargando masterdata' });
-    await CategoryModel.fetchAll();
-    await ProductModel.fetchAll();
+    const categories = await CategoryService.fetchAll();
+    const products = await ProductService.fetchAll();
+    AsyncStorageUtils.set('category', categories);
+    AsyncStorageUtils.set('product', products);
+
     hideModal();
   };
   return (

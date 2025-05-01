@@ -1,3 +1,4 @@
+/*
 const ModelRegistry = {
   models: [],
 
@@ -10,3 +11,4 @@ const ModelRegistry = {
   },
 };
 export default ModelRegistry;
+*/

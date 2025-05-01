@@ -1,6 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+/*import AsyncStorage from '@react-native-async-storage/async-storage';
 import ModelRegistry from './modelRegistry';
-import BackendService from '@/src/dal/backendService';
+import BackendService from '@/src/service/backendService';
 import { registerPendingOperation } from './productModel';
 
 class CategoryModel {
@@ -62,7 +62,7 @@ class CategoryModel {
       return [];
     }
   }
-  /* In Remote */
+
   static async fetchAll() {
     try {
       const categories = await BackendService.fetchCategories();
@@ -90,3 +90,4 @@ class CategoryModel {
 
 ModelRegistry.register(CategoryModel);
 export default CategoryModel;
+*/

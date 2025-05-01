@@ -10,6 +10,7 @@ import * as FileSystem from 'expo-file-system';
 import { useSQLiteContext } from 'expo-sqlite';
 import ModalDropdown from '@/src/components/modalDropdown';
 import Utils from '@/src/utils/utils';
+import AsyncStorageUtils from '../utils/AsyncStorageUtils';
 
 const copyImageToLocalDir = async (fromUri, toUri, oldUri) => {
   try {
@@ -27,7 +28,7 @@ const copyImageToLocalDir = async (fromUri, toUri, oldUri) => {
     console.log(e);
   }
 };
-function Edit({ fields, modelClass, id = null, handleSave = null }) {
+function Edit({ fields, table, serviceClass, id = null, handleSave = null }) {
   const isFocused = useIsFocused();
   const router = useRouter();
   const theme = useTheme();
@@ -47,7 +48,7 @@ function Edit({ fields, modelClass, id = null, handleSave = null }) {
   useEffect(() => {
     (async () => {
       if (id) {
-        const p = await modelClass.findById(id);
+        const p = await AsyncStorageUtils.findById(table, id);
         setRecord(p);
       } else {
         const aaa = newRecord();
@@ -111,11 +112,13 @@ function Edit({ fields, modelClass, id = null, handleSave = null }) {
         handleSave(record);
         return;
       } else if (id) {
-        await modelClass.update(record, db);
+        await AsyncStorageUtils.update(table, record);
+        await serviceClass.update(record, db);
       } else {
-        await modelClass.create(record, db);
+        await AsyncStorageUtils.add(table, record);
+        await serviceClass.add(record, db);
       }
-      router.push('/product');
+      router.push(`/${table}`);
       Toast.show({
         type: 'success',
         text1: 'Operación exitosa',

@@ -11,12 +11,11 @@ import {
   TextInput,
   Card,
 } from 'react-native-paper';
-import CategoryModel from '../../model/categoryModel';
-
+import AsyncStorageUtils from '../../utils/AsyncStorageUtils';
 import SharedView from '@/src/components/shared/sharedView';
 const NoImageIcon = require('@/assets/images/no-image.png');
 
-function ProductListScreen() {
+function CategoryListScreen() {
   const router = useRouter();
   const navigation = useNavigation();
   const theme = useTheme();
@@ -25,12 +24,12 @@ function ProductListScreen() {
 
   useEffect(() => {
     (async () => {
-      const categories = await CategoryModel.findAll();
+      const categories = await AsyncStorageUtils.findAll('category');
       setCategoriesFilters(categories);
     })();
   }, []);
   const filtrarCategories = async (texto) => {
-    const categories = await CategoryModel.findAll();
+    const categories = await AsyncStorageUtils.findAll('category');
     setBusqueda(texto);
     if (texto === '') {
       setCategoriesFilters(categories); // Mostrar todos si el buscador está vacío
@@ -123,4 +122,4 @@ const styles = StyleSheet.create({
     // color: '#999',
   },
 });
-export default ProductListScreen;
+export default CategoryListScreen;

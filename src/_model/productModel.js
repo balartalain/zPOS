@@ -1,6 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+/*import AsyncStorage from '@react-native-async-storage/async-storage';
 import ModelRegistry from './modelRegistry';
-import BackendService from '@/src/dal/backendService';
+import BackendService from '@/src/service/backendService';
 
 export const registerPendingOperation = async (db, model, operation, data) => {
   console.log(data);
@@ -11,6 +11,33 @@ export const registerPendingOperation = async (db, model, operation, data) => {
   );
 };
 
+class ServiceBase {
+  constructor() {
+    if (this.constructor === ServiceBase) {
+      throw new Error(
+        'No se puede instanciar la clase abstracta "ServiceBase".'
+      );
+    }
+  }
+  add(data) {
+    throw new Error('El método "add" debe ser implementado en la clase hija.');
+  }
+  update(data) {
+    throw new Error(
+      'El método "update" debe ser implementado en la clase hija.'
+    );
+  }
+  delete(id) {
+    throw new Error(
+      'El método "delete" debe ser implementado en la clase hija.'
+    );
+  }
+  fetchAll() {
+    throw new Error(
+      'El método "fetchAll" debe ser implementado en la clase hija.'
+    );
+  }
+}
 class ProductModel {
   static async create(data, localDB) {
     try {
@@ -74,7 +101,7 @@ class ProductModel {
       return [];
     }
   }
-  /* In Remote */
+
   static async fetchAll() {
     try {
       const products = await BackendService.fetchProducts();
@@ -104,3 +131,4 @@ class ProductModel {
 
 ModelRegistry.register(ProductModel);
 export default ProductModel;
+*/

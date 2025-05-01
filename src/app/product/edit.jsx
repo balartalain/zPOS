@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Text, View, StyleSheet, findNodeHandle } from 'react-native';
 import { useRouter, useFocusEffect, useLocalSearchParams } from 'expo-router';
 
-import ProductModel from '@/src/model/productModel';
+import ProductService from '../../service/productService';
 import Edit from '@/src/components/editTemplate';
 
 const fields = [
@@ -62,5 +62,12 @@ export default function ProductEditScreen() {
       })();
     }, [])
   );
-  return <Edit fields={fields} modelClass={ProductModel} id={id} />;
+  return (
+    <Edit
+      fields={fields}
+      table={'product'}
+      serviceClass={ProductService}
+      id={id}
+    />
+  );
 }

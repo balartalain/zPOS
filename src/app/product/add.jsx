@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { fields } from './edit';
 import Edit from '../../components/editTemplate';
-import ProductModel from '../../model/productModel';
+import ProductService from '../../service/productService';
 
 export default function ProductAddScreen() {
   const router = useRouter();
@@ -14,5 +14,7 @@ export default function ProductAddScreen() {
     }, [])
   );
 
-  return <Edit fields={fields} modelClass={ProductModel} />;
+  return (
+    <Edit fields={fields} table={'product'} serviceClass={ProductService} />
+  );
 }

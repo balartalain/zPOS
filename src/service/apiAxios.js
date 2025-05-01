@@ -6,6 +6,7 @@ const apiAxios = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 10000,
 });
 
 // Interceptor para manejar respuestas con errores

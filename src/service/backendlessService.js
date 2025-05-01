@@ -1,5 +1,7 @@
 import apiAxios from './apiAxios';
-class BackendlessService {
+import BackendServiceBase from './backendServiceBase';
+
+class BackendlessService extends BackendServiceBase {
   async get(table, query) {
     const encodedQuery = encodeURIComponent(query);
     const response = await apiAxios.post(
@@ -15,12 +17,8 @@ class BackendlessService {
     //   category: p.category?.id || null,
     // }));
   }
-  async fetchCategories() {
-    const response = await apiAxios.get(`/data/category`);
-
-    return response.data;
-  }
-  async addOrUpdateProduct(data) {
+  /* Product */
+  async addProduct(data) {
     if (data.saveNewImage) {
       const imageUri = await this.uploadImage(
         data.image,
@@ -43,17 +41,24 @@ class BackendlessService {
     }
   }
   async updateProduct(data) {
-    await this.addOrUpdateProduct(data);
+    await this.addProduct(data);
   }
   async setCategory(productId, category) {
     if (category) {
-      //const whereClause = `id='${product.category.id}'`;
-      // const encodedParams = encodeURIComponent(whereClause).replaceAll(
-      //   "'",
-      //   '%27'
-      // );
       await apiAxios.post(`/data/product/${productId}/category`, [category]);
     }
+  }
+  /* Category */
+  async fetchCategories() {
+    const response = await apiAxios.get(`/data/category`);
+    return response.data;
+  }
+  async addCategory(data) {
+    const { ___class, created, updated, ownerId, ...category } = data;
+    await apiAxios.put('/data/category/upsert', category);
+  }
+  async updateCategory(data) {
+    await this.addCategory(data);
   }
   async createOrder(orderData) {
     throw new Error('Método no implementado');

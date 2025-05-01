@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, FlatList, StyleSheet, Image } from 'react-native';
 import { Card, TextInput, Text } from 'react-native-paper';
 //import ProductManager from '../Masterdata/product';
-import ProductModel from '../model/productModel';
+import AsyncStorageUtils from '../utils/AsyncStorageUtils';
 import useProductAnimStore from '../store/useProductAnimStore';
 
 const NoImageIcon = require('@/assets/images/no-image.png');
@@ -16,7 +16,7 @@ export default function ProductList({ onPress }) {
   console.log('[Product List]');
   useEffect(() => {
     (async () => {
-      const products = await ProductModel.findAll();
+      const products = await AsyncStorageUtils.findAll('product');
       setProductosFiltrados(products);
     })();
   }, []);
@@ -43,7 +43,7 @@ export default function ProductList({ onPress }) {
   }, []);
   // Función para manejar la búsqueda y filtrar los productos
   const filtrarProductos = async (texto) => {
-    const products = await ProductModel.findAll();
+    const products = await AsyncStorageUtils.findAll();
     setBusqueda(texto);
     if (texto === '') {
       setProductosFiltrados(products); // Mostrar todos si el buscador está vacío
