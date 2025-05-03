@@ -13,12 +13,14 @@ import {
 } from 'react-native-paper';
 import AsyncStorageUtils from '../../utils/AsyncStorageUtils';
 import SharedView from '@/src/components/shared/sharedView';
+import { useData } from '@/src/context/dataContext';
 const NoImageIcon = require('@/assets/images/no-image.png');
 
 function CategoryListScreen() {
   const router = useRouter();
   const navigation = useNavigation();
   const theme = useTheme();
+  const { refreshData } = useData();
   const [busqueda, setBusqueda] = useState('');
   const [categoriesFilters, setCategoriesFilters] = useState([]);
 
@@ -27,7 +29,7 @@ function CategoryListScreen() {
       const categories = await AsyncStorageUtils.findAll('category');
       setCategoriesFilters(categories);
     })();
-  }, []);
+  }, [refreshData]);
   const filtrarCategories = async (texto) => {
     const categories = await AsyncStorageUtils.findAll('category');
     setBusqueda(texto);

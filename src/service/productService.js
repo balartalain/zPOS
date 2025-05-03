@@ -1,13 +1,13 @@
 import ServiceRegistry from './serviceRegistry';
 import BackendFactory from './backendFactory';
-export const registerPendingOperation = async (db, model, operation, data) => {
-  console.log(data);
-  const jsonData = JSON.stringify(data);
-  await db.runAsync(
-    `INSERT INTO pending_operation (model, operation, data) VALUES (?, ?, ?)`,
-    [model, operation, jsonData]
-  );
-};
+// export const registerPendingOperation = async (db, model, operation, data) => {
+//   console.log(data);
+//   const jsonData = JSON.stringify(data);
+//   await db.runAsync(
+//     `INSERT INTO pending_operation (model, operation, data) VALUES (?, ?, ?)`,
+//     [model, operation, jsonData]
+//   );
+// };
 
 class ProductService {
   static async add(data) {

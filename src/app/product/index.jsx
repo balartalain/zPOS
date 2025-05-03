@@ -12,7 +12,7 @@ import {
   Card,
 } from 'react-native-paper';
 import AsyncStorageUtils from '../../utils/AsyncStorageUtils';
-
+import { useData } from '@/src/context/dataContext';
 import SharedView from '@/src/components/shared/sharedView';
 const NoImageIcon = require('@/assets/images/no-image.png');
 
@@ -20,6 +20,7 @@ function ProductListScreen() {
   const router = useRouter();
   const navigation = useNavigation();
   const theme = useTheme();
+  const { refreshData, refreshMasterData } = useData();
   const [busqueda, setBusqueda] = useState('');
   const [productosFiltrados, setProductosFiltrados] = useState([]);
 
@@ -28,7 +29,7 @@ function ProductListScreen() {
       const products = await AsyncStorageUtils.findAll('product');
       setProductosFiltrados(products);
     })();
-  }, []);
+  }, [refreshData]);
   const filtrarProductos = async (texto) => {
     const products = await AsyncStorageUtils.findAll('product');
     setBusqueda(texto);

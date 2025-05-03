@@ -22,7 +22,8 @@ import Toast from 'react-native-toast-message';
 import LoadingModal from '@/src/components/loadingModal';
 import { removeStoredStore } from '@/src/utils/checkAsyncStorage';
 import ProductAnim from '@/src/components/productAnim';
-
+import { DataProvider } from '@/src/context/dataContext';
+import toastConfig from '../toastConfig';
 const customDarkTheme = {
   ...MD3DarkTheme,
   colors: { ...MD3DarkTheme.colors, ...Colors.dark },
@@ -42,48 +43,50 @@ const RootLayout = () => {
   const colorScheme = useColorScheme();
   const paperTheme =
     colorScheme === 'dark' ? CombinedDarkTheme : CombinedLightTheme;
-  //const paperTheme = CombinedDarkTheme;
-  removeStoredStore('user-store');
-  removeStoredStore('ticket-store');
+
   const { isAuthenticated } = useUserStore();
+  console.log('App=>');
   return (
     <SQLiteProvider databaseName="zpos.db" onInit={migrateDbIfNeeded}>
       <PaperProvider theme={paperTheme}>
-        {!isAuthenticated ? (
-          <Login />
-        ) : (
-          <GestureHandlerRootView style={{ flex: 1 }}>
-            <ThemeProvider value={paperTheme}>
-              <Drawer>
-                <Drawer.Screen
-                  name="(stacks)"
-                  options={{ headerShown: false, drawerLabel: 'Ir a Venta' }}
-                />
-                <Drawer.Screen
-                  name="+not-found"
-                  options={{ drawerItemStyle: { display: 'none' } }}
-                />
-                <Drawer.Screen
-                  name="product"
-                  options={{ headerShown: false, drawerLabel: 'Artículos' }}
-                />
-                <Drawer.Screen
-                  name="category"
-                  options={{ headerShown: false, drawerLabel: 'Categorías' }}
-                />
-              </Drawer>
-            </ThemeProvider>
-          </GestureHandlerRootView>
-        )}
-        <LoadingModal />
-        <ProductAnim />
-        <Toast />
+        <DataProvider>
+          {!isAuthenticated ? (
+            <Login />
+          ) : (
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <ThemeProvider value={paperTheme}>
+                <Drawer>
+                  <Drawer.Screen
+                    name="(stacks)"
+                    options={{ headerShown: false, drawerLabel: 'Ir a Venta' }}
+                  />
+                  <Drawer.Screen
+                    name="+not-found"
+                    options={{ drawerItemStyle: { display: 'none' } }}
+                  />
+                  <Drawer.Screen
+                    name="product"
+                    options={{ headerShown: false, drawerLabel: 'Artículos' }}
+                  />
+                  <Drawer.Screen
+                    name="category"
+                    options={{ headerShown: false, drawerLabel: 'Categorías' }}
+                  />
+                </Drawer>
+              </ThemeProvider>
+            </GestureHandlerRootView>
+          )}
+          <LoadingModal />
+          <ProductAnim />
+          <Toast config={toastConfig} />
+        </DataProvider>
       </PaperProvider>
     </SQLiteProvider>
   );
   async function migrateDbIfNeeded(db: any) {
     //await db.execAsync(`PRAGMA user_version = 0`);
     //await db.runAsync('DROP table IF EXISTS pending_operation');
+    //await db.runAsync('DELETE from pending_operation');
     const DATABASE_VERSION = 1;
     let { user_version: currentDbVersion } = await db.getFirstAsync(
       'PRAGMA user_version'

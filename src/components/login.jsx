@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Image, Dimensions } from 'react-native';
 import { TextInput, Button, useTheme, Text } from 'react-native-paper';
+import Toast from 'react-native-toast-message';
 import useUserStore from '../store/useUserStore';
 import useModalStore from '../store/useModalStore';
 import ProductService from '../service/productService';
 import CategoryService from '../service/categoryService';
 import AsyncStorageUtils from '@/src/utils/AsyncStorageUtils';
+import { useData } from '../context/dataContext';
 const { height } = Dimensions.get('window');
 
 const Login = () => {
@@ -14,23 +16,21 @@ const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const { showModal, hideModal } = useModalStore();
-
+  const { refreshMasterData } = useData();
   const handleLogin = async () => {
-    // Aquí iría la lógica de autenticación
-    console.log('Login pressed with:', username, password);
-    await loadMasterdata();
-    setUser(username);
-  };
-  const loadMasterdata = async () => {
     try {
+      //syncData();
       showModal({ label: 'Descargando masterdata' });
-      const categories = await CategoryService.fetchAll();
-      const products = await ProductService.fetchAll();
-      AsyncStorageUtils.set('category', categories);
-      AsyncStorageUtils.set('product', products);
-      hideModal();
+      await refreshMasterData();
+      setUser(username);
     } catch (error) {
-      console.log(error);
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Error de conexión',
+        position: 'bottom',
+      });
+    } finally {
       hideModal();
     }
   };

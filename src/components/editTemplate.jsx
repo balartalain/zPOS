@@ -11,6 +11,7 @@ import { useSQLiteContext } from 'expo-sqlite';
 import ModalDropdown from '@/src/components/modalDropdown';
 import Utils from '@/src/utils/utils';
 import AsyncStorageUtils from '../utils/AsyncStorageUtils';
+import { useData } from '@/src/context/dataContext';
 
 const copyImageToLocalDir = async (fromUri, toUri, oldUri) => {
   try {
@@ -32,7 +33,7 @@ function Edit({ fields, table, serviceClass, id = null, handleSave = null }) {
   const isFocused = useIsFocused();
   const router = useRouter();
   const theme = useTheme();
-  const db = useSQLiteContext();
+  const { create, update } = useData();
   const [record, setRecord] = useState({});
   const newRecord = React.useCallback(() => {
     return fields.reduce((obj, field) => {
@@ -51,8 +52,7 @@ function Edit({ fields, table, serviceClass, id = null, handleSave = null }) {
         const p = await AsyncStorageUtils.findById(table, id);
         setRecord(p);
       } else {
-        const aaa = newRecord();
-        setRecord(aaa);
+        setRecord(newRecord());
       }
     })();
   }, [isFocused]);
@@ -112,18 +112,20 @@ function Edit({ fields, table, serviceClass, id = null, handleSave = null }) {
         handleSave(record);
         return;
       } else if (id) {
-        await AsyncStorageUtils.update(table, record);
-        await serviceClass.update(record, db);
+        console.log(id);
+        update(table, record);
+        //await AsyncStorageUtils.update(table, record);
+        //await serviceClass.update(record, db);
       } else {
-        await AsyncStorageUtils.add(table, record);
-        await serviceClass.add(record, db);
+        create(table, record);
+        //await AsyncStorageUtils.add(table, record);
+        //await serviceClass.add(record, db);
       }
       router.push(`/${table}`);
       Toast.show({
         type: 'success',
         text1: 'Operación exitosa',
         text2: 'Se guardaron los cambios correctamente',
-        visibilityTime: 1500,
         position: 'bottom',
       });
       //setProduct(newProduct());
@@ -132,7 +134,6 @@ function Edit({ fields, table, serviceClass, id = null, handleSave = null }) {
         type: 'error',
         text1: 'Error',
         text2: 'Ocurrió un error guardando los cambios',
-        visibilityTime: 1500,
         position: 'bottom',
       });
       console.log(err);
@@ -141,73 +142,75 @@ function Edit({ fields, table, serviceClass, id = null, handleSave = null }) {
 
   return (
     <SharedView>
-      {fields.map((f, index) => {
-        const { type, label, column } = f;
-        switch (type) {
-          case 'string':
-          case 'numeric':
-            return (
-              <TextInput
-                key={index}
-                style={styles.field}
-                label={label}
-                keyboardType={type}
-                value={String(record?.[column])}
-                onChangeText={(text) => {
-                  setRecord({
-                    ...record,
-                    [column]: type !== 'string' ? parseFloat(text) : text,
-                  });
-                }}
-              />
-            );
-
-          case 'image':
-            return (
-              <View key={index} style={{ flexDirection: 'row' }}>
-                <View style={{ flex: 0.4 }}>
-                  <Image
-                    style={styles.image}
-                    source={
-                      record?.image
-                        ? { uri: record[column] }
-                        : require('@/assets/images/no-image.png')
-                    }
-                  />
-                </View>
-                <View
-                  style={{
-                    flex: 0.6,
-                    justifyContent: 'center',
-                    alignItems: 'flex-start',
-                    paddingRight: 10,
+      {fields
+        .filter((f) => !f.hidden)
+        .map((f, index) => {
+          const { type, label, column } = f;
+          switch (type) {
+            case 'string':
+            case 'numeric':
+              return (
+                <TextInput
+                  key={index}
+                  style={styles.field}
+                  label={label}
+                  keyboardType={type}
+                  value={String(record?.[column])}
+                  onChangeText={(text) => {
+                    setRecord({
+                      ...record,
+                      [column]: type !== 'string' ? parseFloat(text) : text,
+                    });
                   }}
-                >
-                  <Button style={{ marginBottom: 10 }} onPress={pickImage}>
-                    Elija una foto
-                  </Button>
-                  <Button onPress={takePhoto}>Tomar una foto</Button>
+                />
+              );
+
+            case 'image':
+              return (
+                <View key={index} style={{ flexDirection: 'row' }}>
+                  <View style={{ flex: 0.4 }}>
+                    <Image
+                      style={styles.image}
+                      source={
+                        record?.image
+                          ? { uri: record[column] }
+                          : require('@/assets/images/no-image.png')
+                      }
+                    />
+                  </View>
+                  <View
+                    style={{
+                      flex: 0.6,
+                      justifyContent: 'center',
+                      alignItems: 'flex-start',
+                      paddingRight: 10,
+                    }}
+                  >
+                    <Button style={{ marginBottom: 10 }} onPress={pickImage}>
+                      Elija una foto
+                    </Button>
+                    <Button onPress={takePhoto}>Tomar una foto</Button>
+                  </View>
                 </View>
-              </View>
-            );
-          case 'reference': {
-            return (
-              <ModalDropdown
-                key={index}
-                table={column}
-                initialId={
-                  typeof record?.[column] === 'string'
-                    ? record[column]
-                    : record?.[column]?.objectId
-                }
-                onSelect={(id) => {
-                  setRecord((r) => ({ ...r, [column]: id }));
-                }}
-              />
-            );
+              );
+            case 'reference': {
+              return (
+                <ModalDropdown
+                  key={index}
+                  table={column}
+                  initialId={
+                    typeof record?.[column] === 'string'
+                      ? record[column]
+                      : record?.[column]?.objectId
+                  }
+                  onSelect={(id) => {
+                    setRecord((r) => ({ ...r, [column]: id }));
+                  }}
+                />
+              );
+            }
           }
-        }
-      })}
+        })}
 
       <View style={{ flex: 1 }}></View>
       <Button style={styles.btn} mode="contained" onPress={save}>
