@@ -26,15 +26,15 @@ export default function ProductList({ onPress }) {
   }, [productosFiltrados]);
 
   const onMyPress = (item) => {
-    const { x, y } = productMeasure.current[item.id];
+    const { x, y } = productMeasure.current[item.objectId];
     const to = { x: 60, y: 10 };
     runAnimation({ from: { x, y }, to });
     onPress(item);
   };
   const calculateProductMeasure = () => {
     productosFiltrados.forEach((p) => {
-      productRefs.current[p.id].measureInWindow((x, y, width, height) => {
-        productMeasure.current[p.id] = { x, y, width, height };
+      productRefs.current[p.objectId].measureInWindow((x, y, width, height) => {
+        productMeasure.current[p.objectId] = { x, y, width, height };
       });
     });
   };
@@ -57,7 +57,7 @@ export default function ProductList({ onPress }) {
   };
   const LeftContentCard = ({ product }) => (
     <Image
-      ref={(ref) => setProductRef(ref, product.id)}
+      ref={(ref) => setProductRef(ref, product.objectId)}
       source={product.image ? { uri: product.image } : NoImageIcon}
       //source={product.image}
       style={styles.productImage}

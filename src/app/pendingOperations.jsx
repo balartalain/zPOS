@@ -23,7 +23,7 @@ export default PendingScreen = () => {
     <View>
       <FlatList
         data={pending}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.objectId.toString()}
         renderItem={({ item }) => (
           <View>
             <Text>{`${item.model} - ${item.operation} - ${item.created}`}</Text>

@@ -13,7 +13,7 @@ const useTicketStore = create(
       addProductToTicket: (product) =>
         set((state) => {
           const existingProductIndex = state.ticket.lines.findIndex(
-            (line) => line.product.id === product.id
+            (line) => line.product.objectId === product.objectId
           );
 
           let updatedLines;
@@ -28,7 +28,7 @@ const useTicketStore = create(
             // Si no está, lo agrega con cantidad 1
             updatedLines = [
               ...state.ticket.lines,
-              { product, qty: 1, id: state.ticket.lines.length + 1 },
+              { product, qty: 1, objectId: state.ticket.lines.length + 1 },
             ];
           }
 

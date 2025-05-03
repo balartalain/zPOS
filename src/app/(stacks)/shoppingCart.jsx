@@ -26,7 +26,7 @@ export default function ShoppingCartScreen() {
       </Surface>
       <FlatList
         data={ticket.lines}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => index}
         renderItem={({ item }) => (
           <Card
             style={styles.card}
