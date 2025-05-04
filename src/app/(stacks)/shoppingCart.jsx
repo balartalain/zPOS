@@ -52,7 +52,7 @@ export default function ShoppingCartScreen() {
         style={styles.cobrar}
         onPress={() => console.log('Cobrar')}
       >
-        COBRAR
+        Pagar
       </Button>
     </View>
   );

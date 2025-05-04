@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Button, Text, Surface, useTheme } from 'react-native-paper';
 import SharedView from '@/src/components/shared/sharedView';
 import useTicketStore from '@/src/store/useTicketStore';
-
+import keypadPayment from '../../components/keyPadPayment';
 export default function payTicket() {
   const router = useRouter();
   const navigation = useNavigation();

@@ -12,15 +12,15 @@ function TicketScreen() {
   const router = useRouter();
   const theme = useTheme();
   const { ticket, addProductToTicket, getTotal } = useTicketStore();
-  const isConnected = useNetworkStatus();
+  //const isConnected = useNetworkStatus();
   const isStoreClosed = false;
 
-  const addProduct = (product) => {
+  const addProduct = (product: any) => {
     addProductToTicket(product);
     //console.log(ticket.lines);
   };
   const payTicket = () => {
-    router.push('/payTicket');
+    router.push('/addPayment');
   };
   return (
     <View style={{ flex: 1, padding: 10 }}>
@@ -33,7 +33,7 @@ function TicketScreen() {
       {isStoreClosed ? <StoreClosed /> : <ProductList onPress={addProduct} />}
       {!isStoreClosed && (
         <Button mode="contained" style={styles.pay} onPress={payTicket}>
-          {`Pagar - ${isConnected}`}
+          Pagar
         </Button>
       )}
     </View>
