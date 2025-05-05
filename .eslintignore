@@ -1,0 +1,7 @@
+.expo/
+.eas-build/
+node_modules/
+android/build/
+ios/build/
+ios/DerivedData/
+web-build/

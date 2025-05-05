@@ -23,7 +23,7 @@ export default function ProductList({ onPress }) {
 
   useEffect(() => {
     calculateProductMeasure();
-  }, [productosFiltrados]);
+  }, [productosFiltrados, calculateProductMeasure]);
 
   const onMyPress = (item) => {
     const { x, y } = productMeasure.current[item.objectId];

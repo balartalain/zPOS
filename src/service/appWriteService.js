@@ -1,6 +1,5 @@
-import { Client, Databases, Storage, ID } from 'appwrite';
+import { Client, Databases, Storage } from 'appwrite';
 import { Platform } from 'react-native';
-import * as FileSystem from 'expo-file-system';
 import Utils from '../utils/utils';
 
 const appwriteConfig = {
@@ -102,7 +101,7 @@ class AppwriteService {
     }
   }
   async addProduct(data) {
-    const { imageAsset: undefined, ...newProduct } = data;
+    const { imageAsset, ...newProduct } = data;
     if (imageAsset) {
       newProduct.image = await this.uploadImage(imageAsset);
     }

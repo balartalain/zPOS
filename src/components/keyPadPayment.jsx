@@ -30,7 +30,6 @@ const KeyPadButton = ({ text, style, disabled = false }) => {
   );
 };
 const KeypadPayment = () => {
-  const theme = useTheme();
   const targetRef = React.useRef(null);
   const [containerWidth, setContainerWidth] = React.useState(50);
   //React.useLayoutEffect(() => {
@@ -44,10 +43,6 @@ const KeypadPayment = () => {
   };
   const marginBottom =
     (containerWidth - (containerWidth * 0.25 - MARGIN) * 4) / 3;
-
-  React.useEffect(() => {
-    const a = containerWidth + 1;
-  }, []);
 
   return (
     <View style={styles.container}>

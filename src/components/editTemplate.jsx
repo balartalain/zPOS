@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { View, StyleSheet, Image, Text } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
@@ -29,18 +31,19 @@ const copyImageToLocalDir = async (fromUri, toUri, oldUri) => {
     console.log(e);
   }
 };
-function Edit({ fields, table, serviceClass, id = null, handleSave = null }) {
+function Edit({ fields, table, id = null, handleSave = null }) {
   const isFocused = useIsFocused();
   const router = useRouter();
   const theme = useTheme();
   const { create, update } = useData();
   const [record, setRecord] = useState({});
+
   const newRecord = React.useCallback(() => {
     return fields.reduce((obj, field) => {
       obj[field.column] = field.column === 'objectId' ? Utils.uniqueID() : '';
       return obj;
     }, {});
-  }, [fields, id]);
+  }, [fields]);
   //   useLayoutEffect(() => {
   //     navigation.setOptions({
   //       headerTitle: id ? 'Edita el artículo' : 'Adiciona un artículo',
@@ -55,7 +58,7 @@ function Edit({ fields, table, serviceClass, id = null, handleSave = null }) {
         setRecord(newRecord());
       }
     })();
-  }, [isFocused]);
+  }, [isFocused, id, table, newRecord]);
 
   const takePhoto = async () => {
     const permission = await ImagePicker.requestCameraPermissionsAsync();

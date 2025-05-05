@@ -11,17 +11,17 @@ export default class BackendServiceBase {
       'El método "fetchProducts" debe ser implementado en la clase hija.'
     );
   }
-  addProduct(data) {
+  addProduct() {
     throw new Error(
       'El método "addProduct" debe ser implementado en la clase hija.'
     );
   }
-  updateProduct(data) {
+  updateProduct() {
     throw new Error(
       'El método "updateProduct" debe ser implementado en la clase hija.'
     );
   }
-  deleteProduct(id) {
+  deleteProduct() {
     throw new Error(
       'El método "deleteProduct" debe ser implementado en la clase hija.'
     );
@@ -31,17 +31,17 @@ export default class BackendServiceBase {
       'El método "fetchCategories" debe ser implementado en la clase hija.'
     );
   }
-  addCategory(data) {
+  addCategory() {
     throw new Error(
       'El método "addCategory" debe ser implementado en la clase hija.'
     );
   }
-  updateCategory(data) {
+  updateCategory() {
     throw new Error(
       'El método "updateCategory" debe ser implementado en la clase hija.'
     );
   }
-  deleteCategory(id) {
+  deleteCategory() {
     throw new Error(
       'El método "deleteCategory" debe ser implementado en la clase hija.'
     );

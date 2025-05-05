@@ -1,4 +1,5 @@
 import uuid from 'react-native-uuid';
-export default Utils = {
+const Utils = {
   uniqueID: () => uuid.v4(),
 };
+export default Utils;

@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image, Dimensions } from 'react-native';
-import { TextInput, Button, useTheme, Text } from 'react-native-paper';
+import { View, StyleSheet, Image } from 'react-native';
+import { TextInput, Button, useTheme } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 import useUserStore from '../store/useUserStore';
 import useModalStore from '../store/useModalStore';
-import ProductService from '../service/productService';
-import CategoryService from '../service/categoryService';
-import AsyncStorageUtils from '@/src/utils/AsyncStorageUtils';
 import { useData } from '../context/dataContext';
-const { height } = Dimensions.get('window');
 
 const Login = () => {
   const { colors } = useTheme();
@@ -23,7 +19,7 @@ const Login = () => {
       showModal({ label: 'Descargando masterdata' });
       await refreshMasterData();
       setUser(username);
-    } catch (error) {
+    } catch {
       Toast.show({
         type: 'error',
         text1: 'Error',

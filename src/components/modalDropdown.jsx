@@ -6,14 +6,7 @@ import {
   FlatList,
   StyleSheet,
 } from 'react-native';
-import {
-  Text,
-  TextInput,
-  Button,
-  Menu,
-  Divider,
-  useTheme,
-} from 'react-native-paper';
+import { Text, Button, useTheme } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ModalDropdown = ({ table, initialId, onSelect }) => {

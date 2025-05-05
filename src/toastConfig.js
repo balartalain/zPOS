@@ -1,8 +1,5 @@
-import Toast, {
-  BaseToast,
-  ErrorToast,
-  SuccessToast,
-} from 'react-native-toast-message';
+/* eslint-disable react/react-in-jsx-scope */
+import { ErrorToast, SuccessToast } from 'react-native-toast-message';
 
 /*
   1. Create the config

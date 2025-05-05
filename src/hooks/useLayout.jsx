@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default useLayout = () => {
+export default function useLayout() {
   const [layout, setLayout] = React.useState(null);
 
   const onLayout = React.useCallback((event) => {
@@ -10,4 +10,4 @@ export default useLayout = () => {
   }, []);
 
   return [layout, onLayout];
-};
+}

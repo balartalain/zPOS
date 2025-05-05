@@ -17,6 +17,8 @@ const withApproval = (WrappedComponent) => {
         requestApproval(`${currentRoute}?${queryString}`); // Pasa el nombre de la ruta actual
       }
     }, [
+      currentRoute,
+      params,
       isGrantedApproval,
       hasRequestedApproval,
       router,

@@ -16,7 +16,7 @@ export default function useNetWorkStatus() {
           }
         );
         setHasInternet(response.ok);
-      } catch (error) {
+      } catch {
         setHasInternet(false);
       } finally {
         clearTimeout(timer);

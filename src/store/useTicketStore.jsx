@@ -52,32 +52,34 @@ const useTicketStore = create(
         return get().ticket.totalAmt;
       },
       addPayment: (paymentMethod, amount) => {
-        const existingPaymentIndex = state.ticket.payments.findIndex(
-          (payment) => payment.paymentMethod === paymentMethod
-        );
-
-        let updatedPayments;
-        if (existingPaymentIndex !== -1) {
-          updatedPayments = state.ticket.payments.map((payment, index) =>
-            index === existingPaymentIndex
-              ? { ...payment, amount: payment.amount + amount }
-              : payment
+        set((state) => {
+          const existingPaymentIndex = state.ticket.payments.findIndex(
+            (payment) => payment.paymentMethod === paymentMethod
           );
-        } else {
-          // state.ticket.lines.length + 1
-          // Si no está, lo agrega con cantidad 1
-          updatedPayments = [
-            ...state.ticket.payments,
-            { name: paymentMethod, amount, objectId: Utils.uniqueID() },
-          ];
-        }
 
-        return {
-          ticket: {
-            ...state.ticket,
-            payments: updatedPayments,
-          },
-        };
+          let updatedPayments;
+          if (existingPaymentIndex !== -1) {
+            updatedPayments = state.ticket.payments.map((payment, index) =>
+              index === existingPaymentIndex
+                ? { ...payment, amount: payment.amount + amount }
+                : payment
+            );
+          } else {
+            // state.ticket.lines.length + 1
+            // Si no está, lo agrega con cantidad 1
+            updatedPayments = [
+              ...state.ticket.payments,
+              { name: paymentMethod, amount, objectId: Utils.uniqueID() },
+            ];
+          }
+
+          return {
+            ticket: {
+              ...state.ticket,
+              payments: updatedPayments,
+            },
+          };
+        });
       },
       // Guardar venta en el historial (con fecha y sincronización pendiente)
       completeTicket: () => {

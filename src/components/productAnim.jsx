@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import { StyleSheet, Animated } from 'react-native';
 import React, { useEffect, useRef } from 'react';
 import useProductAnimStore from '@/src/store/useProductAnimStore';
 
-export default function productAnim() {
+export default function ProductAnim() {
   const { animate, from, to, hideAnim } = useProductAnimStore();
   const aAnim = useRef(
     new Animated.ValueXY(new Animated.ValueXY(from))
@@ -36,7 +36,7 @@ export default function productAnim() {
       rotationAnim.setValue(0);
       scaleAnim.setValue(1);
     }
-  }, [animate]);
+  }, [animate, aAnim, from, hideAnim, rotationAnim, scaleAnim]);
   const animatedStyle = {
     transform: [
       {

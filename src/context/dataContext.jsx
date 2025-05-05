@@ -64,7 +64,7 @@ export function DataProvider({ children }) {
       timeout = setTimeout(syncData, 1000);
     } finally {
     }
-  }, []);
+  }, [db]);
   const refreshMasterData = useCallback(async () => {
     const _categories = await CategoryService.fetchAll();
     const _products = await ProductService.fetchAll();
@@ -83,30 +83,34 @@ export function DataProvider({ children }) {
         [model, operation, jsonData]
       );
     },
-    []
+    [db]
   );
-  const create = useCallback(async (table, data) => {
-    try {
-      const serviceClass = ServiceRegistry.get(table);
-      //await serviceClass.add(data);
-      await AsyncStorageUtils.add(table, data);
-      setRefreshData((prev) => !prev);
-      registerPendingOperation(table, 'add', data);
-    } catch (error) {
-      console.log(`Error on create ${table}`, error);
-      throw error;
-    }
-  }, []);
-  const update = useCallback(async (table, data) => {
-    try {
-      await AsyncStorageUtils.update(table, data);
-      setRefreshData((prev) => !prev);
-      registerPendingOperation(table, 'update', data);
-    } catch (error) {
-      console.log(`Error on create ${table}`, error);
-      throw error;
-    }
-  }, []);
+  const create = useCallback(
+    async (table, data) => {
+      try {
+        await AsyncStorageUtils.add(table, data);
+        setRefreshData((prev) => !prev);
+        registerPendingOperation(table, 'add', data);
+      } catch (error) {
+        console.log(`Error on create ${table}`, error);
+        throw error;
+      }
+    },
+    [registerPendingOperation]
+  );
+  const update = useCallback(
+    async (table, data) => {
+      try {
+        await AsyncStorageUtils.update(table, data);
+        setRefreshData((prev) => !prev);
+        registerPendingOperation(table, 'update', data);
+      } catch (error) {
+        console.log(`Error on create ${table}`, error);
+        throw error;
+      }
+    },
+    [registerPendingOperation]
+  );
   return (
     <DataContext.Provider
       value={{
