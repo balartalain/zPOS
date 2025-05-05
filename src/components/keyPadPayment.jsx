@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import {
   View,
@@ -6,6 +7,7 @@ import {
   TouchableOpacity,
   Text,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { TextInput, useTheme } from 'react-native-paper';
 
 const { width } = Dimensions.get('window');
@@ -68,9 +70,24 @@ const KeypadPayment = () => {
         onLayout={onLayoutHandler}
         style={styles.keyPadContainer}
       >
-        <TextInput
-          style={{ marginBottom, height: containerWidth * 0.25 - MARGIN }}
-        />
+        <View style={{ marginBottom, flexDirection: 'row' }}>
+          <TextInput
+            style={{ flex: 1, height: containerWidth * 0.25 - MARGIN }}
+            //value={'10.5'}
+            label="Amount"
+          />
+          <View
+            style={{
+              width: containerWidth * 0.25 - MARGIN,
+              height: containerWidth * 0.25 - MARGIN,
+              marginLeft: marginBottom,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Ionicons name="backspace-outline" size={32} color="black" />
+          </View>
+        </View>
         <View
           style={[
             styles.keyContainer,
