@@ -6,15 +6,16 @@ import {
   TouchableOpacity,
   Text,
 } from 'react-native';
-import { useTheme } from 'react-native-paper';
+import { TextInput, useTheme } from 'react-native-paper';
 
 const { width } = Dimensions.get('window');
 const MARGIN = 2;
 
-const KeyPadButton = ({ text, style }) => {
+const KeyPadButton = ({ text, style, disabled = false }) => {
   const theme = useTheme();
   return (
     <TouchableOpacity
+      disabled={disabled}
       style={[
         {
           justifyContent: 'center',
@@ -43,6 +44,11 @@ const KeypadPayment = () => {
   };
   const marginBottom =
     (containerWidth - (containerWidth * 0.25 - MARGIN) * 4) / 3;
+
+  React.useEffect(() => {
+    const a = containerWidth + 1;
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.pm}>
@@ -67,6 +73,9 @@ const KeypadPayment = () => {
         onLayout={onLayoutHandler}
         style={styles.keyPadContainer}
       >
+        <TextInput
+          style={{ marginBottom, height: containerWidth * 0.25 - MARGIN }}
+        />
         <View
           style={[
             styles.keyContainer,
@@ -78,9 +87,11 @@ const KeypadPayment = () => {
           {['7', '8', '9', ' '].map((key, index) => (
             <KeyPadButton
               key={'1' + index}
+              disabled={key === ' '}
               style={{
                 width: containerWidth * 0.25 - MARGIN,
                 aspectRatio: 1,
+                opacity: key !== ' ' ? 1 : 0.5,
               }}
               text={key}
             />
@@ -97,9 +108,11 @@ const KeypadPayment = () => {
           {['4', '5', '6', ' '].map((key, index) => (
             <KeyPadButton
               key={'2' + index}
+              disabled={key === ' '}
               style={{
                 width: containerWidth * 0.25 - MARGIN,
                 aspectRatio: 1,
+                opacity: key !== ' ' ? 1 : 0.5,
               }}
               text={key}
             />
@@ -116,9 +129,11 @@ const KeypadPayment = () => {
           {['1', '2', '3', ' '].map((key, index) => (
             <KeyPadButton
               key={'3' + index}
+              disabled={key === ' '}
               style={{
                 width: containerWidth * 0.25 - MARGIN,
                 aspectRatio: 1,
+                opacity: key !== ' ' ? 1 : 0.5,
               }}
               text={key}
             />
