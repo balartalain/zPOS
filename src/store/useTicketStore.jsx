@@ -5,7 +5,7 @@ import Utils from '@/src/utils/utils';
 const useTicketStore = create(
   persist(
     (set, get) => ({
-      ticket: { lines: [] }, // Ticket con líneas de productos
+      ticket: { lines: [], payments: [], totalAmt: 0, totalPaid: 0 }, // Ticket con líneas de productos
       sales: [], // Ventas almacenadas de los últimos 30 días
       isClosedStore: true,
       openShift: (initialCash) => {},
@@ -37,31 +37,33 @@ const useTicketStore = create(
             ticket: {
               ...state.ticket,
               lines: updatedLines,
-              totalAmt:
-                state.ticket.lines.reduce(
-                  (total, line) => total + line.product.price * line.qty,
-                  0
-                ) + product.price,
+              totalAmt: state.ticket.totalAmt + product.price,
             },
           };
         }),
 
       // Calcular el monto total del ticket
       getTotal: () => {
-        console.log();
         return get().ticket.totalAmt;
       },
       addPayment: (paymentMethod, amount) => {
         set((state) => {
           const existingPaymentIndex = state.ticket.payments.findIndex(
-            (payment) => payment.paymentMethod === paymentMethod
+            (payment) => payment.name === paymentMethod
           );
-
           let updatedPayments;
+          const change =
+            state.ticket.totalPaid + amount > state.ticket.totalAmt
+              ? state.ticket.totalPaid + amount - state.ticket.totalAmt
+              : 0;
           if (existingPaymentIndex !== -1) {
             updatedPayments = state.ticket.payments.map((payment, index) =>
               index === existingPaymentIndex
-                ? { ...payment, amount: payment.amount + amount }
+                ? {
+                    ...payment,
+                    amount: payment.amount + amount,
+                    change,
+                  }
                 : payment
             );
           } else {
@@ -69,14 +71,51 @@ const useTicketStore = create(
             // Si no está, lo agrega con cantidad 1
             updatedPayments = [
               ...state.ticket.payments,
-              { name: paymentMethod, amount, objectId: Utils.uniqueID() },
+              {
+                name: paymentMethod,
+                amount,
+                change,
+                objectId: Utils.uniqueID(),
+              },
             ];
           }
-
           return {
             ticket: {
               ...state.ticket,
               payments: updatedPayments,
+              totalPaid:
+                change > 0
+                  ? state.ticket.totalAmt
+                  : state.ticket.totalPaid + amount,
+              change: state.ticket.change + change,
+            },
+          };
+        });
+      },
+      deletePayment: (paymentMethod) => {
+        set((state) => {
+          const deletedPayment = state.ticket.payments.find(
+            (p) => p.name === paymentMethod
+          );
+          const totalPaid =
+            state.ticket.totalPaid -
+            (deletedPayment.amount - deletedPayment.change);
+          const updatedPayments = state.ticket.payments.filter(
+            (p) => p.name !== paymentMethod
+          );
+          const totalPaymentAmount = updatedPayments.reduce(
+            (acc, p) => acc + p.amount,
+            0
+          );
+          return {
+            ticket: {
+              ...state.ticket,
+              payments: updatedPayments,
+              totalPaid,
+              change:
+                totalPaymentAmount > state.ticket.totalAmt
+                  ? totalPaymentAmount - state.ticket.totalAmt
+                  : 0,
             },
           };
         });
@@ -94,11 +133,24 @@ const useTicketStore = create(
             lines: [],
             payments: [],
             totalAmt: 0,
+            totalPaid: 0,
+            change: 0,
             objectId: Utils.uniqueID(),
           }, // Vacía el ticket después de finalizar la venta
         }));
       },
-
+      deleteOrder: () => {
+        set(() => ({
+          ticket: {
+            lines: [],
+            payments: [],
+            totalAmt: 0,
+            totalPaid: 0,
+            change: 0,
+            objectId: Utils.uniqueID(),
+          }, // Vacía el ticket después de finalizar la venta
+        }));
+      },
       // Marcar una venta como sincronizada después de enviarla al servidor
       markSaleAsSynced: (saleId) =>
         set((state) => ({

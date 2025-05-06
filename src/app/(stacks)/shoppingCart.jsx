@@ -14,7 +14,7 @@ import useTicketStore from '@/src/store/useTicketStore';
 export default function ShoppingCartScreen() {
   const router = useRouter();
   const theme = useTheme();
-  const { ticket, getTotal } = useTicketStore();
+  const { ticket, deleteOrder, getTotal } = useTicketStore();
 
   return (
     <View style={{ flex: 1, padding: 10 }}>
@@ -47,6 +47,13 @@ export default function ShoppingCartScreen() {
           </Card>
         )}
       />
+      <Button
+        mode="contained"
+        style={styles.cobrar}
+        onPress={() => deleteOrder()}
+      >
+        Borrar la compra
+      </Button>
       <Button
         mode="contained"
         style={styles.cobrar}

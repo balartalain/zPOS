@@ -11,7 +11,8 @@ import { checkStoredState } from '@/src/utils/checkAsyncStorage';
 function TicketScreen() {
   const router = useRouter();
   const theme = useTheme();
-  const { ticket, addProductToTicket, getTotal } = useTicketStore();
+  const { ticket, deleteOrder, addProductToTicket, getTotal } =
+    useTicketStore();
   //const isConnected = useNetworkStatus();
   const isStoreClosed = false;
 
@@ -20,7 +21,7 @@ function TicketScreen() {
     //console.log(ticket.lines);
   };
   const payTicket = () => {
-    router.push('/addPayment');
+    router.push('/addPayments');
   };
   return (
     <View style={{ flex: 1, padding: 10 }}>
@@ -32,9 +33,11 @@ function TicketScreen() {
       </Surface>
       {isStoreClosed ? <StoreClosed /> : <ProductList onPress={addProduct} />}
       {!isStoreClosed && (
-        <Button mode="contained" style={styles.pay} onPress={payTicket}>
-          Pagar
-        </Button>
+        <>
+          <Button mode="contained" style={styles.pay} onPress={payTicket}>
+            Pagar
+          </Button>
+        </>
       )}
     </View>
   );

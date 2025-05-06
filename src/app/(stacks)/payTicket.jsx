@@ -2,11 +2,10 @@ import { StyleSheet, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
-import { Button, Text, Surface, useTheme } from 'react-native-paper';
+import { Button, TextInput, TextuseTheme } from 'react-native-paper';
 import SharedView from '@/src/components/shared/sharedView';
 import useTicketStore from '@/src/store/useTicketStore';
-import keypadPayment from '../../components/keyPadPayment';
-export default function payTicket() {
+export default function PayTicket() {
   const router = useRouter();
   const navigation = useNavigation();
   const { getTotal, completeTicket } = useTicketStore();
@@ -21,37 +20,51 @@ export default function payTicket() {
   };
   return (
     <SharedView>
-      <View>
-        <Surface style={[styles.surface]} elevation={1}>
-          <Text variant="displayMedium">{`Total: $${getTotal()}`}</Text>
-        </Surface>
-      </View>
-      <View>
+      <View style={{ flex: 0.3 }}></View>
+      <View
+        style={{
+          flex: 0.7,
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+
+          justifyContent: 'space-between',
+        }}
+      >
+        <TextInput
+          style={{ marginBottom: 2, width: '100%' }}
+          //value={'10.5'}
+          keyboardType="numeric"
+          label="Amount"
+        />
         <Button
+          style={[styles.btn, { width: '29%', marginRight: 5 }]}
           mode="contained"
-          style={styles.payBtn}
-          onPress={() => done('Efectivo')}
+          onPress={() => {}}
         >
           Efectivo
         </Button>
         <Button
+          style={[styles.btn, { width: '29%', marginRight: 5 }]}
           mode="contained"
-          style={styles.payBtn}
-          onPress={() => done('Transferencia')}
+          onPress={() => {}}
         >
-          Transeferencia
+          Transfer
+        </Button>
+        <Button style={[styles.btn, styles.btnDone]} mode="contained">
+          Done
         </Button>
       </View>
     </SharedView>
   );
 }
 const styles = StyleSheet.create({
-  surface: {
-    paddingVertical: 80,
-    alignItems: 'center',
+  btn: {
+    border: 0,
+    borderRadius: 0,
+    height: 50,
+    justifyContent: 'center',
   },
-  payBtn: {
-    paddingVertical: 10,
-    marginTop: 20,
+  btnDone: {
+    flex: 1,
   },
 });

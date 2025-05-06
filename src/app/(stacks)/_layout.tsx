@@ -99,7 +99,7 @@ const StacksLayout = () => {
             headerTitle: 'En la cesta',
           }}
         />
-        <Stack.Screen name="addPayment" />
+        <Stack.Screen name="addPayments" />
       </Stack>
     </ApprovalProvider>
   );
