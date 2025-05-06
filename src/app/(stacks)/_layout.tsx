@@ -3,11 +3,37 @@ import { View } from 'react-native';
 import { Stack, useNavigation, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { DrawerActions } from '@react-navigation/native';
-import { Button, Text, Surface, useTheme, Badge } from 'react-native-paper';
+import { getHeaderTitle } from '@react-navigation/elements';
+import {
+  Button,
+  Text,
+  Surface,
+  useTheme,
+  Badge,
+  Appbar,
+} from 'react-native-paper';
 import { ApprovalProvider } from '../../components/approvalContext';
 import useTicketStore from '@/src/store/useTicketStore';
 import useNetworkStatus from '@/src/hooks/useNetworkStatus';
 
+// function AppBar(props) {
+//   const nav = useNavigation();
+//   const { navigation, route, options, back } = props;
+//   const title = getHeaderTitle(options, route.name);
+//   return (
+//     <Appbar.Header>
+//       {back ? (
+//         <Appbar.BackAction onPress={navigation.goBack} />
+//       ) : (
+//         <Appbar.Action
+//           icon="menu"
+//           onPress={() => nav.dispatch(DrawerActions.openDrawer())}
+//         />
+//       )}
+//       <Appbar.Content title={title} />
+//     </Appbar.Header>
+//   );
+// }
 const StacksLayout = () => {
   const router = useRouter();
   const nav = useNavigation();
@@ -15,52 +41,31 @@ const StacksLayout = () => {
   const { sales, completeTicket, markSaleAsSynced } = useTicketStore();
   const isConnected = useNetworkStatus();
 
-  // Función para enviar ventas no sincronizadas
-  const syncSalesWithServer = async () => {
-    try {
-      for (const sale of sales.filter((sale) => !sale.synced)) {
-        await fetch('https://api.myposapp.com/syncSales', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(sale),
-        });
-
-        markSaleAsSynced(sale.date);
-      }
-      console.log('Ventas sincronizadas con éxito');
-    } catch (error) {
-      console.error('Error al sincronizar ventas:', error);
-    }
-  };
-
-  // Detectar conexión y sincronizar automáticamente
-  useEffect(() => {
-    if (isConnected && sales.some((sale) => !sale.synced)) {
-      //syncSalesWithServer();
-    }
-  }, [isConnected, sales]);
-
   return (
     <ApprovalProvider>
-      <Stack>
+      <Stack
+        screenOptions={{
+          headerLeft: (props) => {
+            const { canGoBack } = props;
+            return (
+              <Ionicons
+                name={canGoBack ? 'arrow-back' : 'menu'}
+                size={24}
+                onPress={() => {
+                  canGoBack
+                    ? router.back()
+                    : nav.dispatch(DrawerActions.openDrawer());
+                }}
+                style={{ paddingLeft: 0, marginLeft: 0, marginRight: 13 }}
+              />
+            );
+          },
+        }}
+      >
         <Stack.Screen
           name="index"
           options={{
             headerTitle: 'Nueva Venta',
-            headerLeft: () => {
-              return (
-                <Ionicons
-                  name="menu"
-                  size={24}
-                  onPress={() => {
-                    nav.dispatch(DrawerActions.openDrawer());
-                  }}
-                  style={{ paddingLeft: 0, marginLeft: 0, marginRight: 13 }}
-                />
-              );
-            },
             headerRight: () => {
               return (
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>

@@ -14,14 +14,14 @@ export default function PaymentScreen() {
     useEffect(() => {
       navigation.setOptions({
         //headerTitleAlign: 'left',
-        headerLeft: () => (
-          <Ionicons
-            name="arrow-back"
-            size={24}
-            style={{ marginLeft: 0, marginRight: 10 }}
-            onPress={() => navigation.goBack()}
-          />
-        ),
+        // headerLeft: () => (
+        //   <Ionicons
+        //     name="arrow-back"
+        //     size={24}
+        //     style={{ marginLeft: 0, marginRight: 10 }}
+        //     onPress={() => navigation.goBack()}
+        //   />
+        // ),
         headerStyle: {
           //backgroundColor: '#f4511e',
           //textAlign: 'left',
