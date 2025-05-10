@@ -95,7 +95,7 @@ const KeypadPayment = () => {
       const cloneTicket = { ...ticket, created_at };
       await completeTicket(created_at);
       syncOrder(cloneTicket);
-      router.push('/');
+      router.back();
     } catch (err) {
       console.log(err);
     }

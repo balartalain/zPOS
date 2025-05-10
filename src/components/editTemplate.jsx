@@ -106,21 +106,19 @@ function Edit({ fields, table, id = null, handleSave = null }) {
   };
 
   const save = async () => {
-    //await ProductManager.addProduct(product);
-    //await BackendService.addProduct(product);
     try {
       //const newUri = `${FileSystem.documentDirectory}_prod_${product.id}_${Date.now()}.jpg`;
       //await copyImageToLocalDir(product.image, newUri, product.oldImage);
       //product.image = newUri;
       if (handleSave) {
-        handleSave(record);
+        await handleSave(record);
         return;
       } else if (id) {
-        update(table, record);
+        await update(table, record);
         //await AsyncStorageUtils.update(table, record);
         //await serviceClass.update(record, db);
       } else {
-        create(table, record);
+        await create(table, record);
         //await AsyncStorageUtils.add(table, record);
         //await serviceClass.add(record, db);
       }

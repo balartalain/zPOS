@@ -20,14 +20,14 @@ const NoImageIcon = require('@/assets/images/no-image.png');
 
 function ProductListScreen() {
   const router = useRouter();
-  const navigation = useNavigation();
   const theme = useTheme();
-  const { refreshData, refreshMasterData } = useData();
+  const { refreshData } = useData();
   const [busqueda, setBusqueda] = useState('');
   const [productosFiltrados, setProductosFiltrados] = useState([]);
 
   useEffect(() => {
     (async () => {
+      console.log('list products');
       const products = await AsyncStorageUtils.findAll('product');
       setProductosFiltrados(products);
     })();

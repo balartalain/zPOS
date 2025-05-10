@@ -28,10 +28,12 @@ export default function ProductList({ onPress }) {
   }, [productosFiltrados, calculateProductMeasure]);
 
   const onMyPress = (item) => {
-    const { x, y } = productMeasure.current[item.id];
-    const to = { x: 60, y: 10 };
-    runAnimation({ from: { x, y }, to });
-    onPress(item);
+    if (item.in_stock > 0) {
+      const { x, y } = productMeasure.current[item.id];
+      const to = { x: 60, y: 10 };
+      runAnimation({ from: { x, y }, to });
+      onPress(item);
+    }
   };
   const calculateProductMeasure = React.useCallback(() => {
     productosFiltrados.forEach((p) => {
@@ -82,7 +84,7 @@ export default function ProductList({ onPress }) {
         keyExtractor={(item, index) => index}
         renderItem={({ item }) => (
           <Card
-            style={styles.card}
+            style={[styles.card, item.in_stock === 0 && { opacity: 0.5 }]}
             contentStyle={styles.innerCard}
             onPress={() => onMyPress(item)}
           >

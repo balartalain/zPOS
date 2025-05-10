@@ -8,6 +8,8 @@ import useNetworkStatus from '@/src/hooks/useNetworkStatus';
 import useTicketStore from '@/src/store/useTicketStore';
 import { checkStoredState } from '@/src/utils/checkAsyncStorage';
 import { Utils } from '@/src/utils';
+import AsyncStorageUtils from '@/src/utils/AsyncStorageUtils';
+import { useData } from '@/src/context/dataContext';
 const { width } = Dimensions.get('window');
 
 function TicketScreen() {
@@ -18,12 +20,24 @@ function TicketScreen() {
   //const isConnected = useNetworkStatus();
   const isStoreClosed = false;
 
-  const addProduct = (product: any) => {
-    addProductToTicket(product);
+  const addProduct = async (product: any) => {
+    product.in_stock = product.in_stock - 1;
+    await addProductToTicket(product);
+    await AsyncStorageUtils.update('product', product);
     //console.log(ticket.lines);
   };
   const payTicket = () => {
     router.push('/addPayments');
+  };
+  const handleDeleteOrder = async () => {
+    for (const line of ticket.lines) {
+      const product = {
+        ...line.product,
+        in_stock: line.product.in_stock - line.qty,
+      };
+      await AsyncStorageUtils.update('product', product);
+    }
+    deleteOrder();
   };
   return (
     <View style={{ flex: 1, padding: 10 }}>
@@ -40,7 +54,11 @@ function TicketScreen() {
             justifyContent: 'space-around',
           }}
         >
-          <Button mode="contained" style={styles.payBtn} onPress={deleteOrder}>
+          <Button
+            mode="contained"
+            style={styles.payBtn}
+            onPress={handleDeleteOrder}
+          >
             Limpiar Cesta
           </Button>
           <Button mode="contained" style={styles.payBtn} onPress={payTicket}>
