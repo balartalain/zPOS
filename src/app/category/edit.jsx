@@ -1,12 +1,13 @@
-import { useRouter, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import React from 'react';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 
 import Edit from '@/src/components/editTemplate';
 import CategoryService from '../../service/categoryService';
 
 const fields = [
   {
-    column: 'objectId',
-    label: 'objectId',
+    column: 'id',
+    label: 'id',
     type: 'string',
     required: true,
     hidden: true,
@@ -20,7 +21,6 @@ const fields = [
 ];
 export { fields };
 export default function CategoryEditScreen() {
-  const router = useRouter();
   const { id } = useLocalSearchParams();
   return (
     <Edit

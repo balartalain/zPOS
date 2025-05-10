@@ -5,7 +5,7 @@ import Utils from '@/src/utils/utils';
 const useTicketStore = create(
   persist(
     (set, get) => ({
-      ticket: { lines: [], payments: [], totalAmt: 0, totalPaid: 0 }, // Ticket con líneas de productos
+      ticket: { lines: [], payments: [], totalAmt: 0, totalPaid: 0, change: 0 }, // Ticket con líneas de productos
       sales: [], // Ventas almacenadas de los últimos 30 días
       isClosedStore: true,
       openShift: (initialCash) => {},
@@ -13,7 +13,7 @@ const useTicketStore = create(
       addProductToTicket: (product) =>
         set((state) => {
           const existingProductIndex = state.ticket.lines.findIndex(
-            (line) => line.product.objectId === product.objectId
+            (line) => line.product.id === product.id
           );
 
           let updatedLines;
@@ -27,10 +27,7 @@ const useTicketStore = create(
           } else {
             // state.ticket.lines.length + 1
             // Si no está, lo agrega con cantidad 1
-            updatedLines = [
-              ...state.ticket.lines,
-              { product, qty: 1, objectId: Utils.uniqueID() },
-            ];
+            updatedLines = [...state.ticket.lines, { product, qty: 1 }];
           }
 
           return {
@@ -75,7 +72,6 @@ const useTicketStore = create(
                 name: paymentMethod,
                 amount,
                 change,
-                objectId: Utils.uniqueID(),
               },
             ];
           }
@@ -135,7 +131,6 @@ const useTicketStore = create(
             totalAmt: 0,
             totalPaid: 0,
             change: 0,
-            objectId: Utils.uniqueID(),
           }, // Vacía el ticket después de finalizar la venta
         }));
       },
@@ -147,7 +142,6 @@ const useTicketStore = create(
             totalAmt: 0,
             totalPaid: 0,
             change: 0,
-            objectId: Utils.uniqueID(),
           }, // Vacía el ticket después de finalizar la venta
         }));
       },

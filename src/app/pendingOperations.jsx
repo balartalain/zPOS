@@ -4,14 +4,14 @@ import { View, Text, FlatList } from 'react-native';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useData } from '@/src/context/dataContext';
 
-export default PendingScreen = () => {
+export default function PendingScreen() {
   const db = useSQLiteContext();
   const [pending, setPending] = useState([]);
   const { updatePending } = useData();
   useFocusEffect(
     React.useCallback(() => {
       getPending();
-    }, [updatePending])
+    }, [updatePending, getPending])
   );
   const getPending = React.useCallback(async () => {
     const pending = await db.getAllAsync(
@@ -23,7 +23,7 @@ export default PendingScreen = () => {
     <View>
       <FlatList
         data={pending}
-        keyExtractor={(item) => item.objectId.toString()}
+        keyExtractor={(item, index) => index}
         renderItem={({ item }) => (
           <View>
             <Text>{`${item.model} - ${item.operation} - ${item.created}`}</Text>
@@ -32,4 +32,4 @@ export default PendingScreen = () => {
       />
     </View>
   );
-};
+}

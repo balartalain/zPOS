@@ -1,27 +1,40 @@
 import ServiceRegistry from './serviceRegistry';
-import BackendFactory from './backendFactory';
+//import BackendFactory from './backendFactory';
+import { supabase } from './supabase-config';
+// export const registerPendingOperation = async (db, model, operation, data) => {
+//   console.log(data);
+//   const jsonData = JSON.stringify(data);
+//   await db.runAsync(
+//     `INSERT INTO pending_operation (model, operation, data) VALUES (?, ?, ?)`,
+//     [model, operation, jsonData]
+//   );
+// };
 
 class CategoryService {
-  static async add(data) {
+  static async save(data) {
     try {
-      await BackendFactory.getInstance().addCategory(data);
+      //const { data, error } = await supabase.from('product').insert([_data]);
+      const { error } = await supabase.from('category').upsert(data);
+      if (error) throw error;
     } catch (error) {
-      console.log('Error in CategoryService->add ', error);
+      console.log('Error in CategoryService->save ', error);
       throw error;
     }
   }
-  static async update(data) {
-    try {
-      await BackendFactory.getInstance().updateCategory(data);
-    } catch (error) {
-      console.log('Error in CategoryService->update ', error);
-      throw error;
-    }
-  }
+  // static async update(data) {
+  //   try {
+  //     const { error } = await supabase.from('category').upsert(data);
+  //     if (error) throw error;
+  //   } catch (error) {
+  //     console.log('Error in CategoryService->update ', error);
+  //     throw error;
+  //   }
+  // }
   static async fetchAll() {
     try {
-      console.log('fetch categ');
-      return await BackendFactory.getInstance().fetchCategories();
+      const { data, error } = await supabase.from('category').select();
+      if (error) throw error;
+      return data;
     } catch (error) {
       console.log('Error in CategoryService->fetchAll ', error);
       throw error;
@@ -29,7 +42,8 @@ class CategoryService {
   }
   static async delete(id) {
     try {
-      await BackendFactory.getInstance().deleteCategory(id);
+      const response = await supabase.from('category').delete().eq('id', id);
+      console.log(response);
     } catch (error) {
       console.log('Error in CategoryService->delete ', error);
       throw error;

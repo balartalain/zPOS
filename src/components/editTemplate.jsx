@@ -14,7 +14,6 @@ import ModalDropdown from '@/src/components/modalDropdown';
 import Utils from '@/src/utils/utils';
 import AsyncStorageUtils from '../utils/AsyncStorageUtils';
 import { useData } from '@/src/context/dataContext';
-
 const copyImageToLocalDir = async (fromUri, toUri, oldUri) => {
   try {
     if (oldUri) {
@@ -35,12 +34,12 @@ function Edit({ fields, table, id = null, handleSave = null }) {
   const isFocused = useIsFocused();
   const router = useRouter();
   const theme = useTheme();
-  const { create, update } = useData();
+  const { create, update, saveImage } = useData();
   const [record, setRecord] = useState({});
 
   const newRecord = React.useCallback(() => {
     return fields.reduce((obj, field) => {
-      obj[field.column] = field.column === 'objectId' ? Utils.uniqueID() : '';
+      obj[field.column] = field.column === 'id' ? Utils.uniqueID() : '';
       return obj;
     }, {});
   }, [fields]);
@@ -94,12 +93,13 @@ function Edit({ fields, table, id = null, handleSave = null }) {
       mediaTypes: ['images'],
       allowsEditing: true,
       aspect: [4, 3],
+      exif: false,
     });
     if (!result.canceled) {
       setRecord({
         ...record,
         image: result.assets[0].uri,
-        saveNewImage: true,
+        updatedImage: true,
       });
     }
   };
@@ -115,7 +115,6 @@ function Edit({ fields, table, id = null, handleSave = null }) {
         handleSave(record);
         return;
       } else if (id) {
-        console.log(id);
         update(table, record);
         //await AsyncStorageUtils.update(table, record);
         //await serviceClass.update(record, db);
@@ -162,7 +161,10 @@ function Edit({ fields, table, id = null, handleSave = null }) {
                   onChangeText={(text) => {
                     setRecord({
                       ...record,
-                      [column]: type !== 'string' ? parseFloat(text) : text,
+                      [column]:
+                        type !== 'string' && Utils.isFloat(text)
+                          ? parseFloat(text)
+                          : text,
                     });
                   }}
                 />
@@ -204,7 +206,7 @@ function Edit({ fields, table, id = null, handleSave = null }) {
                   initialId={
                     typeof record?.[column] === 'string'
                       ? record[column]
-                      : record?.[column]?.objectId
+                      : record?.[column]?.id
                   }
                   onSelect={(id) => {
                     setRecord((r) => ({ ...r, [column]: id }));

@@ -11,6 +11,7 @@ import {
   ServiceRegistry,
   CategoryService,
   ProductService,
+  TicketService,
 } from '@/src/service';
 import AsyncStorageUtils from '../utils/AsyncStorageUtils';
 
@@ -30,7 +31,7 @@ export function DataProvider({ children }) {
         clearTimeout(timeout);
       }
     };
-  }, []);
+  }, [syncData]);
   const syncData = useCallback(async () => {
     try {
       if (timeout) {
@@ -41,13 +42,17 @@ export function DataProvider({ children }) {
         return;
       }
       isSyncingRef.current = true;
+      //await db.runAsync('DELETE from pending_operation');
       const pending = await db.getAllAsync(
-        'SELECT * FROM pending_operation ORDER BY created DESC'
+        'SELECT * FROM pending_operation ORDER BY created ASC'
       );
       for (const record of pending) {
         const { id, model, operation } = record;
         const data = JSON.parse(record.data);
         const serviceClass = ServiceRegistry.get(model);
+        if (!serviceClass) {
+          throw new Error(`No existe el servicio ${model}`);
+        }
         await serviceClass[operation](data);
         await db.runAsync('DELETE from pending_operation where id = $id', {
           $id: id,
@@ -61,7 +66,7 @@ export function DataProvider({ children }) {
     } catch (error) {
       console.log(error);
       isSyncingRef.current = false;
-      timeout = setTimeout(syncData, 1000);
+      timeout = setTimeout(syncData, 10000);
     } finally {
     }
   }, [db]);
@@ -76,7 +81,6 @@ export function DataProvider({ children }) {
   }, []);
   const registerPendingOperation = useCallback(
     async (model, operation, data) => {
-      console.log(data);
       const jsonData = JSON.stringify(data);
       await db.runAsync(
         `INSERT INTO pending_operation (model, operation, data) VALUES (?, ?, ?)`,
@@ -86,26 +90,60 @@ export function DataProvider({ children }) {
     [db]
   );
   const create = useCallback(
-    async (table, data) => {
+    async (table, _data) => {
       try {
+        const { updatedImage, ...data } = _data;
         await AsyncStorageUtils.add(table, data);
+        if (updatedImage) {
+          const imageName = `${data.name.replaceAll(' ', '-')}_${Date.now()}.jpeg`;
+          saveImage(table, data.image, imageName);
+          data.image = imageName;
+        }
         setRefreshData((prev) => !prev);
-        registerPendingOperation(table, 'add', data);
+        registerPendingOperation(table, 'save', data);
       } catch (error) {
         console.log(`Error on create ${table}`, error);
+        throw error;
+      }
+    },
+    [registerPendingOperation, saveImage]
+  );
+  const createOrder = useCallback(
+    async (data) => {
+      try {
+        registerPendingOperation('order', 'save', data);
+      } catch (error) {
+        console.log(`Error on create order`, error);
         throw error;
       }
     },
     [registerPendingOperation]
   );
   const update = useCallback(
-    async (table, data) => {
+    async (table, _data) => {
       try {
+        const { updatedImage, ...data } = _data;
         await AsyncStorageUtils.update(table, data);
+        if (updatedImage) {
+          const imageName = `${data.name.replaceAll(' ', '-')}_${Date.now()}.jpeg`;
+          saveImage(table, data.image, imageName);
+          data.image = imageName;
+        }
         setRefreshData((prev) => !prev);
-        registerPendingOperation(table, 'update', data);
+        registerPendingOperation(table, 'save', data);
       } catch (error) {
         console.log(`Error on create ${table}`, error);
+        throw error;
+      }
+    },
+    [registerPendingOperation, saveImage]
+  );
+  const saveImage = useCallback(
+    async (table, imageUri, imageName) => {
+      try {
+        registerPendingOperation(table, 'saveImage', { imageUri, imageName });
+      } catch (error) {
+        console.log(`Error on saveImage ${table}`, error);
         throw error;
       }
     },
@@ -115,6 +153,7 @@ export function DataProvider({ children }) {
     <DataContext.Provider
       value={{
         create,
+        createOrder,
         update,
         refreshMasterData,
         syncData,

@@ -7,8 +7,8 @@ import Edit from '@/src/components/editTemplate';
 
 const fields = [
   {
-    column: 'objectId',
-    label: 'objectId',
+    column: 'id',
+    label: 'id',
     type: 'string',
     required: true,
     hidden: true,
@@ -20,7 +20,7 @@ const fields = [
     required: true,
   },
   {
-    column: 'category',
+    column: 'category_id',
     label: 'Categoría',
     type: 'reference',
     required: false,
@@ -38,7 +38,7 @@ const fields = [
     required: true,
   },
   {
-    column: 'inStock',
+    column: 'in_stock',
     label: 'En Stock',
     type: 'numeric',
     required: true,

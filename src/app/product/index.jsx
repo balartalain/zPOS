@@ -69,7 +69,7 @@ function ProductListScreen() {
             style={styles.card}
             contentStyle={styles.innerCard}
             onPress={() => {
-              router.push('/product/edit?id=' + item.objectId);
+              router.push('/product/edit?id=' + item.id);
             }}
           >
             <Card.Title
@@ -80,7 +80,7 @@ function ProductListScreen() {
               <Text variant="titleMedium">
                 {item.name} - ${item.price}
               </Text>
-              <Text variant="bodyMedium">stock: {item.inStock}</Text>
+              <Text variant="bodyMedium">stock: {item.in_stock}</Text>
             </Card.Content>
           </Card>
         )}

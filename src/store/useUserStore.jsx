@@ -12,6 +12,11 @@ const useUserStore = create(
           userName,
           isAuthenticated: true,
         })),
+      logout: () =>
+        set(() => ({
+          userName: null,
+          isAuthenticated: false,
+        })),
     }),
     {
       name: 'user-store',

@@ -61,7 +61,7 @@ function CategoryListScreen() {
             style={styles.card}
             contentStyle={styles.innerCard}
             onPress={() => {
-              router.push('/category/edit?id=' + item.objectId);
+              router.push('/category/edit?id=' + item.id);
             }}
           >
             <Card.Content style={styles.contentCard}>

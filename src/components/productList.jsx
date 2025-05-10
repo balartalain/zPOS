@@ -4,7 +4,7 @@ import { Card, TextInput, Text } from 'react-native-paper';
 //import ProductManager from '../Masterdata/product';
 import AsyncStorageUtils from '../utils/AsyncStorageUtils';
 import useProductAnimStore from '../store/useProductAnimStore';
-
+import { useData } from '../context/dataContext';
 const NoImageIcon = require('@/assets/images/no-image.png');
 
 export default function ProductList({ onPress }) {
@@ -13,37 +13,38 @@ export default function ProductList({ onPress }) {
   const productRefs = useRef({});
   const productMeasure = useRef({});
   const { runAnimation } = useProductAnimStore();
+  const { refreshData } = useData();
   console.log('[Product List]');
   useEffect(() => {
     (async () => {
       const products = await AsyncStorageUtils.findAll('product');
       setProductosFiltrados(products);
     })();
-  }, []);
+  }, [refreshData]);
 
   useEffect(() => {
     calculateProductMeasure();
   }, [productosFiltrados, calculateProductMeasure]);
 
   const onMyPress = (item) => {
-    const { x, y } = productMeasure.current[item.objectId];
+    const { x, y } = productMeasure.current[item.id];
     const to = { x: 60, y: 10 };
     runAnimation({ from: { x, y }, to });
     onPress(item);
   };
-  const calculateProductMeasure = () => {
+  const calculateProductMeasure = React.useCallback(() => {
     productosFiltrados.forEach((p) => {
-      productRefs.current[p.objectId].measureInWindow((x, y, width, height) => {
-        productMeasure.current[p.objectId] = { x, y, width, height };
+      productRefs.current[p.id].measureInWindow((x, y, width, height) => {
+        productMeasure.current[p.id] = { x, y, width, height };
       });
     });
-  };
+  }, [productosFiltrados]);
   const setProductRef = useCallback((ref, id) => {
     productRefs.current[id] = ref;
   }, []);
   // Función para manejar la búsqueda y filtrar los productos
   const filtrarProductos = async (texto) => {
-    const products = await AsyncStorageUtils.findAll();
+    const products = await AsyncStorageUtils.findAll('product');
     setBusqueda(texto);
     if (texto === '') {
       setProductosFiltrados(products); // Mostrar todos si el buscador está vacío
@@ -57,7 +58,7 @@ export default function ProductList({ onPress }) {
   };
   const LeftContentCard = ({ product }) => (
     <Image
-      ref={(ref) => setProductRef(ref, product.objectId)}
+      ref={(ref) => setProductRef(ref, product.id)}
       source={product.image ? { uri: product.image } : NoImageIcon}
       //source={product.image}
       style={styles.productImage}
@@ -92,7 +93,7 @@ export default function ProductList({ onPress }) {
               <Text variant="titleMedium">
                 {item.name} - ${item.price}
               </Text>
-              <Text variant="bodyMedium">stock: {item.inStock}</Text>
+              <Text variant="bodyMedium">stock: {item.in_stock}</Text>
             </Card.Content>
           </Card>
         )}

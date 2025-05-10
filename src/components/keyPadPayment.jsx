@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from 'react-native-paper';
+import { useData } from '@/src/context/dataContext';
 import useTicketStore from '@/src/store/useTicketStore';
 import Utils from '@/src/utils/utils';
 
@@ -47,7 +48,8 @@ const KeyPadButton = ({
 const KeypadPayment = () => {
   const theme = useTheme();
   const targetRef = React.useRef(null);
-  const { ticket, addPayment } = useTicketStore();
+  const { createOrder } = useData();
+  const { ticket, addPayment, completeTicket } = useTicketStore();
   const [containerWidth, setContainerWidth] = React.useState(50);
   const [selectedTextAmount, setSelectedTextAmount] = React.useState(true);
   const [amount, setAmount] = React.useState();
@@ -85,7 +87,14 @@ const KeypadPayment = () => {
     }
     setSelectedTextAmount(false);
   };
-  const handlePressDone = () => {};
+  const handlePressDone = async () => {
+    try {
+      await completeTicket();
+      createOrder(ticket);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const handlePressAddPayment = (paymentMethod) => {
     addPayment(paymentMethod, parseFloat(amount));
   };
@@ -251,7 +260,7 @@ const KeypadPayment = () => {
               //backgroundColor: '#d3d3d3',
               opacity: pending === 0 ? 1 : 0.4,
             }}
-            text={'Done'}
+            text={'Aceptar'}
             onPress={handlePressDone}
             disabled={pending > 0}
           />

@@ -46,4 +46,9 @@ export default class BackendServiceBase {
       'El método "deleteCategory" debe ser implementado en la clase hija.'
     );
   }
+  addOrder() {
+    throw new Error(
+      'El método "createTicket" debe ser implementado en la clase hija.'
+    );
+  }
 }

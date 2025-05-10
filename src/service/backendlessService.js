@@ -38,7 +38,7 @@ class BackendlessService extends BackendServiceBase {
     } = data;
     await apiAxios.put('/data/product/upsert', product);
     if (data.category) {
-      await this.setCategory(data.objectId, data.category);
+      await this.setCategory(data.id, data.category);
     }
   }
   async updateProduct(data) {
@@ -61,8 +61,9 @@ class BackendlessService extends BackendServiceBase {
   async updateCategory(data) {
     await this.addCategory(data);
   }
-  async createOrder(orderData) {
-    throw new Error('Método no implementado');
+  async addOrder(data) {
+    //console.log(JSON.stringify(data, null, 2));
+    await apiAxios.put('/data/order/deep-save', data);
   }
   async uploadImage(imageURL, imageName) {
     const formData = new FormData();

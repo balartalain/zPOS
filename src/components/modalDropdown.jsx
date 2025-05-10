@@ -18,9 +18,9 @@ const ModalDropdown = ({ table, initialId, onSelect }) => {
 
   useEffect(() => {
     (async () => {
-      const storedData = await AsyncStorage.getItem(table);
+      const storedData = await AsyncStorage.getItem(table.split('_')[0]);
       const _data = storedData ? JSON.parse(storedData) : [];
-      const _initialValue = _data.find((d) => d.objectId === initialId);
+      const _initialValue = _data.find((d) => d.id === initialId);
       if (_initialValue) {
         setSelectedValue(_initialValue.name);
       }
@@ -29,7 +29,7 @@ const ModalDropdown = ({ table, initialId, onSelect }) => {
   }, [table, initialId]);
 
   const handleSelect = (item) => {
-    onSelect(item.objectId);
+    onSelect(item.id);
     setSelectedValue(item.name);
     toggleModal();
   };

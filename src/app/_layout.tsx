@@ -44,7 +44,11 @@ const RootLayout = () => {
   const paperTheme =
     colorScheme === 'dark' ? CombinedDarkTheme : CombinedLightTheme;
 
-  const { isAuthenticated } = useUserStore();
+  const { isAuthenticated, logout } = useUserStore();
+  useEffect(() => {
+    logout();
+  }, []);
+
   console.log('App=>');
   return (
     <SQLiteProvider databaseName="zpos.db" onInit={migrateDbIfNeeded}>
@@ -86,7 +90,7 @@ const RootLayout = () => {
   async function migrateDbIfNeeded(db: any) {
     //await db.execAsync(`PRAGMA user_version = 0`);
     //await db.runAsync('DROP table IF EXISTS pending_operation');
-    //await db.runAsync('DELETE from pending_operation');
+    await db.runAsync('DELETE from pending_operation');
     const DATABASE_VERSION = 1;
     let { user_version: currentDbVersion } = await db.getFirstAsync(
       'PRAGMA user_version'

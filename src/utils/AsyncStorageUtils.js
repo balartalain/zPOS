@@ -14,14 +14,14 @@ const AsyncStorageUtils = {
     const storedItems = await AsyncStorage.getItem(key);
     let items = storedItems ? JSON.parse(storedItems) : [];
     items = items.map((_item) =>
-      _item.objectId === item.objectId ? { ..._item, ...item } : _item
+      _item.id === item.id ? { ..._item, ...item } : _item
     );
     await AsyncStorage.setItem(key, JSON.stringify(items));
   },
   delete: async function (key, id) {
     const storedItems = await AsyncStorage.getItem(key);
     const items = storedItems ? JSON.parse(storedItems) : [];
-    const newItems = items.filter((item) => item.objectId !== id);
+    const newItems = items.filter((item) => item.id !== id);
     await AsyncStorage.setItem(key, JSON.stringify(newItems));
   },
   findAll: async function (key) {
@@ -32,7 +32,7 @@ const AsyncStorageUtils = {
   findById: async function (key, id) {
     const storedItems = await AsyncStorage.getItem(key);
     const items = storedItems ? JSON.parse(storedItems) : [];
-    return items.find((i) => i.objectId === id);
+    return items.find((i) => i.id === id);
   },
 };
 export default AsyncStorageUtils;
