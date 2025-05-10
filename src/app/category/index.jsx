@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Image } from 'react-native';
+import { FlatList, StyleSheet, Dimensions } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
@@ -14,6 +14,7 @@ import {
 import AsyncStorageUtils from '../../utils/AsyncStorageUtils';
 import SharedView from '@/src/components/shared/sharedView';
 import { useData } from '@/src/context/dataContext';
+const { width } = Dimensions.get('window');
 const NoImageIcon = require('@/assets/images/no-image.png');
 
 function CategoryListScreen() {
@@ -87,8 +88,9 @@ function CategoryListScreen() {
 }
 const styles = StyleSheet.create({
   addBtn: {
-    padding: 10,
-    marginTop: 10,
+    height: width * 0.15,
+    justifyContent: 'center',
+    borderRadius: 0,
   },
   input: {
     marginBottom: 20,

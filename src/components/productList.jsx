@@ -5,6 +5,7 @@ import { Card, TextInput, Text } from 'react-native-paper';
 import AsyncStorageUtils from '../utils/AsyncStorageUtils';
 import useProductAnimStore from '../store/useProductAnimStore';
 import { useData } from '../context/dataContext';
+import { Utils } from '@/src/utils';
 const NoImageIcon = require('@/assets/images/no-image.png');
 
 export default function ProductList({ onPress }) {
@@ -91,7 +92,7 @@ export default function ProductList({ onPress }) {
             />
             <Card.Content style={styles.contentCard}>
               <Text variant="titleMedium">
-                {item.name} - ${item.price}
+                {item.name} - {Utils.formatCurrency(item.price)}
               </Text>
               <Text variant="bodyMedium">stock: {item.in_stock}</Text>
             </Card.Content>

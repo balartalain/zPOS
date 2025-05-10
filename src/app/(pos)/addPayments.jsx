@@ -6,55 +6,56 @@ import { Text, Surface } from 'react-native-paper';
 import SharedView from '@/src/components/shared/sharedView';
 import useTicketStore from '@/src/store/useTicketStore';
 import KeypadPayment from '../../components/keyPadPayment';
+import { Utils } from '@/src/utils';
 
 export default function PaymentScreen() {
   const navigation = useNavigation();
-  const { ticket, deletePayment } = useTicketStore();
-  'Por pagar: ' + (parseFloat(ticket.totalAmt) - parseFloat(ticket.totalPaid)),
-    useEffect(() => {
-      navigation.setOptions({
-        //headerTitleAlign: 'left',
-        // headerLeft: () => (
-        //   <Ionicons
-        //     name="arrow-back"
-        //     size={24}
-        //     style={{ marginLeft: 0, marginRight: 10 }}
-        //     onPress={() => navigation.goBack()}
-        //   />
-        // ),
-        headerStyle: {
-          //backgroundColor: '#f4511e',
-          //textAlign: 'left',
-        },
-        //headerTitleStyle: { fontWei },
-        headerTitle: () => {
-          const pending =
-            parseFloat(ticket.totalAmt) - parseFloat(ticket.totalPaid);
-          const label =
-            ticket.change === 0
-              ? `Por pagar ${pending}`
-              : `Cambio ${ticket.change}`;
-          return (
-            <View
+  const { ticket, deletePayment, getTotalPaid } = useTicketStore();
+
+  useEffect(() => {
+    navigation.setOptions({
+      //headerTitleAlign: 'left',
+      // headerLeft: () => (
+      //   <Ionicons
+      //     name="arrow-back"
+      //     size={24}
+      //     style={{ marginLeft: 0, marginRight: 10 }}
+      //     onPress={() => navigation.goBack()}
+      //   />
+      // ),
+      headerStyle: {
+        //backgroundColor: '#f4511e',
+        //textAlign: 'left',
+      },
+      //headerTitleStyle: { fontSize: 6 },
+      headerTitle: () => {
+        const pending =
+          parseFloat(ticket.total_amount) - parseFloat(getTotalPaid());
+        const label =
+          ticket.change === 0
+            ? `Por pagar ${Utils.formatCurrency(pending)}`
+            : `Cambio ${Utils.formatCurrency(ticket.change)}`;
+        return (
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-around',
+            }}
+          >
+            <Text
+              style={{ color: 'green', fontSize: 16 }}
+            >{` Total ${Utils.formatCurrency(ticket.total_amount)}`}</Text>
+            <Text
               style={{
-                flexDirection: 'row',
-                justifyContent: 'space-around',
+                fontSize: 16,
+                color: ticket.change >= 0 && pending === 0 ? 'green' : 'red',
               }}
-            >
-              <Text
-                style={{ color: 'green', fontSize: 20 }}
-              >{` Total ${ticket.totalAmt} Cup`}</Text>
-              <Text
-                style={{
-                  fontSize: 20,
-                  color: ticket.change >= 0 && pending === 0 ? 'green' : 'red',
-                }}
-              >{` ${label} Cup`}</Text>
-            </View>
-          );
-        },
-      });
-    }, [navigation, ticket.totalAmt, ticket.totalPaid, ticket.change]);
+            >{` ${label}`}</Text>
+          </View>
+        );
+      },
+    });
+  }, [navigation, ticket.total_amount, getTotalPaid, ticket.change]);
 
   const handleDeletePayment = (pm) => {
     deletePayment(pm);
@@ -70,9 +71,9 @@ export default function PaymentScreen() {
           }}
           elevation={2}
         >
-          {ticket.payments.map((p) => (
+          {ticket.payments.map((p, index) => (
             <View
-              key={p.name}
+              key={index}
               style={{
                 flexDirection: 'row',
                 width: '50%',
@@ -82,7 +83,9 @@ export default function PaymentScreen() {
               }}
             >
               <Text style={{ flex: 1 }}>{p.name}</Text>
-              <Text style={{ marginRight: 8 }}>{p.amount}</Text>
+              <Text style={{ marginRight: 8 }}>
+                {Utils.formatCurrency(p.amount)}
+              </Text>
               <TouchableOpacity onPress={() => handleDeletePayment(p.name)}>
                 <Ionicons name="close-outline" size={24} color="black" />
               </TouchableOpacity>

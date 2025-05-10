@@ -11,7 +11,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from 'react-native-paper';
 import { useData } from '@/src/context/dataContext';
 import useTicketStore from '@/src/store/useTicketStore';
-import Utils from '@/src/utils/utils';
+import { Utils } from '@/src/utils';
+import { create } from 'zustand';
+import { router } from 'expo-router';
 
 const { width } = Dimensions.get('window');
 const MARGIN = 2;
@@ -48,8 +50,8 @@ const KeyPadButton = ({
 const KeypadPayment = () => {
   const theme = useTheme();
   const targetRef = React.useRef(null);
-  const { createOrder } = useData();
-  const { ticket, addPayment, completeTicket } = useTicketStore();
+  const { syncOrder } = useData();
+  const { ticket, addPayment, completeTicket, getTotalPaid } = useTicketStore();
   const [containerWidth, setContainerWidth] = React.useState(50);
   const [selectedTextAmount, setSelectedTextAmount] = React.useState(true);
   const [amount, setAmount] = React.useState();
@@ -62,7 +64,7 @@ const KeypadPayment = () => {
     console.log('layout', event.nativeEvent.layout.width);
     setContainerWidth(event.nativeEvent.layout.width - MARGIN);
   };
-  const pending = ticket.totalAmt - ticket.totalPaid;
+  const pending = ticket.total_amount - getTotalPaid();
   React.useEffect(() => {
     setAmount(pending);
     setSelectedTextAmount(true);
@@ -89,8 +91,11 @@ const KeypadPayment = () => {
   };
   const handlePressDone = async () => {
     try {
-      await completeTicket();
-      createOrder(ticket);
+      const created_at = new Date();
+      const cloneTicket = { ...ticket, created_at };
+      await completeTicket(created_at);
+      syncOrder(cloneTicket);
+      router.push('/');
     } catch (err) {
       console.log(err);
     }

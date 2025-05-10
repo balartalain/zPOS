@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet, Dimensions } from 'react-native';
 import { Stack, useNavigation, useRouter } from 'expo-router';
 import {
   Card,
@@ -9,12 +9,16 @@ import {
   Surface,
   useTheme,
 } from 'react-native-paper';
+
 import useTicketStore from '@/src/store/useTicketStore';
+import { Utils } from '@/src/utils';
+
+const { width } = Dimensions.get('window');
 
 export default function ShoppingCartScreen() {
   const router = useRouter();
   const theme = useTheme();
-  const { ticket, deleteOrder, getTotal } = useTicketStore();
+  const { ticket, deleteOrder, getTotalAmt } = useTicketStore();
 
   return (
     <View style={{ flex: 1, padding: 10 }}>
@@ -22,7 +26,7 @@ export default function ShoppingCartScreen() {
         style={[styles.surface, { backgroundColor: theme.colors.primary }]}
         elevation={5}
       >
-        <Text variant="displayMedium">{`Total: $${getTotal()}`}</Text>
+        <Text variant="displayMedium">{`Total: ${Utils.formatCurrency(getTotalAmt())}`}</Text>
       </Surface>
       <FlatList
         data={ticket.lines}
@@ -41,26 +45,34 @@ export default function ShoppingCartScreen() {
                 {item.product.name} x {item.qty}
               </Text>
               <Text variant="titleMedium">
-                ${item.product.price * item.qty}
+                {Utils.formatCurrency(item.product.price * item.qty)}
               </Text>
             </Card.Content>
           </Card>
         )}
       />
-      <Button
-        mode="contained"
-        style={styles.cobrar}
-        onPress={() => deleteOrder()}
+      <View
+        style={{
+          marginTop: 5,
+          flexDirection: 'row',
+          justifyContent: 'space-around',
+        }}
       >
-        Borrar la compra
-      </Button>
-      <Button
-        mode="contained"
-        style={styles.cobrar}
-        onPress={() => console.log('Cobrar')}
-      >
-        Pagar
-      </Button>
+        <Button
+          mode="contained"
+          style={styles.btn}
+          onPress={() => deleteOrder()}
+        >
+          Limpiar Cesta
+        </Button>
+        <Button
+          mode="contained"
+          style={styles.btn}
+          onPress={() => router.push('/addPayments')}
+        >
+          Pagar
+        </Button>
+      </View>
     </View>
   );
 }
@@ -82,8 +94,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  cobrar: {
-    padding: 10,
-    marginTop: 10,
+  btn: {
+    width: '49%',
+    height: width * 0.15,
+    justifyContent: 'center',
+    borderRadius: 0,
   },
 });

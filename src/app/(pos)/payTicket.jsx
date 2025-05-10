@@ -8,7 +8,7 @@ import useTicketStore from '@/src/store/useTicketStore';
 export default function PayTicket() {
   const router = useRouter();
   const navigation = useNavigation();
-  const { getTotal, completeTicket } = useTicketStore();
+  const { completeTicket } = useTicketStore();
   useEffect(() => {
     navigation.setOptions({
       headerTitle: 'A Pagar',

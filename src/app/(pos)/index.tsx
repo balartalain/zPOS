@@ -7,12 +7,13 @@ import ProductList from '../../components/productList';
 import useNetworkStatus from '@/src/hooks/useNetworkStatus';
 import useTicketStore from '@/src/store/useTicketStore';
 import { checkStoredState } from '@/src/utils/checkAsyncStorage';
+import { Utils } from '@/src/utils';
 const { width } = Dimensions.get('window');
 
 function TicketScreen() {
   const router = useRouter();
   const theme = useTheme();
-  const { ticket, deleteOrder, addProductToTicket, getTotal } =
+  const { ticket, deleteOrder, addProductToTicket, getTotalAmt } =
     useTicketStore();
   //const isConnected = useNetworkStatus();
   const isStoreClosed = false;
@@ -27,7 +28,7 @@ function TicketScreen() {
   return (
     <View style={{ flex: 1, padding: 10 }}>
       <Surface style={styles.display} elevation={2}>
-        <Text variant="displayMedium">{`Total: $${getTotal()}`}</Text>
+        <Text variant="displayMedium">{`Total: ${Utils.formatCurrency(getTotalAmt())}`}</Text>
       </Surface>
       {isStoreClosed ? <StoreClosed /> : <ProductList onPress={addProduct} />}
       {!isStoreClosed && (

@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Image } from 'react-native';
+import { FlatList, StyleSheet, Image, Dimensions } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
@@ -14,6 +14,8 @@ import {
 import AsyncStorageUtils from '../../utils/AsyncStorageUtils';
 import { useData } from '@/src/context/dataContext';
 import SharedView from '@/src/components/shared/sharedView';
+import { Utils } from '@/src/utils';
+const { width } = Dimensions.get('window');
 const NoImageIcon = require('@/assets/images/no-image.png');
 
 function ProductListScreen() {
@@ -78,7 +80,7 @@ function ProductListScreen() {
             />
             <Card.Content style={styles.contentCard}>
               <Text variant="titleMedium">
-                {item.name} - ${item.price}
+                {item.name} - {Utils.formatCurrency(item.price)}
               </Text>
               <Text variant="bodyMedium">stock: {item.in_stock}</Text>
             </Card.Content>
@@ -102,8 +104,9 @@ function ProductListScreen() {
 }
 const styles = StyleSheet.create({
   addBtn: {
-    padding: 10,
-    marginTop: 10,
+    height: width * 0.15,
+    borderRadius: 0,
+    justifyContent: 'center',
   },
   input: {
     marginBottom: 20,

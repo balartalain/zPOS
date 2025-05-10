@@ -1,23 +1,38 @@
 import ServiceRegistry from './serviceRegistry';
-import BackendFactory from './backendFactory';
+import { supabase } from './supabase-config';
 
 class TicketService {
-  static async add(data) {
+  static async save(data) {
     try {
-      const lines = data.lines.map((line) => ({
-        ...line,
-        product: { id: line.product.id }, // Solo conserva el `id` de `product`
-      }));
-      const ticket = {
-        ...data,
-        lines,
-      };
-      const { payments, ..._ticket } = ticket;
-      console.log('lines=>', JSON.stringify(_ticket, null, 2));
-      //console.log('ticket service=>', ticket);
-      await BackendFactory.getInstance().addOrder(_ticket);
+      console.log('order=>', data);
+      const { error } = await supabase.from('order').insert(data);
+      if (error) throw error;
     } catch (error) {
-      console.log('Error in TicketService->add ', error);
+      console.log('Error in TicketService->save ', error);
+      throw error;
+    }
+  }
+  static async saveLines(_lines) {
+    try {
+      const lines = _lines.map(({ product, ...line }) => ({
+        ...line,
+        product_id: product.id, // Solo conserva el `id` de `product`
+      }));
+      console.log('lines=>', lines);
+      const { error } = await supabase.from('orderline').insert(lines);
+      if (error) throw error;
+    } catch (error) {
+      console.log('Error in TicketService->saveLines ', error);
+      throw error;
+    }
+  }
+  static async savePayments(payments) {
+    try {
+      console.log('payments=>', payments);
+      const { error } = await supabase.from('payment').insert(payments);
+      if (error) throw error;
+    } catch (error) {
+      console.log('Error in TicketService->savePayments ', error);
       throw error;
     }
   }

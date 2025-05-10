@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { View, StyleSheet, Image, Text } from 'react-native';
+import { View, StyleSheet, Image, Dimensions } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { TextInput, Button, Menu, Divider, useTheme } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
@@ -11,9 +11,10 @@ import SharedView from '@/src/components/shared/sharedView';
 import * as FileSystem from 'expo-file-system';
 import { useSQLiteContext } from 'expo-sqlite';
 import ModalDropdown from '@/src/components/modalDropdown';
-import Utils from '@/src/utils/utils';
+import { Utils } from '@/src/utils';
 import AsyncStorageUtils from '../utils/AsyncStorageUtils';
 import { useData } from '@/src/context/dataContext';
+const { width } = Dimensions.get('window');
 const copyImageToLocalDir = async (fromUri, toUri, oldUri) => {
   try {
     if (oldUri) {
@@ -236,7 +237,10 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   btn: {
-    padding: 10,
+    height: width * 0.15,
+    borderRadius: 0,
+    justifyContent: 'center',
+    //padding: 10,
   },
 });
 

@@ -108,10 +108,13 @@ export function DataProvider({ children }) {
     },
     [registerPendingOperation, saveImage]
   );
-  const createOrder = useCallback(
+  const syncOrder = useCallback(
     async (data) => {
       try {
-        registerPendingOperation('order', 'save', data);
+        const { lines, payments, ...ticket } = data;
+        registerPendingOperation('order', 'save', ticket);
+        registerPendingOperation('order', 'saveLines', lines);
+        registerPendingOperation('order', 'savePayments', payments);
       } catch (error) {
         console.log(`Error on create order`, error);
         throw error;
@@ -153,7 +156,7 @@ export function DataProvider({ children }) {
     <DataContext.Provider
       value={{
         create,
-        createOrder,
+        syncOrder,
         update,
         refreshMasterData,
         syncData,

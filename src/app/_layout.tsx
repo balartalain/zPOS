@@ -46,7 +46,7 @@ const RootLayout = () => {
 
   const { isAuthenticated, logout } = useUserStore();
   useEffect(() => {
-    logout();
+    //logout();
   }, []);
 
   console.log('App=>');
@@ -61,7 +61,7 @@ const RootLayout = () => {
               <ThemeProvider value={paperTheme}>
                 <Drawer>
                   <Drawer.Screen
-                    name="(stacks)"
+                    name="(pos)"
                     options={{ headerShown: false, drawerLabel: 'Ir a Venta' }}
                   />
                   <Drawer.Screen
