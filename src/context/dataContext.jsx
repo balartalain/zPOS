@@ -11,18 +11,18 @@ import {
   ServiceRegistry,
   CategoryService,
   ProductService,
-  TicketService,
 } from '@/src/service';
 import AsyncStorageUtils from '../utils/AsyncStorageUtils';
 
 const DataContext = createContext(null);
+const SyncContext = createContext(null);
 let timeout = null;
 export function DataProvider({ children }) {
   const db = useSQLiteContext();
   const syncTimeoutRef = useRef(null);
   const isSyncingRef = useRef(false);
-  const [refreshData, setRefreshData] = useState(false);
-  const [updatePending, setUpdatePending] = useState(false);
+  const [hasChangedData, setHasChangedData] = useState(false);
+  const [hasPending, setHasPending] = useState(false);
 
   useEffect(() => {
     syncData();
@@ -58,7 +58,8 @@ export function DataProvider({ children }) {
           $id: id,
         });
       }
-      setUpdatePending((prev) => !prev);
+      console.log('sync data');
+      setHasPending((prev) => !prev);
       //await new Promise((resolve) => setTimeout(resolve, 2000));
 
       isSyncingRef.current = false;
@@ -67,7 +68,6 @@ export function DataProvider({ children }) {
       console.log(error);
       isSyncingRef.current = false;
       timeout = setTimeout(syncData, 10000);
-    } finally {
     }
   }, [db]);
   const refreshMasterData = useCallback(async () => {
@@ -75,7 +75,7 @@ export function DataProvider({ children }) {
     const _products = await ProductService.fetchAll();
     await AsyncStorageUtils.set('category', _categories);
     await AsyncStorageUtils.set('product', _products);
-    setRefreshData((prev) => !prev);
+    setHasChangedData((prev) => !prev);
     //setProducts(_products);
     //setCategories(_categories);
   }, []);
@@ -99,7 +99,7 @@ export function DataProvider({ children }) {
           saveImage(table, data.image, imageName);
           data.image = imageName;
         }
-        setRefreshData((prev) => !prev);
+        setHasChangedData((prev) => !prev);
         registerPendingOperation(table, 'save', data);
       } catch (error) {
         console.log(`Error on create ${table}`, error);
@@ -122,6 +122,7 @@ export function DataProvider({ children }) {
     },
     [registerPendingOperation]
   );
+
   const update = useCallback(
     async (table, _data) => {
       try {
@@ -132,7 +133,7 @@ export function DataProvider({ children }) {
           saveImage(table, data.image, imageName);
           data.image = imageName;
         }
-        setRefreshData((prev) => !prev);
+        setHasChangedData((prev) => !prev);
         registerPendingOperation(table, 'save', data);
       } catch (error) {
         console.log(`Error on create ${table}`, error);
@@ -152,21 +153,32 @@ export function DataProvider({ children }) {
     },
     [registerPendingOperation]
   );
+  const forceRefresh = useCallback(() => {
+    setHasChangedData((prev) => !prev);
+  }, []);
+  const value = useCallback(
+    () => ({
+      create,
+      syncOrder,
+      update,
+      refreshMasterData,
+      syncData,
+      hasChangedData,
+      forceRefresh,
+    }),
+    [
+      create,
+      syncOrder,
+      update,
+      refreshMasterData,
+      syncData,
+      hasChangedData,
+      forceRefresh,
+    ]
+  );
   return (
-    <DataContext.Provider
-      value={{
-        create,
-        syncOrder,
-        update,
-        refreshMasterData,
-        syncData,
-        refreshData,
-        updatePending,
-        //forceSync,
-        //isSyncing,
-      }}
-    >
-      {children}
+    <DataContext.Provider value={value}>
+      <SyncContext.Provider value={hasPending}>{children}</SyncContext.Provider>
     </DataContext.Provider>
   );
 }
