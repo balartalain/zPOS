@@ -1,33 +1,66 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import NetInfo from '@react-native-community/netinfo';
 
+const CONNECTIVITY_CHECK_TIMEOUT = 3000;
+
+const checkInternetConnectivity = async () => {
+  try {
+    const networkState = await NetInfo.fetch();
+
+    if (!networkState.isConnected) {
+      return false;
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(
+      () => controller.abort(),
+      CONNECTIVITY_CHECK_TIMEOUT
+    );
+
+    try {
+      await fetch('https://8.8.8.8', {
+        method: 'HEAD',
+        signal: controller.signal,
+      });
+      return true;
+    } catch (error) {
+      return false;
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  } catch (error) {
+    return false;
+  }
+};
+let mounted = true;
+let retryTimeout;
 export default function useNetWorkStatus() {
-  const [hasInternet, setHasInternet] = useState(false);
-
+  const [isConnected, setIsConnected] = useState(false);
+  const checkConnection = useCallback(async () => {
+    try {
+      const connected = await checkInternetConnectivity();
+      setIsConnected(connected);
+    } catch (error) {
+      setIsConnected(false);
+    }
+  }, []);
   useEffect(() => {
-    const checkInternetAccess = async () => {
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 10000);
-      try {
-        const response = await fetch(
-          'https://jsonplaceholder.typicode.com/todos/1',
-          {
-            method: 'HEAD',
-            signal: controller.signal,
-          }
-        );
-        setHasInternet(response.ok);
-      } catch {
-        setHasInternet(false);
-      } finally {
-        clearTimeout(timer);
-        setTimeout(checkInternetAccess, 10000);
+    mounted = true;
+    (async () => {
+      await infinityCheck();
+    })();
+    return () => {
+      mounted = false;
+      if (retryTimeout) {
+        clearTimeout(retryTimeout);
       }
     };
+  }, [infinityCheck]);
+  const infinityCheck = useCallback(async () => {
+    if (!mounted) return;
+    await checkConnection();
+    retryTimeout = setTimeout(async () => await infinityCheck(), 5000);
+  }, [checkConnection]);
 
-    // Ejecuta la verificación inicial
-    checkInternetAccess();
-    return () => {};
-  }, []);
-
-  return hasInternet;
+  return isConnected;
 }

@@ -1,23 +1,25 @@
 import React, { useState } from 'react';
-import { useFocusEffect } from 'expo-router';
 import { View, Text, FlatList } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useData } from '@/src/context/dataContext';
 
 export default function PendingScreen() {
   const db = useSQLiteContext();
+  const isFocused = useIsFocused();
   const [pending, setPending] = useState([]);
-  const { updatePending } = useData();
-  useFocusEffect(
-    React.useCallback(() => {
+  const { executedSynchronization } = useData();
+  React.useEffect(() => {
+    if (isFocused) {
       getPending();
-    }, [updatePending, getPending])
-  );
+    }
+  }, [getPending, executedSynchronization, isFocused]);
+
   const getPending = React.useCallback(async () => {
-    const pending = await db.getAllAsync(
+    const _pending = await db.getAllAsync(
       'SELECT * FROM pending_operation ORDER BY created DESC'
     );
-    setPending(pending);
+    setPending(_pending);
   }, [db]);
   return (
     <View>

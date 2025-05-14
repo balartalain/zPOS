@@ -13,35 +13,46 @@ import {
   ProductService,
 } from '@/src/service';
 import AsyncStorageUtils from '../utils/AsyncStorageUtils';
+import useNetWorkStatus from '../hooks/useNetworkStatus';
 
 const DataContext = createContext(null);
 const SyncContext = createContext(null);
-let timeout = null;
+const SYNCING_TIMEOUT = 10000;
 export function DataProvider({ children }) {
   const db = useSQLiteContext();
   const syncTimeoutRef = useRef(null);
-  const isSyncingRef = useRef(false);
-  const [hasChangedData, setHasChangedData] = useState(false);
-  const [hasPending, setHasPending] = useState(false);
-
+  const [isUpdatedMasterData, setIsUpdatedMasterData] = useState(false);
+  const [executedSynchronization, setExecutedSynchronization] = useState(false);
+  const isConnected = useNetWorkStatus();
   useEffect(() => {
-    syncData();
+    (async () => {
+      if (isConnected) {
+        console.log('Online');
+        syncTimeoutRef.current = setTimeout(async () => await syncLoop(), 1000);
+      } else {
+        console.log('Offline');
+      }
+    })();
     return () => {
-      if (timeout) {
-        clearTimeout(timeout);
+      if (syncTimeoutRef.current) {
+        clearTimeout(syncTimeoutRef.current);
       }
     };
-  }, [syncData]);
+  }, [syncLoop, isConnected]);
+  const syncLoop = useCallback(async () => {
+    if (isConnected) {
+      console.log('sincronizando...');
+      await syncData();
+      setExecutedSynchronization((prev) => !prev);
+      syncTimeoutRef.current = setTimeout(
+        async () => await syncLoop(),
+        SYNCING_TIMEOUT
+      );
+    }
+  }, [isConnected, syncData]);
+
   const syncData = useCallback(async () => {
     try {
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-      if (isSyncingRef.current) {
-        console.log('Sincronización en curso');
-        return;
-      }
-      isSyncingRef.current = true;
       //await db.runAsync('DELETE from pending_operation');
       const pending = await db.getAllAsync(
         'SELECT * FROM pending_operation ORDER BY created ASC'
@@ -58,16 +69,8 @@ export function DataProvider({ children }) {
           $id: id,
         });
       }
-      console.log('sync data');
-      setHasPending((prev) => !prev);
-      //await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      isSyncingRef.current = false;
-      timeout = setTimeout(syncData, 10000);
     } catch (error) {
       console.log(error);
-      isSyncingRef.current = false;
-      timeout = setTimeout(syncData, 10000);
     }
   }, [db]);
   const refreshMasterData = useCallback(async () => {
@@ -75,9 +78,7 @@ export function DataProvider({ children }) {
     const _products = await ProductService.fetchAll();
     await AsyncStorageUtils.set('category', _categories);
     await AsyncStorageUtils.set('product', _products);
-    setHasChangedData((prev) => !prev);
-    //setProducts(_products);
-    //setCategories(_categories);
+    setIsUpdatedMasterData((prev) => !prev);
   }, []);
   const registerPendingOperation = useCallback(
     async (model, operation, data) => {
@@ -99,7 +100,7 @@ export function DataProvider({ children }) {
           saveImage(table, data.image, imageName);
           data.image = imageName;
         }
-        setHasChangedData((prev) => !prev);
+        setIsUpdatedMasterData((prev) => !prev);
         registerPendingOperation(table, 'save', data);
       } catch (error) {
         console.log(`Error on create ${table}`, error);
@@ -133,7 +134,7 @@ export function DataProvider({ children }) {
           saveImage(table, data.image, imageName);
           data.image = imageName;
         }
-        setHasChangedData((prev) => !prev);
+        setIsUpdatedMasterData((prev) => !prev);
         registerPendingOperation(table, 'save', data);
       } catch (error) {
         console.log(`Error on create ${table}`, error);
@@ -154,31 +155,34 @@ export function DataProvider({ children }) {
     [registerPendingOperation]
   );
   const forceRefresh = useCallback(() => {
-    setHasChangedData((prev) => !prev);
+    console.log('force refresh');
+    setIsUpdatedMasterData((prev) => !prev);
   }, []);
-  const value = useCallback(
+  const value = React.useMemo(
     () => ({
       create,
       syncOrder,
       update,
       refreshMasterData,
-      syncData,
-      hasChangedData,
+      isUpdatedMasterData,
       forceRefresh,
+      executedSynchronization,
     }),
     [
       create,
       syncOrder,
       update,
       refreshMasterData,
-      syncData,
-      hasChangedData,
+      isUpdatedMasterData,
       forceRefresh,
+      executedSynchronization,
     ]
   );
   return (
     <DataContext.Provider value={value}>
-      <SyncContext.Provider value={hasPending}>{children}</SyncContext.Provider>
+      <SyncContext.Provider value={executedSynchronization}>
+        {children}
+      </SyncContext.Provider>
     </DataContext.Provider>
   );
 }

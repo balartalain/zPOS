@@ -21,17 +21,16 @@ const NoImageIcon = require('@/assets/images/no-image.png');
 function ProductListScreen() {
   const router = useRouter();
   const theme = useTheme();
-  const { refreshData } = useData();
+  const { isUpdatedMasterData } = useData();
   const [busqueda, setBusqueda] = useState('');
   const [productosFiltrados, setProductosFiltrados] = useState([]);
 
   useEffect(() => {
     (async () => {
-      console.log('list products');
       const products = await AsyncStorageUtils.findAll('product');
       setProductosFiltrados(products);
     })();
-  }, [refreshData]);
+  }, [isUpdatedMasterData]);
   const filtrarProductos = async (texto) => {
     const products = await AsyncStorageUtils.findAll('product');
     setBusqueda(texto);
@@ -82,7 +81,12 @@ function ProductListScreen() {
               <Text variant="titleMedium">
                 {item.name} - {Utils.formatCurrency(item.price)}
               </Text>
-              <Text variant="bodyMedium">stock: {item.in_stock}</Text>
+              <Text
+                variant="bodyMedium"
+                style={[item.in_stock === 0 && styles.outOfStock]}
+              >
+                stock: {item.in_stock}
+              </Text>
             </Card.Content>
           </Card>
         )}
@@ -139,6 +143,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 16,
     // color: '#999',
+  },
+  outOfStock: {
+    color: 'red',
+    textDecorationLine: 'line-through',
   },
 });
 export default ProductListScreen;

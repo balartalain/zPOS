@@ -35,7 +35,7 @@ function Edit({ fields, table, id = null, handleSave = null }) {
   const isFocused = useIsFocused();
   const router = useRouter();
   const theme = useTheme();
-  const { create, update, saveImage } = useData();
+  const { create, update } = useData();
   const [record, setRecord] = useState({});
 
   const newRecord = React.useCallback(() => {

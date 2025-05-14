@@ -8,33 +8,35 @@ import { useData } from '../context/dataContext';
 import { Utils } from '@/src/utils';
 const NoImageIcon = require('@/assets/images/no-image.png');
 
-export default function ProductList({ onPress }) {
+function ProductList({ onPress }) {
   const [busqueda, setBusqueda] = useState(''); // Estado para el texto del buscador
   const [productosFiltrados, setProductosFiltrados] = useState([]);
   const productRefs = useRef({});
   const productMeasure = useRef({});
   const { runAnimation } = useProductAnimStore();
-  const { refreshData } = useData();
-  console.log('[Product List]');
+  const { isUpdatedMasterData } = useData();
   useEffect(() => {
     (async () => {
+      //console.log('[Product List]=> fetch');
       const products = await AsyncStorageUtils.findAll('product');
       setProductosFiltrados(products);
     })();
-  }, [refreshData]);
-
+  }, [isUpdatedMasterData]);
   useEffect(() => {
     calculateProductMeasure();
   }, [productosFiltrados, calculateProductMeasure]);
 
-  const onMyPress = (item) => {
-    if (item.in_stock > 0) {
-      const { x, y } = productMeasure.current[item.id];
-      const to = { x: 60, y: 10 };
-      runAnimation({ from: { x, y }, to });
-      onPress(item);
-    }
-  };
+  const onMyPress = React.useCallback(
+    (item) => {
+      if (item.in_stock > 0) {
+        const { x, y } = productMeasure.current[item.id];
+        const to = { x: 60, y: 10 };
+        runAnimation({ from: { x, y }, to });
+        onPress(item);
+      }
+    },
+    [onPress, runAnimation]
+  );
   const calculateProductMeasure = React.useCallback(() => {
     productosFiltrados.forEach((p) => {
       productRefs.current[p.id].measureInWindow((x, y, width, height) => {
@@ -47,6 +49,7 @@ export default function ProductList({ onPress }) {
   }, []);
   // Función para manejar la búsqueda y filtrar los productos
   const filtrarProductos = async (texto) => {
+    console.log('filtrar products');
     const products = await AsyncStorageUtils.findAll('product');
     setBusqueda(texto);
     if (texto === '') {
@@ -84,7 +87,7 @@ export default function ProductList({ onPress }) {
         keyExtractor={(item, index) => index}
         renderItem={({ item }) => (
           <Card
-            style={[styles.card, item.in_stock === 0 && { opacity: 0.5 }]}
+            style={[styles.card]}
             contentStyle={styles.innerCard}
             onPress={() => onMyPress(item)}
           >
@@ -96,7 +99,12 @@ export default function ProductList({ onPress }) {
               <Text variant="titleMedium">
                 {item.name} - {Utils.formatCurrency(item.price)}
               </Text>
-              <Text variant="bodyMedium">stock: {item.in_stock}</Text>
+              <Text
+                variant="bodyMedium"
+                style={[item.in_stock === 0 && styles.outOfStock]}
+              >
+                stock: {item.in_stock}
+              </Text>
             </Card.Content>
           </Card>
         )}
@@ -148,4 +156,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     // color: '#999',
   },
+  outOfStock: {
+    color: 'red',
+    textDecorationLine: 'line-through',
+  },
 });
+export default React.memo(ProductList);

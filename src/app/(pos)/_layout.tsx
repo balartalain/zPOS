@@ -14,7 +14,7 @@ import {
 } from 'react-native-paper';
 import { ApprovalProvider } from '../../components/approvalContext';
 import useTicketStore from '@/src/store/useTicketStore';
-import useNetworkStatus from '@/src/hooks/useNetworkStatus';
+//import useNetworkStatus from '@/src/hooks/useNetworkStatus';
 
 // function AppBar(props) {
 //   const nav = useNavigation();
@@ -39,8 +39,8 @@ const StacksLayout = () => {
   const nav = useNavigation();
   const theme = useTheme();
   const { sales, completeTicket, markSaleAsSynced } = useTicketStore();
-  const isConnected = useNetworkStatus();
-
+  //const isConnected = useNetworkStatus();
+  //console.log('POS is online: ', isConnected);
   return (
     <ApprovalProvider>
       <Stack

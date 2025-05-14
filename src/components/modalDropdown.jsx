@@ -18,6 +18,7 @@ const ModalDropdown = ({ table, initialId, onSelect }) => {
 
   useEffect(() => {
     (async () => {
+      console.log('modal drop down');
       const storedData = await AsyncStorage.getItem(table.split('_')[0]);
       const _data = storedData ? JSON.parse(storedData) : [];
       const _initialValue = _data.find((d) => d.id === initialId);

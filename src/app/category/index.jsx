@@ -1,27 +1,15 @@
 import { FlatList, StyleSheet, Dimensions } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import {
-  Button,
-  Text,
-  Surface,
-  useTheme,
-  TextInput,
-  Card,
-} from 'react-native-paper';
+import { Button, Text, TextInput, Card } from 'react-native-paper';
 import AsyncStorageUtils from '../../utils/AsyncStorageUtils';
 import SharedView from '@/src/components/shared/sharedView';
 import { useData } from '@/src/context/dataContext';
 const { width } = Dimensions.get('window');
-const NoImageIcon = require('@/assets/images/no-image.png');
 
 function CategoryListScreen() {
   const router = useRouter();
-  const navigation = useNavigation();
-  const theme = useTheme();
-  const { refreshData } = useData();
+  const { isUpdatedMasterData } = useData();
   const [busqueda, setBusqueda] = useState('');
   const [categoriesFilters, setCategoriesFilters] = useState([]);
 
@@ -30,7 +18,7 @@ function CategoryListScreen() {
       const categories = await AsyncStorageUtils.findAll('category');
       setCategoriesFilters(categories);
     })();
-  }, [refreshData]);
+  }, [isUpdatedMasterData]);
   const filtrarCategories = async (texto) => {
     const categories = await AsyncStorageUtils.findAll('category');
     setBusqueda(texto);
@@ -46,14 +34,16 @@ function CategoryListScreen() {
   };
   return (
     <SharedView>
-      {/*<TextInput
-        label="Buscar"
-        type="flat"
-        value={busqueda}
-        onChangeText={filtrarCategories}
-        mode="outlined"
-        style={styles.input}
-      />*/}
+      {
+        <TextInput
+          label="Buscar"
+          type="flat"
+          value={busqueda}
+          onChangeText={filtrarCategories}
+          mode="outlined"
+          style={styles.input}
+        />
+      }
       <FlatList
         data={categoriesFilters}
         keyExtractor={(item, index) => index}

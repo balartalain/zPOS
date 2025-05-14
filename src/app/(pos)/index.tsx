@@ -15,17 +15,18 @@ const { width } = Dimensions.get('window');
 function TicketScreen() {
   const router = useRouter();
   const theme = useTheme();
+  const { forceRefresh } = useData();
   const { ticket, deleteOrder, addProductToTicket, getTotalAmt } =
     useTicketStore();
-  //const isConnected = useNetworkStatus();
   const isStoreClosed = false;
 
-  const addProduct = async (product: any) => {
+  const addProduct = React.useCallback(async (product: any) => {
     product.in_stock = product.in_stock - 1;
     await addProductToTicket(product);
     await AsyncStorageUtils.update('product', product);
     //console.log(ticket.lines);
-  };
+  }, []);
+
   const payTicket = () => {
     router.push('/addPayments');
   };
@@ -33,10 +34,11 @@ function TicketScreen() {
     for (const line of ticket.lines) {
       const product = {
         ...line.product,
-        in_stock: line.product.in_stock - line.qty,
+        in_stock: line.product.in_stock + line.qty,
       };
       await AsyncStorageUtils.update('product', product);
     }
+    forceRefresh();
     deleteOrder();
   };
   return (
@@ -109,4 +111,4 @@ const styles = StyleSheet.create({
     //height: width * 0.2,
   },
 });
-export default TicketScreen;
+export default React.memo(TicketScreen);

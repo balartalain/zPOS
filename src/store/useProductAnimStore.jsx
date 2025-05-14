@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-
+import React from 'react';
 const useProductAnimStore = create((set, get) => ({
   animate: false,
   from: { x: 0, y: 0 },
