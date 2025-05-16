@@ -15,7 +15,7 @@ export default function ProductAnim() {
       Animated.parallel([
         Animated.timing(aAnim, {
           toValue: {
-            x: 320,
+            x: to.x - 20,
             y: 10,
           },
           duration: 200,

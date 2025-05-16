@@ -66,36 +66,6 @@ const StacksLayout = () => {
           name="index"
           options={{
             headerTitle: 'Nueva Venta',
-            headerRight: () => {
-              return (
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Badge
-                    style={{
-                      position: 'absolute',
-                      top: -5,
-                      right: 8,
-                      backgroundColor: theme.colors.tertiary,
-                    }}
-                    size={18}
-                    visible={true}
-                  >
-                    2
-                  </Badge>
-                  <Ionicons
-                    name="cart"
-                    size={24}
-                    onPress={() => {
-                      router.push('/shoppingCart');
-                    }}
-                    style={{
-                      marginLeft: 0,
-                      marginRight: 20,
-                      color: theme.colors.primary,
-                    }}
-                  />
-                </View>
-              );
-            },
           }}
         />
         <Stack.Screen
