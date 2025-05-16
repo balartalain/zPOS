@@ -1,8 +1,9 @@
 import { View, StyleSheet, Dimensions } from 'react-native';
-import React from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Button, Text, Surface, useTheme } from 'react-native-paper';
+import { Button, Text, Surface, useTheme, Badge } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 import ProductList from '../../components/productList';
 import useNetworkStatus from '@/src/hooks/useNetworkStatus';
 import useTicketStore from '@/src/store/useTicketStore';
@@ -12,14 +13,80 @@ import AsyncStorageUtils from '@/src/utils/AsyncStorageUtils';
 import { useData } from '@/src/context/dataContext';
 const { width } = Dimensions.get('window');
 
-function TicketScreen() {
+function Basket({ onSetBasketCoords }) {
   const router = useRouter();
   const theme = useTheme();
+  const basketRef = React.useRef(null);
+  React.useEffect(() => {
+    setTimeout(() => {
+      if (basketRef.current) {
+        basketRef.current.measureInWindow((x, y, width, height) => {
+          onSetBasketCoords({ x: x - 20 + width / 2, y, width, height });
+          console.log(x, y, width, height);
+          //console.log(insets);
+        });
+      }
+    }, 500);
+  }, []);
+  return (
+    <View
+      ref={basketRef}
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        //width: 35,
+      }}
+    >
+      <Badge
+        style={{
+          position: 'absolute',
+          top: -1,
+          right: -1,
+          backgroundColor: theme.colors.tertiary,
+          zIndex: 1,
+        }}
+        size={16}
+        visible={true}
+      >
+        12
+      </Badge>
+      <Ionicons
+        name="cart"
+        size={30}
+        onPress={() => {
+          router.push('/shoppingCart');
+        }}
+        style={{
+          marginLeft: 0,
+          //marginRight: 20,
+          color: theme.colors.primary,
+        }}
+      />
+    </View>
+  );
+}
+function TicketScreen() {
+  const router = useRouter();
+  const navigation = useNavigation();
+  const theme = useTheme();
   const { forceRefresh } = useData();
+  const [basketCoords, setBasketCoords] = useState({
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+  });
   const { ticket, deleteOrder, addProductToTicket, getTotalAmt } =
     useTicketStore();
   const isStoreClosed = false;
+  console.log('pos screen');
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      //headerTitleAlign: 'left',
+      headerRight: () => <Basket onSetBasketCoords={setBasketCoords} />,
+    });
+  }, [navigation]);
   const addProduct = React.useCallback(async (product: any) => {
     product.in_stock = product.in_stock - 1;
     await addProductToTicket(product);
@@ -46,7 +113,11 @@ function TicketScreen() {
       <Surface style={styles.display} elevation={2}>
         <Text variant="displayMedium">{`Total: ${Utils.formatCurrency(getTotalAmt())}`}</Text>
       </Surface>
-      {isStoreClosed ? <StoreClosed /> : <ProductList onPress={addProduct} />}
+      {isStoreClosed ? (
+        <StoreClosed />
+      ) : (
+        <ProductList onPress={addProduct} basketCoords={basketCoords} />
+      )}
       {!isStoreClosed && (
         <View
           style={{

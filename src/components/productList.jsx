@@ -8,13 +8,14 @@ import { useData } from '../context/dataContext';
 import { Utils } from '@/src/utils';
 const NoImageIcon = require('@/assets/images/no-image.png');
 
-function ProductList({ onPress }) {
+function ProductList({ onPress, basketCoords }) {
   const [busqueda, setBusqueda] = useState(''); // Estado para el texto del buscador
   const [productosFiltrados, setProductosFiltrados] = useState([]);
   const productRefs = useRef({});
   const productMeasure = useRef({});
   const { runAnimation } = useProductAnimStore();
   const { isUpdatedMasterData } = useData();
+  console.log('product list');
   useEffect(() => {
     (async () => {
       //console.log('[Product List]=> fetch');
@@ -30,12 +31,12 @@ function ProductList({ onPress }) {
     (item) => {
       if (item.in_stock > 0) {
         const { x, y } = productMeasure.current[item.id];
-        const to = { x: 60, y: 10 };
+        const to = { x: basketCoords.x, y: basketCoords.y };
         runAnimation({ from: { x, y }, to });
         onPress(item);
       }
     },
-    [onPress, runAnimation]
+    [onPress, runAnimation, basketCoords.x, basketCoords.y]
   );
   const calculateProductMeasure = React.useCallback(() => {
     productosFiltrados.forEach((p) => {

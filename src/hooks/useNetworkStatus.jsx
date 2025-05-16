@@ -3,7 +3,7 @@ import NetInfo from '@react-native-community/netinfo';
 
 const CONNECTIVITY_CHECK_TIMEOUT = 3000;
 
-const checkInternetConnectivity = async () => {
+export const checkInternetConnectivity = async () => {
   try {
     const networkState = await NetInfo.fetch();
 

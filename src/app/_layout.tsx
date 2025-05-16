@@ -62,7 +62,10 @@ const RootLayout = () => {
                 <Drawer>
                   <Drawer.Screen
                     name="(pos)"
-                    options={{ headerShown: false, drawerLabel: 'Ir a Venta' }}
+                    options={{
+                      headerShown: false,
+                      drawerLabel: 'Ir a Venta',
+                    }}
                   />
                   <Drawer.Screen
                     name="+not-found"
@@ -74,7 +77,10 @@ const RootLayout = () => {
                   />
                   <Drawer.Screen
                     name="category"
-                    options={{ headerShown: false, drawerLabel: 'Categorías' }}
+                    options={{
+                      headerShown: false,
+                      drawerLabel: 'Categorías',
+                    }}
                   />
                 </Drawer>
               </ThemeProvider>
