@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import { View, Text, FlatList } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { useSQLiteContext } from 'expo-sqlite';
-import { useData } from '@/src/context/dataContext';
+import { useSync } from '@/src/context/dataContext';
 
 export default function PendingScreen() {
   const db = useSQLiteContext();
   const isFocused = useIsFocused();
   const [pending, setPending] = useState([]);
-  const { executedSynchronization } = useData();
+  const executedSynchronization = useSync();
   React.useEffect(() => {
     if (isFocused) {
+      console.log('pending operations', executedSynchronization);
       getPending();
     }
   }, [getPending, executedSynchronization, isFocused]);

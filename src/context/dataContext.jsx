@@ -166,7 +166,6 @@ export function DataProvider({ children }) {
       refreshMasterData,
       isUpdatedMasterData,
       forceRefresh,
-      executedSynchronization,
     }),
     [
       create,
@@ -175,7 +174,6 @@ export function DataProvider({ children }) {
       refreshMasterData,
       isUpdatedMasterData,
       forceRefresh,
-      executedSynchronization,
     ]
   );
   return (
@@ -191,5 +189,9 @@ export function useData() {
   if (!context) {
     throw new Error('useData must be used within a DataProvider');
   }
+  return context;
+}
+export function useSync() {
+  const context = useContext(SyncContext);
   return context;
 }
