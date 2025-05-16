@@ -1,4 +1,4 @@
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import React, { useState, useLayoutEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,7 +16,9 @@ const { width } = Dimensions.get('window');
 function Basket({ onSetBasketCoords }) {
   const router = useRouter();
   const theme = useTheme();
+  const { ticket } = useTicketStore();
   const basketRef = React.useRef(null);
+  const itemCount = ticket.lines.reduce((acc, line) => acc + line.qty, 0);
   React.useEffect(() => {
     setTimeout(() => {
       if (basketRef.current) {
@@ -37,31 +39,35 @@ function Basket({ onSetBasketCoords }) {
         //width: 35,
       }}
     >
-      <Badge
-        style={{
-          position: 'absolute',
-          top: -1,
-          right: -1,
-          backgroundColor: theme.colors.tertiary,
-          zIndex: 1,
-        }}
-        size={16}
-        visible={true}
-      >
-        12
-      </Badge>
-      <Ionicons
-        name="cart"
-        size={30}
+      <TouchableOpacity
         onPress={() => {
           router.push('/shoppingCart');
         }}
-        style={{
-          marginLeft: 0,
-          //marginRight: 20,
-          color: theme.colors.primary,
-        }}
-      />
+      >
+        <Badge
+          style={{
+            position: 'absolute',
+            top: -1,
+            right: -1,
+            backgroundColor: theme.colors.tertiary,
+            zIndex: 1,
+          }}
+          size={18}
+          visible={true}
+        >
+          {itemCount}
+        </Badge>
+
+        <Ionicons
+          name="cart"
+          size={30}
+          style={{
+            marginLeft: 0,
+            //marginRight: 20,
+            color: theme.colors.primary,
+          }}
+        />
+      </TouchableOpacity>
     </View>
   );
 }
