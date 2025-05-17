@@ -80,7 +80,6 @@ const styles = StyleSheet.create({
   addBtn: {
     height: width * 0.15,
     justifyContent: 'center',
-    borderRadius: 0,
   },
   input: {
     marginBottom: 20,
@@ -88,14 +87,6 @@ const styles = StyleSheet.create({
   card: {
     marginBottom: 10,
     minHeight: 60,
-  },
-  productImage: {
-    width: 50,
-    height: 50,
-    //marginRight: 12,
-    borderRadius: 4,
-    backgroundColor: '#ccc',
-    resizeMode: 'cover',
   },
   innerCard: {
     flex: 1,

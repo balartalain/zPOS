@@ -92,20 +92,28 @@ function ProductList({ onPress, basketCoords }) {
             contentStyle={styles.innerCard}
             onPress={() => onMyPress(item)}
           >
-            <Card.Title
-              style={{ paddingLeft: 5, minHeight: 0, paddingVertical: 10 }}
-              left={() => <LeftContentCard product={item} />}
-            />
             <Card.Content style={styles.contentCard}>
-              <Text variant="titleMedium">
-                {item.name} - {Utils.formatCurrency(item.price)}
-              </Text>
-              <Text
-                variant="bodyMedium"
-                style={[item.in_stock === 0 && styles.outOfStock]}
+              <LeftContentCard product={item} />
+              <View>
+                <Text variant="titleMedium">{item.name}</Text>
+                <Text
+                  variant="bodyMedium"
+                  style={[item.in_stock === 0 && styles.outOfStock]}
+                >
+                  stock: {item.in_stock}
+                </Text>
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: 'flex-end',
+                  justifyContent: 'center',
+                }}
               >
-                stock: {item.in_stock}
-              </Text>
+                <Text variant="titleMedium">
+                  {Utils.formatCurrency(item.price)}
+                </Text>
+              </View>
             </Card.Content>
           </Card>
         )}
@@ -134,8 +142,8 @@ const styles = StyleSheet.create({
   productImage: {
     width: 50,
     height: 50,
-    //marginRight: 12,
-    borderRadius: 4,
+    marginRight: 10,
+    //borderRadius: 4,
     //backgroundColor: '#ccc',
     resizeMode: 'cover',
   },
@@ -146,10 +154,12 @@ const styles = StyleSheet.create({
     //alignItems: 'center',
   },
   contentCard: {
+    flex: 1,
+    flexDirection: 'row',
+    paddingVertical: 5,
     paddingLeft: 0,
-    paddingBottom: 0,
     marginLeft: 10,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
   },
   emptyText: {
     textAlign: 'center',

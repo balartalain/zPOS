@@ -232,11 +232,9 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     //marginRight: 12,
-    borderRadius: 4,
   },
   btn: {
     height: width * 0.15,
-    borderRadius: 0,
     justifyContent: 'center',
     //padding: 10,
   },

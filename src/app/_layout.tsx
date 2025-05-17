@@ -26,10 +26,12 @@ import { DataProvider } from '@/src/context/dataContext';
 import toastConfig from '../toastConfig';
 const customDarkTheme = {
   ...MD3DarkTheme,
+  roundness: 2,
   colors: { ...MD3DarkTheme.colors, ...Colors.dark },
 };
 const customLightTheme = {
   ...MD3LightTheme,
+  roundness: 2,
   colors: { ...MD3LightTheme, ...Colors.light },
 };
 const { LightTheme, DarkTheme } = adaptNavigationTheme({
@@ -96,7 +98,7 @@ const RootLayout = () => {
   async function migrateDbIfNeeded(db: any) {
     //await db.execAsync(`PRAGMA user_version = 0`);
     //await db.runAsync('DROP table IF EXISTS pending_operation');
-    await db.runAsync('DELETE from pending_operation');
+    //await db.runAsync('DELETE from pending_operation');
     const DATABASE_VERSION = 1;
     let { user_version: currentDbVersion } = await db.getFirstAsync(
       'PRAGMA user_version'

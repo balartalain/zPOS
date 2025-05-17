@@ -22,10 +22,7 @@ export default function ShoppingCartScreen() {
 
   return (
     <View style={{ flex: 1, padding: 10 }}>
-      <Surface
-        style={[styles.surface, { backgroundColor: theme.colors.primary }]}
-        elevation={5}
-      >
+      <Surface style={styles.surface} elevation={2}>
         <Text variant="displayMedium">{`Total: ${Utils.formatCurrency(getTotalAmt())}`}</Text>
       </Surface>
       <FlatList
@@ -98,6 +95,5 @@ const styles = StyleSheet.create({
     width: '49%',
     height: width * 0.15,
     justifyContent: 'center',
-    borderRadius: 0,
   },
 });

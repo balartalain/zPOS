@@ -109,7 +109,6 @@ function ProductListScreen() {
 const styles = StyleSheet.create({
   addBtn: {
     height: width * 0.15,
-    borderRadius: 0,
     justifyContent: 'center',
   },
   input: {
@@ -122,7 +121,6 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     //marginRight: 12,
-    borderRadius: 4,
     backgroundColor: '#ccc',
     resizeMode: 'cover',
   },

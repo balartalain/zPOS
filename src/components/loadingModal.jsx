@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)', // Fondo oscuro semitransparente para bloquear la interacción
   },
   modalView: {
-    borderRadius: 10,
+    borderRadius: 2,
     padding: 15,
     alignItems: 'center',
     elevation: 5,

@@ -47,8 +47,8 @@ const ModalDropdown = ({ table, initialId, onSelect }) => {
           flexDirection: 'row-reverse',
         }}
         style={{
-          borderRadius: 0,
           marginBottom: 20,
+          borderRadius: 2,
           paddingVertical: 5,
           borderWidth: 0,
           borderBottomWidth: 1,
@@ -87,11 +87,6 @@ const ModalDropdown = ({ table, initialId, onSelect }) => {
 };
 
 const styles = StyleSheet.create({
-  button: {
-    padding: 15,
-    backgroundColor: '#3498db',
-    borderRadius: 5,
-  },
   buttonText: {
     color: 'white',
     textAlign: 'center',
@@ -118,9 +113,6 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     marginTop: 10,
-    //padding: 10,
-    //backgroundColor: '#e74c3c',
-    //borderRadius: 5,
   },
   closeText: {
     color: 'white',
