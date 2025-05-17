@@ -65,7 +65,7 @@ const useTicketStore = create(
       addPayment: (paymentMethod, amount) => {
         set((state) => {
           const existingPaymentIndex = state.ticket.payments.findIndex(
-            (payment) => payment.name === paymentMethod
+            (payment) => payment.payment_method === paymentMethod
           );
           let updatedPayments;
           const change =
@@ -108,7 +108,7 @@ const useTicketStore = create(
       deletePayment: (paymentMethod) => {
         set((state) => {
           const updatedPayments = state.ticket.payments.filter(
-            (p) => p.name !== paymentMethod
+            (p) => p.payment_method !== paymentMethod
           );
           const totalPaymentAmount = updatedPayments.reduce(
             (acc, p) => acc + p.amount,

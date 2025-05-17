@@ -39,9 +39,7 @@ const KeyPadButton = ({
       ]}
       onPress={onPress}
     >
-      <Text
-        style={{ fontSize: width * 0.05, fontWeight: 'bold', ...textStyle }}
-      >
+      <Text style={{ fontSize: width * 0.05, fontWeight: 450, ...textStyle }}>
         {text}
       </Text>
     </TouchableOpacity>
@@ -263,11 +261,11 @@ const KeypadPayment = () => {
               height: containerWidth * 0.25 - MARGIN,
               backgroundColor: theme.colors.primary,
               //backgroundColor: '#d3d3d3',
-              opacity: pending === 0 ? 1 : 0.4,
+              opacity: ticket.total_amount > 0 && pending === 0 ? 1 : 0.4,
             }}
             text={'Aceptar'}
             onPress={handlePressDone}
-            disabled={pending > 0}
+            disabled={ticket.total_amount === 0 || pending > 0}
           />
         </View>
       </View>

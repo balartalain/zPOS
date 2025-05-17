@@ -8,13 +8,12 @@ export default function PendingScreen() {
   const db = useSQLiteContext();
   const isFocused = useIsFocused();
   const [pending, setPending] = useState([]);
-  const executedSynchronization = useSync();
+  const isSyncing = useSync();
   React.useEffect(() => {
     if (isFocused) {
-      console.log('pending operations', executedSynchronization);
       getPending();
     }
-  }, [getPending, executedSynchronization, isFocused]);
+  }, [getPending, isSyncing, isFocused]);
 
   const getPending = React.useCallback(async () => {
     const _pending = await db.getAllAsync(

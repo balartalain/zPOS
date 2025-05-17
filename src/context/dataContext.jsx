@@ -22,7 +22,7 @@ export function DataProvider({ children }) {
   const db = useSQLiteContext();
   const syncTimeoutRef = useRef(null);
   const [isUpdatedMasterData, setIsUpdatedMasterData] = useState(false);
-  const [executedSynchronization, setExecutedSynchronization] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
   const isConnected = useNetWorkStatus();
   useEffect(() => {
     (async () => {
@@ -43,7 +43,6 @@ export function DataProvider({ children }) {
     if (isConnected) {
       console.log('sincronizando...');
       await syncData();
-      setExecutedSynchronization((prev) => !prev);
       syncTimeoutRef.current = setTimeout(
         async () => await syncLoop(),
         SYNCING_TIMEOUT
@@ -57,20 +56,25 @@ export function DataProvider({ children }) {
       const pending = await db.getAllAsync(
         'SELECT * FROM pending_operation ORDER BY created ASC'
       );
-      for (const record of pending) {
-        const { id, model, operation } = record;
-        const data = JSON.parse(record.data);
-        const serviceClass = ServiceRegistry.get(model);
-        if (!serviceClass) {
-          throw new Error(`No existe el servicio ${model}`);
+      if (pending.length > 0) {
+        setIsSyncing(true);
+        for (const record of pending) {
+          const { id, model, operation } = record;
+          const data = JSON.parse(record.data);
+          const serviceClass = ServiceRegistry.get(model);
+          if (!serviceClass) {
+            throw new Error(`No existe el servicio ${model}`);
+          }
+          await serviceClass[operation](data);
+          await db.runAsync('DELETE from pending_operation where id = $id', {
+            $id: id,
+          });
         }
-        await serviceClass[operation](data);
-        await db.runAsync('DELETE from pending_operation where id = $id', {
-          $id: id,
-        });
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsSyncing(false);
     }
   }, [db]);
   const refreshMasterData = useCallback(async () => {
@@ -178,9 +182,7 @@ export function DataProvider({ children }) {
   );
   return (
     <DataContext.Provider value={value}>
-      <SyncContext.Provider value={executedSynchronization}>
-        {children}
-      </SyncContext.Provider>
+      <SyncContext.Provider value={isSyncing}>{children}</SyncContext.Provider>
     </DataContext.Provider>
   );
 }

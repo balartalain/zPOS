@@ -11,6 +11,7 @@ import { checkStoredState } from '@/src/utils/checkAsyncStorage';
 import { Utils } from '@/src/utils';
 import AsyncStorageUtils from '@/src/utils/AsyncStorageUtils';
 import { useData } from '@/src/context/dataContext';
+import SynchronizeIcon from '@/src/components/synchronizeIcon';
 const { width } = Dimensions.get('window');
 
 function Basket({ onSetBasketCoords }) {
@@ -36,7 +37,7 @@ function Basket({ onSetBasketCoords }) {
       style={{
         flexDirection: 'row',
         alignItems: 'center',
-        //width: 35,
+        marginRight: 10,
       }}
     >
       <TouchableOpacity
@@ -47,8 +48,8 @@ function Basket({ onSetBasketCoords }) {
         <Badge
           style={{
             position: 'absolute',
-            top: -1,
-            right: -1,
+            top: -6,
+            right: -3,
             backgroundColor: theme.colors.tertiary,
             zIndex: 1,
           }}
@@ -90,7 +91,12 @@ function TicketScreen() {
   useLayoutEffect(() => {
     navigation.setOptions({
       //headerTitleAlign: 'left',
-      headerRight: () => <Basket onSetBasketCoords={setBasketCoords} />,
+      headerRight: () => (
+        <>
+          <Basket onSetBasketCoords={setBasketCoords} />
+          <SynchronizeIcon />
+        </>
+      ),
     });
   }, [navigation]);
   const addProduct = React.useCallback(async (product: any) => {
@@ -183,7 +189,7 @@ const styles = StyleSheet.create({
   },
   payBtn: {
     width: '49%',
-    borderRadius: 0,
+    //borderRadius: 2,
     justifyContent: 'center',
     //height: width * 0.2,
   },

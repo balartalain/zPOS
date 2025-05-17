@@ -4,6 +4,7 @@ import { Stack, useNavigation, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { DrawerActions } from '@react-navigation/native';
 import { Button, Text, Surface, useTheme, Badge } from 'react-native-paper';
+import SynchronizeIcon from '@/src/components/synchronizeIcon';
 
 const ProductsLayout = () => {
   const router = useRouter();
@@ -11,7 +12,7 @@ const ProductsLayout = () => {
   const theme = useTheme();
 
   return (
-    <Stack>
+    <Stack screenOptions={{ headerRight: () => <SynchronizeIcon /> }}>
       <Stack.Screen
         name="index"
         options={{

@@ -82,11 +82,13 @@ export default function PaymentScreen() {
                 borderBottomWidth: 0.5,
               }}
             >
-              <Text style={{ flex: 1 }}>{p.name}</Text>
+              <Text style={{ flex: 1 }}>{p.payment_method}</Text>
               <Text style={{ marginRight: 8 }}>
                 {Utils.formatCurrency(p.amount)}
               </Text>
-              <TouchableOpacity onPress={() => handleDeletePayment(p.name)}>
+              <TouchableOpacity
+                onPress={() => handleDeletePayment(p.payment_method)}
+              >
                 <Ionicons name="close-outline" size={24} color="black" />
               </TouchableOpacity>
             </View>
@@ -108,14 +110,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
   },
-  paymentButton: {
-    //flex: 1,
-    borderRadius: 2,
-    //width: '100%',
-    marginBottom: 8,
-    height: 60,
-    justifyContent: 'center',
-  },
   keypadContainer: {
     //flex: 1,
     width: '70%',
@@ -132,21 +126,5 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     width: '100%',
     marginBottom: 1,
-  },
-  keypadButton: {
-    //flex: 1,
-    //marginHorizontal: 5,
-    height: 60,
-    justifyContent: 'center',
-    marginRight: 1,
-    borderRadius: 2,
-  },
-  doneButton: {
-    flex: 1,
-    //marginHorizontal: 5,
-    height: 60,
-    backgroundColor: '#d3d3d3',
-    justifyContent: 'center',
-    borderRadius: 2,
   },
 });
