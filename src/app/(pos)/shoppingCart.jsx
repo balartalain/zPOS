@@ -33,7 +33,7 @@ export default function ShoppingCartScreen() {
             style={styles.card}
             onPress={() => {
               router.push(
-                `/changeQty?productName=${item.product.name}&price=${item.product.price}`
+                `/changeQty?lineId=${item.id}&price=${item.product.price}`
               );
             }}
           >

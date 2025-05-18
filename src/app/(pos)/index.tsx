@@ -91,12 +91,7 @@ function TicketScreen() {
   useLayoutEffect(() => {
     navigation.setOptions({
       //headerTitleAlign: 'left',
-      headerRight: () => (
-        <>
-          <Basket onSetBasketCoords={setBasketCoords} />
-          <SynchronizeIcon />
-        </>
-      ),
+      headerRight: () => <Basket onSetBasketCoords={setBasketCoords} />,
     });
   }, [navigation]);
   const addProduct = React.useCallback(async (product: any) => {
@@ -111,11 +106,12 @@ function TicketScreen() {
   };
   const handleDeleteOrder = async () => {
     for (const line of ticket.lines) {
-      const product = {
-        ...line.product,
-        in_stock: line.product.in_stock + line.qty,
-      };
-      await AsyncStorageUtils.update('product', product);
+      const product = await AsyncStorageUtils.findById(
+        'product',
+        line.product.id
+      );
+      (product.in_stock += line.qty),
+        await AsyncStorageUtils.update('product', product);
     }
     forceRefresh();
     deleteOrder();

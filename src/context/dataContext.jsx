@@ -13,7 +13,7 @@ import {
   ProductService,
 } from '@/src/service';
 import AsyncStorageUtils from '../utils/AsyncStorageUtils';
-import useNetWorkStatus from '../hooks/useNetworkStatus';
+import { checkInternetConnectivity } from '../hooks/useNetworkStatus';
 
 const DataContext = createContext(null);
 const SyncContext = createContext(null);
@@ -23,32 +23,33 @@ export function DataProvider({ children }) {
   const syncTimeoutRef = useRef(null);
   const [isUpdatedMasterData, setIsUpdatedMasterData] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
-  const isConnected = useNetWorkStatus();
+  //const isConnected = useNetWorkStatus();
   useEffect(() => {
     (async () => {
-      if (isConnected) {
-        console.log('Online');
-        syncTimeoutRef.current = setTimeout(async () => await syncLoop(), 1000);
-      } else {
-        console.log('Offline');
-      }
+      syncTimeoutRef.current = setTimeout(async () => await syncLoop(), 1000);
     })();
     return () => {
       if (syncTimeoutRef.current) {
         clearTimeout(syncTimeoutRef.current);
       }
     };
-  }, [syncLoop, isConnected]);
+  }, [syncLoop]);
   const syncLoop = useCallback(async () => {
-    if (isConnected) {
-      console.log('sincronizando...');
-      await syncData();
+    try {
+      const isConnected = await checkInternetConnectivity();
+      if (isConnected) {
+        console.log('Online');
+        await syncData();
+      } else {
+        console.log('Offline');
+      }
+    } finally {
       syncTimeoutRef.current = setTimeout(
         async () => await syncLoop(),
         SYNCING_TIMEOUT
       );
     }
-  }, [isConnected, syncData]);
+  }, [syncData]);
 
   const syncData = useCallback(async () => {
     try {
@@ -58,6 +59,7 @@ export function DataProvider({ children }) {
       );
       if (pending.length > 0) {
         setIsSyncing(true);
+        console.log('is syncing true');
         for (const record of pending) {
           const { id, model, operation } = record;
           const data = JSON.parse(record.data);
@@ -74,6 +76,7 @@ export function DataProvider({ children }) {
     } catch (error) {
       console.log(error);
     } finally {
+      console.log('is syncing false');
       setIsSyncing(false);
     }
   }, [db]);

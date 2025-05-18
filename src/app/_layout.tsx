@@ -24,6 +24,8 @@ import { removeStoredStore } from '@/src/utils/checkAsyncStorage';
 import ProductAnim from '@/src/components/productAnim';
 import { DataProvider } from '@/src/context/dataContext';
 import toastConfig from '../toastConfig';
+import LineAnimated from '@/src/components/lineAnimated';
+
 const customDarkTheme = {
   ...MD3DarkTheme,
   roundness: 2,
@@ -56,6 +58,7 @@ const RootLayout = () => {
     <SQLiteProvider databaseName="zpos.db" onInit={migrateDbIfNeeded}>
       <PaperProvider theme={paperTheme}>
         <DataProvider>
+          <LineAnimated />
           {!isAuthenticated ? (
             <Login />
           ) : (

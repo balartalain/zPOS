@@ -1,38 +1,23 @@
 import ServiceRegistry from './serviceRegistry';
-//import BackendFactory from './backendFactory';
 import { supabase } from './supabase-config';
-// export const registerPendingOperation = async (db, model, operation, data) => {
-//   console.log(data);
-//   const jsonData = JSON.stringify(data);
-//   await db.runAsync(
-//     `INSERT INTO pending_operation (model, operation, data) VALUES (?, ?, ?)`,
-//     [model, operation, jsonData]
-//   );
-// };
-
+import { fetchWithTimeout } from './ticketService';
 class CategoryService {
   static async save(data) {
     try {
-      //const { data, error } = await supabase.from('product').insert([_data]);
-      const { error } = await supabase.from('category').upsert(data);
+      const { error } = await fetchWithTimeout(async (signal) => {
+        return await supabase.from('category').upsert(data).abortSignal(signal);
+      });
       if (error) throw error;
     } catch (error) {
       console.log('Error in CategoryService->save ', error);
       throw error;
     }
   }
-  // static async update(data) {
-  //   try {
-  //     const { error } = await supabase.from('category').upsert(data);
-  //     if (error) throw error;
-  //   } catch (error) {
-  //     console.log('Error in CategoryService->update ', error);
-  //     throw error;
-  //   }
-  // }
   static async fetchAll() {
     try {
-      const { data, error } = await supabase.from('category').select();
+      const { data, error } = await fetchWithTimeout(async (signal) => {
+        return await supabase.from('category').select().abortSignal(signal);
+      });
       if (error) throw error;
       return data;
     } catch (error) {
@@ -42,8 +27,14 @@ class CategoryService {
   }
   static async delete(id) {
     try {
-      const response = await supabase.from('category').delete().eq('id', id);
-      console.log(response);
+      const { error } = await fetchWithTimeout(async (signal) => {
+        return await supabase
+          .from('category')
+          .delete()
+          .eq('id', id)
+          .abortSignal(signal);
+      });
+      if (error) throw error;
     } catch (error) {
       console.log('Error in CategoryService->delete ', error);
       throw error;

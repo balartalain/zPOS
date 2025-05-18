@@ -10,14 +10,14 @@ export default function PendingScreen() {
   const [pending, setPending] = useState([]);
   const isSyncing = useSync();
   React.useEffect(() => {
-    if (isFocused) {
+    if (isFocused && isSyncing) {
       getPending();
     }
   }, [getPending, isSyncing, isFocused]);
 
   const getPending = React.useCallback(async () => {
     const _pending = await db.getAllAsync(
-      'SELECT * FROM pending_operation ORDER BY created DESC'
+      'SELECT * FROM pending_operation ORDER BY created ASC'
     );
     setPending(_pending);
   }, [db]);

@@ -42,7 +42,7 @@ export default function useNetWorkStatus() {
       //console.log('checking conection... ', connected);
       setIsConnected(connected);
     } catch (error) {
-      console.log('checking conection... ', false);
+      //console.log('checking conection... ', false);
       setIsConnected(false);
     }
   }, []);

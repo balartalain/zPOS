@@ -15,7 +15,23 @@ const useTicketStore = create(
       sales: [], // Ventas almacenadas de los últimos 30 días
       isClosedStore: true,
       openShift: (initialCash) => {},
-      // Agregar un producto al ticket
+      setQty: (lineId, qty) => {
+        set((state) => {
+          const updatedLines = state.ticket.lines.map((line) =>
+            line.id === lineId ? { ...line, qty } : line
+          );
+          return {
+            ticket: {
+              ...state.ticket,
+              lines: updatedLines,
+              total_amount: updatedLines.reduce(
+                (acc, line) => acc + line.qty * line.product.price,
+                0
+              ),
+            },
+          };
+        });
+      },
       addProductToTicket: (product) =>
         set((state) => {
           const existingProductIndex = state.ticket.lines.findIndex(
