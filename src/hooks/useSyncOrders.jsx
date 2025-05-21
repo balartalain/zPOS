@@ -8,7 +8,7 @@ export function useSyncOrders() {
 
   const syncOrders = async () => {
     if (syncInProgress.current) {
-      console.log('🚀 Sincronización ya en progreso, evitando duplicados...');
+      //console.log('🚀 Sincronización ya en progreso, evitando duplicados...');
       return;
     }
 
@@ -20,7 +20,7 @@ export function useSyncOrders() {
       const orders = storedOrders ? JSON.parse(storedOrders) : [];
 
       if (orders.length > 0) {
-        console.log('🔄 Sincronizando pedidos...', orders);
+        //console.log('🔄 Sincronizando pedidos...', orders);
 
         // Simulación de envío al servidor
         await fetch('https://api.example.com/orders', {
@@ -28,7 +28,7 @@ export function useSyncOrders() {
           body: JSON.stringify(orders),
         });
 
-        console.log('✅ Sincronización completa, limpiando almacenamiento...');
+        //console.log('✅ Sincronización completa, limpiando almacenamiento...');
         await AsyncStorage.removeItem('pendingOrders'); // Limpiar órdenes sincronizadas
       }
     } catch (error) {

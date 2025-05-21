@@ -53,7 +53,7 @@ const RootLayout = () => {
     //logout();
   }, []);
 
-  console.log('App=>');
+  //console.log('App=>');
   return (
     <SQLiteProvider databaseName="zpos.db" onInit={migrateDbIfNeeded}>
       <PaperProvider theme={paperTheme}>
@@ -120,7 +120,7 @@ const RootLayout = () => {
           created DATETIME DEFAULT CURRENT_TIMESTAMP
         );
       `);
-      console.log('Initial migration applied, DB version:', DATABASE_VERSION);
+      //console.log('Initial migration applied, DB version:', DATABASE_VERSION);
       // await db.runAsync(
       //   'INSERT INTO todos (value, intValue) VALUES (?, ?)',
       //   'hello',

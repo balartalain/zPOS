@@ -28,7 +28,7 @@ export default ImageListScreen = () => {
         setImageUris([]);
       }
     };
-    console.log('Loading Images...');
+    //console.log('Loading Images...');
     loadImages();
   }, []);
 

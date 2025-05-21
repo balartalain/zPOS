@@ -10,10 +10,10 @@ export default function PendingScreen() {
   const [pending, setPending] = useState([]);
   const isSyncing = useSync();
   React.useEffect(() => {
-    if (isFocused && isSyncing) {
+    if (isFocused) {
       getPending();
     }
-  }, [getPending, isSyncing, isFocused]);
+  }, [getPending, isFocused, isSyncing]);
 
   const getPending = React.useCallback(async () => {
     const _pending = await db.getAllAsync(

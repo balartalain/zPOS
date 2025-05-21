@@ -19,7 +19,10 @@ export default function ShoppingCartScreen() {
   const router = useRouter();
   const theme = useTheme();
   const { ticket, deleteOrder, getTotalAmt } = useTicketStore();
-
+  const handleDeleteOrder = () => {
+    deleteOrder();
+    router.back();
+  };
   return (
     <View style={{ flex: 1, padding: 10 }}>
       <Surface style={styles.surface} elevation={2}>
@@ -55,11 +58,7 @@ export default function ShoppingCartScreen() {
           justifyContent: 'space-around',
         }}
       >
-        <Button
-          mode="contained"
-          style={styles.btn}
-          onPress={() => deleteOrder()}
-        >
+        <Button mode="contained" style={styles.btn} onPress={handleDeleteOrder}>
           Limpiar Cesta
         </Button>
         <Button

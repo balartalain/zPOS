@@ -36,7 +36,7 @@ export default function ProductAnim() {
       rotationAnim.setValue(0);
       scaleAnim.setValue(1);
     }
-  }, [animate, aAnim, from, hideAnim, rotationAnim, scaleAnim]);
+  }, [animate, aAnim, from, to.x, hideAnim, rotationAnim, scaleAnim]);
   const animatedStyle = {
     transform: [
       {

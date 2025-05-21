@@ -25,8 +25,8 @@ function Basket({ onSetBasketCoords }) {
       if (basketRef.current) {
         basketRef.current.measureInWindow((x, y, width, height) => {
           onSetBasketCoords({ x: x - 20 + width / 2, y, width, height });
-          console.log(x, y, width, height);
-          //console.log(insets);
+          //console.log(x, y, width, height);
+          ////console.log(insets);
         });
       }
     }, 500);
@@ -76,7 +76,6 @@ function TicketScreen() {
   const router = useRouter();
   const navigation = useNavigation();
   const theme = useTheme();
-  const { forceRefresh } = useData();
   const [basketCoords, setBasketCoords] = useState({
     x: 0,
     y: 0,
@@ -86,7 +85,7 @@ function TicketScreen() {
   const { ticket, deleteOrder, addProductToTicket, getTotalAmt } =
     useTicketStore();
   const isStoreClosed = false;
-  console.log('pos screen');
+  //console.log('pos screen');
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -95,25 +94,14 @@ function TicketScreen() {
     });
   }, [navigation]);
   const addProduct = React.useCallback(async (product: any) => {
-    product.in_stock = product.in_stock - 1;
     await addProductToTicket(product);
-    await AsyncStorageUtils.update('product', product);
-    //console.log(ticket.lines);
+    ////console.log(ticket.lines);
   }, []);
 
   const payTicket = () => {
     router.push('/addPayments');
   };
   const handleDeleteOrder = async () => {
-    for (const line of ticket.lines) {
-      const product = await AsyncStorageUtils.findById(
-        'product',
-        line.product.id
-      );
-      (product.in_stock += line.qty),
-        await AsyncStorageUtils.update('product', product);
-    }
-    forceRefresh();
     deleteOrder();
   };
   return (

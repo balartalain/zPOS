@@ -26,7 +26,6 @@ function ChangeQtyScreen() {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const { lineId } = useLocalSearchParams();
-  const { forceRefresh } = useData();
   const { ticket, setQty } = useTicketStore();
   const [product, setProduct] = useState();
   const line = ticket.lines.find((l) => l.id === lineId);
@@ -38,7 +37,7 @@ function ChangeQtyScreen() {
         setProduct(_product);
       }
     })();
-  }, [isFocused, line.product.id]);
+  }, [isFocused, line.product.id, line.qty]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -66,12 +65,8 @@ function ChangeQtyScreen() {
     }
   };
   const handlePressDone = async () => {
-    console.log(line, qty);
-    setQty(line.id, qty);
-    product.in_stock -= qty - 1;
-    await AsyncStorageUtils.update('product', product);
-    forceRefresh();
     router.back();
+    setQty(line.id, qty);
   };
   return (
     <SharedView style={styles.container}>

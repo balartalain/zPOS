@@ -5,7 +5,9 @@ import { Card, TextInput, Text } from 'react-native-paper';
 import AsyncStorageUtils from '../utils/AsyncStorageUtils';
 import useProductAnimStore from '../store/useProductAnimStore';
 import { useData } from '../context/dataContext';
+import { eventBus } from '../event/eventBus';
 import { Utils } from '@/src/utils';
+import useWhyDidYouUpdate from '@/src/hooks/useWhyDidYouUpdate';
 const NoImageIcon = require('@/assets/images/no-image.png');
 
 function ProductList({ onPress, basketCoords }) {
@@ -14,15 +16,29 @@ function ProductList({ onPress, basketCoords }) {
   const productRefs = useRef({});
   const productMeasure = useRef({});
   const { runAnimation } = useProductAnimStore();
-  const { isUpdatedMasterData } = useData();
-  console.log('product list');
+  const { loadProducts } = useData();
+  //console.log('product list');
+  useWhyDidYouUpdate(
+    'ProductList',
+    { onPress, basketCoords },
+    {
+      busqueda,
+      productosFiltrados,
+      runAnimation,
+      loadProducts,
+    }
+  );
   useEffect(() => {
     (async () => {
-      //console.log('[Product List]=> fetch');
-      const products = await AsyncStorageUtils.findAll('product');
-      setProductosFiltrados(products);
+      //console.log('Product List=>loadProducts');
+      setProductosFiltrados(await loadProducts());
     })();
-  }, [isUpdatedMasterData]);
+    eventBus.on('CHANGED_PRODUCT', async () => {
+      //console.log('Product List=>CHANGED_PRODUCT event');
+      setProductosFiltrados(await loadProducts());
+    });
+  }, [loadProducts]);
+
   useEffect(() => {
     calculateProductMeasure();
   }, [productosFiltrados, calculateProductMeasure]);
@@ -50,7 +66,7 @@ function ProductList({ onPress, basketCoords }) {
   }, []);
   // Función para manejar la búsqueda y filtrar los productos
   const filtrarProductos = async (texto) => {
-    console.log('filtrar products');
+    //console.log('filtrar products');
     const products = await AsyncStorageUtils.findAll('product');
     setBusqueda(texto);
     if (texto === '') {

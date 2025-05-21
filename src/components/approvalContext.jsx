@@ -18,7 +18,7 @@ export const ApprovalProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    console.log('isGrantedApproval: ' + isGrantedApproval);
+    //console.log('isGrantedApproval: ' + isGrantedApproval);
     if (isGrantedApproval) {
       window.setTimeout(() => {
         setIsGrantedApproval(false);

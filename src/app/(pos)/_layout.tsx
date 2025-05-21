@@ -41,7 +41,7 @@ const StacksLayout = () => {
   const theme = useTheme();
   const { sales, completeTicket, markSaleAsSynced } = useTicketStore();
   //const isConnected = useNetworkStatus();
-  //console.log('POS is online: ', isConnected);
+  ////console.log('POS is online: ', isConnected);
   return (
     <ApprovalProvider>
       <Stack

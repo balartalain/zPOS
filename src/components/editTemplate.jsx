@@ -28,7 +28,7 @@ const copyImageToLocalDir = async (fromUri, toUri, oldUri) => {
       to: toUri,
     });
   } catch (e) {
-    console.log(e);
+    //console.log(e);
   }
 };
 function Edit({ fields, table, id = null, handleSave = null }) {
@@ -122,7 +122,7 @@ function Edit({ fields, table, id = null, handleSave = null }) {
         //await AsyncStorageUtils.add(table, record);
         //await serviceClass.add(record, db);
       }
-      router.push(`/${table}`);
+      router.back();
       Toast.show({
         type: 'success',
         text1: 'Operación exitosa',
@@ -137,7 +137,7 @@ function Edit({ fields, table, id = null, handleSave = null }) {
         text2: 'Ocurrió un error guardando los cambios',
         position: 'bottom',
       });
-      console.log(err);
+      //console.log(err);
     }
   };
 

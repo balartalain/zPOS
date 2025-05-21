@@ -2,32 +2,46 @@ import { FlatList, StyleSheet, Dimensions } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { Button, Text, TextInput, Card } from 'react-native-paper';
-import AsyncStorageUtils from '../../utils/AsyncStorageUtils';
 import SharedView from '@/src/components/shared/sharedView';
 import { useData } from '@/src/context/dataContext';
+import { eventBus, eventName } from '@/src/event/eventBus';
+import useWhyDidYouUpdate from '@/src/hooks/useWhyDidYouUpdate';
 const { width } = Dimensions.get('window');
 
 function CategoryListScreen() {
   const router = useRouter();
-  const { isUpdatedMasterData } = useData();
+  const { loadCategories } = useData();
   const [busqueda, setBusqueda] = useState('');
   const [categoriesFilters, setCategoriesFilters] = useState([]);
-
+  useWhyDidYouUpdate(
+    'CategoryListScreen',
+    {},
+    {
+      loadCategories,
+      busqueda,
+      categoriesFilters,
+    }
+  );
   useEffect(() => {
-    (async () => {
-      const categories = await AsyncStorageUtils.findAll('category');
+    //console.log('Category List mount');
+    loadCategories().then((categories) => {
       setCategoriesFilters(categories);
-    })();
-  }, [isUpdatedMasterData]);
+    });
+    eventBus.on(eventName.CHANGED_CATEGORY, async () => {
+      //console.log('Category Screen=>CHANGED_CATEGORY event');
+      setCategoriesFilters(await loadCategories());
+    });
+  }, [loadCategories]);
+
   const filtrarCategories = async (texto) => {
-    const categories = await AsyncStorageUtils.findAll('category');
+    const categories = await loadCategories();
     setBusqueda(texto);
     if (texto === '') {
       setCategoriesFilters(categories); // Mostrar todos si el buscador está vacío
     } else {
       setCategoriesFilters(
         categories.filter((category) =>
-          categories.name.toLowerCase().includes(texto.toLowerCase())
+          category.name.toLowerCase().includes(texto.toLowerCase())
         )
       );
     }

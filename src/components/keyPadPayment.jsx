@@ -12,7 +12,6 @@ import { useTheme } from 'react-native-paper';
 import { useData } from '@/src/context/dataContext';
 import useTicketStore from '@/src/store/useTicketStore';
 import { Utils } from '@/src/utils';
-import { create } from 'zustand';
 import { router } from 'expo-router';
 
 const { width } = Dimensions.get('window');
@@ -33,13 +32,20 @@ const KeyPadButton = ({
         {
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: theme.colors.primaryContainer,
+          backgroundColor: theme.colors.primary,
           ...style,
         },
       ]}
       onPress={onPress}
     >
-      <Text style={{ fontSize: width * 0.05, fontWeight: 450, ...textStyle }}>
+      <Text
+        style={{
+          fontSize: width * 0.05,
+          fontWeight: 450,
+          ...textStyle,
+          color: theme.colors.onPrimary,
+        }}
+      >
         {text}
       </Text>
     </TouchableOpacity>
@@ -48,18 +54,17 @@ const KeyPadButton = ({
 const KeypadPayment = () => {
   const theme = useTheme();
   const targetRef = React.useRef(null);
-  const { syncOrder } = useData();
   const { ticket, addPayment, completeTicket, getTotalPaid } = useTicketStore();
   const [containerWidth, setContainerWidth] = React.useState(50);
   const [selectedTextAmount, setSelectedTextAmount] = React.useState(true);
   const [amount, setAmount] = React.useState();
   //React.useLayoutEffect(() => {
   //targetRef.current?.measure((x, y, width, height, pageX, pageY) => {
-  //  console.log('width', width);
+  //  //console.log('width', width);
   // });
   //}, [ /* add dependencies here */]);
   const onLayoutHandler = (event) => {
-    console.log('layout', event.nativeEvent.layout.width);
+    //console.log('layout', event.nativeEvent.layout.width);
     setContainerWidth(event.nativeEvent.layout.width - MARGIN);
   };
   const pending = ticket.total_amount - getTotalPaid();
@@ -87,15 +92,15 @@ const KeypadPayment = () => {
     }
     setSelectedTextAmount(false);
   };
-  const handlePressDone = async () => {
+  const handlePressDone = () => {
     try {
-      const created_at = new Date();
-      const cloneTicket = { ...ticket, created_at };
-      await completeTicket(created_at);
-      syncOrder(cloneTicket);
+      //const created_at = new Date();
+      //const cloneTicket = { ...ticket, created_at };
+      completeTicket();
+      //syncOrder(cloneTicket);
       router.back();
     } catch (err) {
-      console.log(err);
+      //console.log(err);
     }
   };
   const handlePressAddPayment = (paymentMethod) => {
@@ -117,7 +122,7 @@ const KeypadPayment = () => {
           text={'Efectivo'}
           textStyle={{ fontSize: width * 0.048, fontWeight: 450 }}
           onPress={() => handlePressAddPayment('Efectivo')}
-          disabled={pending === 0}
+          disabled={pending === 0 || amount === ''}
         />
         <KeyPadButton
           style={{
@@ -128,7 +133,7 @@ const KeypadPayment = () => {
           text={'Transfer'}
           textStyle={{ fontSize: width * 0.048, fontWeight: 450 }}
           onPress={() => handlePressAddPayment('Transfer')}
-          disabled={pending === 0}
+          disabled={pending === 0 || amount === ''}
         />
       </View>
       <View
@@ -166,13 +171,17 @@ const KeypadPayment = () => {
               marginLeft: marginBottom,
               justifyContent: 'center',
               alignItems: 'center',
-              backgroundColor: theme.colors.primaryContainer,
+              backgroundColor: theme.colors.primary,
               opacity: pending > 0 ? 1 : 0.4,
             }}
             onPress={handlePressBack}
             disabled={pending === 0}
           >
-            <Ionicons name="backspace-outline" size={32} color="black" />
+            <Ionicons
+              name="backspace-outline"
+              size={32}
+              color={theme.colors.onPrimary}
+            />
           </TouchableOpacity>
         </View>
         <View

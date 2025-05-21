@@ -9,19 +9,19 @@ const StackPos = () => {
   return (
     <View>
       <Text variant="titleLarge">Esta es la terminal de punto de venta</Text>
-      <Button  mode="text" onPress={() => console.log('Pressed')} style={{ margin:10, backgroundColor: theme.colors.onPrimary }}>
+      <Button  mode="text" onPress={() => //console.log('Pressed')} style={{ margin:10, backgroundColor: theme.colors.onPrimary }}>
         text
       </Button>
-      <Button  mode="contained" onPress={() => console.log('Pressed')} style={{ margin:10 }}>
+      <Button  mode="contained" onPress={() => //console.log('Pressed')} style={{ margin:10 }}>
         contained
       </Button>
-      <Button  mode="elevated" onPress={() => console.log('Pressed')} style={{ margin:10 }}>
+      <Button  mode="elevated" onPress={() => //console.log('Pressed')} style={{ margin:10 }}>
         elevated
       </Button>
-      <Button  mode="outlined" onPress={() => console.log('Pressed')} style={{ margin:10 }}>
+      <Button  mode="outlined" onPress={() => //console.log('Pressed')} style={{ margin:10 }}>
         outlined
       </Button>
-      <Button  mode="contained-tonal" onPress={() => console.log('Pressed')} style={{ margin:10 }}>
+      <Button  mode="contained-tonal" onPress={() => //console.log('Pressed')} style={{ margin:10 }}>
         contained-tonal
       </Button>
       <Text

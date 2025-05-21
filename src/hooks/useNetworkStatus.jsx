@@ -39,10 +39,10 @@ export default function useNetWorkStatus() {
   const checkConnection = useCallback(async () => {
     try {
       const connected = await checkInternetConnectivity();
-      //console.log('checking conection... ', connected);
+      ////console.log('checking conection... ', connected);
       setIsConnected(connected);
     } catch (error) {
-      //console.log('checking conection... ', false);
+      ////console.log('checking conection... ', false);
       setIsConnected(false);
     }
   }, []);

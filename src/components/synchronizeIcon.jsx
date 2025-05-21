@@ -12,7 +12,7 @@ export default function SynchronizeIcon() {
   const rotateAnim = React.useRef(new Animated.Value(0)).current;
 
   React.useEffect(() => {
-    console.log('anim');
+    //console.log('anim');
     if (isSyncing) {
       Animated.loop(
         Animated.timing(rotateAnim, {

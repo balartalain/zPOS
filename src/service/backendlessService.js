@@ -62,7 +62,7 @@ class BackendlessService extends BackendServiceBase {
     await this.addCategory(data);
   }
   async addOrder(data) {
-    //console.log(JSON.stringify(data, null, 2));
+    ////console.log(JSON.stringify(data, null, 2));
     await apiAxios.put('/data/order/deep-save', data);
   }
   async uploadImage(imageURL, imageName) {

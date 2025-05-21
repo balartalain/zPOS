@@ -16,7 +16,7 @@ export default function OpenStore() {
 
   const handleChangeText = (text) => {
     setInputValue(text);
-    console.log('Current value:', text);
+    //console.log('Current value:', text);
     // Perform validation or formatting here
   };
   return (

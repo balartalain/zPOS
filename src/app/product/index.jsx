@@ -11,28 +11,33 @@ import {
   TextInput,
   Card,
 } from 'react-native-paper';
-import AsyncStorageUtils from '../../utils/AsyncStorageUtils';
 import { useData } from '@/src/context/dataContext';
 import SharedView from '@/src/components/shared/sharedView';
 import { Utils } from '@/src/utils';
+import { eventBus, eventName } from '@/src/event/eventBus';
+
 const { width } = Dimensions.get('window');
 const NoImageIcon = require('@/assets/images/no-image.png');
 
 function ProductListScreen() {
   const router = useRouter();
   const theme = useTheme();
-  const { isUpdatedMasterData } = useData();
+  const { loadProducts } = useData();
   const [busqueda, setBusqueda] = useState('');
   const [productosFiltrados, setProductosFiltrados] = useState([]);
 
   useEffect(() => {
     (async () => {
-      const products = await AsyncStorageUtils.findAll('product');
-      setProductosFiltrados(products);
+      setProductosFiltrados(await loadProducts());
     })();
-  }, [isUpdatedMasterData]);
+    eventBus.on(eventName.CHANGED_PRODUCT, async () => {
+      setProductosFiltrados(await loadProducts());
+    });
+    return () => {};
+  }, [loadProducts]);
+
   const filtrarProductos = async (texto) => {
-    const products = await AsyncStorageUtils.findAll('product');
+    const products = await loadProducts();
     setBusqueda(texto);
     if (texto === '') {
       setProductosFiltrados(products); // Mostrar todos si el buscador está vacío

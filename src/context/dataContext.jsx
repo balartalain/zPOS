@@ -14,19 +14,32 @@ import {
 } from '@/src/service';
 import AsyncStorageUtils from '../utils/AsyncStorageUtils';
 import { checkInternetConnectivity } from '../hooks/useNetworkStatus';
+import { eventBus, eventName } from '@/src/event/eventBus';
+import useWhyDidYouUpdate from '@/src/hooks/useWhyDidYouUpdate';
 
 const DataContext = createContext(null);
 const SyncContext = createContext(null);
 const SYNCING_TIMEOUT = 10000;
+
 export function DataProvider({ children }) {
   const db = useSQLiteContext();
   const syncTimeoutRef = useRef(null);
-  const [isUpdatedMasterData, setIsUpdatedMasterData] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
-  //const isConnected = useNetWorkStatus();
+  useWhyDidYouUpdate(
+    'Data Context',
+    { children },
+    { db, syncTimeoutRef, isSyncing }
+  );
+  useEffect(() => {
+    eventBus.on(eventName.SYNC_ORDER, async (order) => {
+      console.log('sync order event=>', order);
+      syncOrder(order);
+    });
+  }, [syncOrder]);
+
   useEffect(() => {
     (async () => {
-      syncTimeoutRef.current = setTimeout(async () => await syncLoop(), 1000);
+      //syncTimeoutRef.current = setTimeout(async () => await syncLoop(), 1000);
     })();
     return () => {
       if (syncTimeoutRef.current) {
@@ -34,14 +47,22 @@ export function DataProvider({ children }) {
       }
     };
   }, [syncLoop]);
+  const loadCategories = React.useCallback(async () => {
+    const categories = await AsyncStorageUtils.findAll('category');
+    return categories;
+  }, []);
+  const loadProducts = React.useCallback(async () => {
+    const products = await AsyncStorageUtils.findAll('product');
+    return products;
+  }, []);
   const syncLoop = useCallback(async () => {
     try {
       const isConnected = await checkInternetConnectivity();
       if (isConnected) {
-        console.log('Online');
+        //console.log('Online');
         await syncData();
       } else {
-        console.log('Offline');
+        //console.log('Offline');
       }
     } finally {
       syncTimeoutRef.current = setTimeout(
@@ -59,7 +80,7 @@ export function DataProvider({ children }) {
       );
       if (pending.length > 0) {
         setIsSyncing(true);
-        console.log('is syncing true');
+        //console.log('is syncing true');
         for (const record of pending) {
           const { id, model, operation } = record;
           const data = JSON.parse(record.data);
@@ -74,9 +95,9 @@ export function DataProvider({ children }) {
         }
       }
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     } finally {
-      console.log('is syncing false');
+      //console.log('is syncing false');
       setIsSyncing(false);
     }
   }, [db]);
@@ -85,7 +106,6 @@ export function DataProvider({ children }) {
     const _products = await ProductService.fetchAll();
     await AsyncStorageUtils.set('category', _categories);
     await AsyncStorageUtils.set('product', _products);
-    setIsUpdatedMasterData((prev) => !prev);
   }, []);
   const registerPendingOperation = useCallback(
     async (model, operation, data) => {
@@ -107,7 +127,6 @@ export function DataProvider({ children }) {
           saveImage(table, data.image, imageName);
           data.image = imageName;
         }
-        setIsUpdatedMasterData((prev) => !prev);
         registerPendingOperation(table, 'save', data);
       } catch (error) {
         console.log(`Error on create ${table}`, error);
@@ -141,7 +160,6 @@ export function DataProvider({ children }) {
           saveImage(table, data.image, imageName);
           data.image = imageName;
         }
-        setIsUpdatedMasterData((prev) => !prev);
         registerPendingOperation(table, 'save', data);
       } catch (error) {
         console.log(`Error on create ${table}`, error);
@@ -161,27 +179,16 @@ export function DataProvider({ children }) {
     },
     [registerPendingOperation]
   );
-  const forceRefresh = useCallback(() => {
-    console.log('force refresh');
-    setIsUpdatedMasterData((prev) => !prev);
-  }, []);
   const value = React.useMemo(
     () => ({
+      loadProducts,
+      loadCategories,
       create,
-      syncOrder,
       update,
+      syncOrder,
       refreshMasterData,
-      isUpdatedMasterData,
-      forceRefresh,
     }),
-    [
-      create,
-      syncOrder,
-      update,
-      refreshMasterData,
-      isUpdatedMasterData,
-      forceRefresh,
-    ]
+    [create, syncOrder, update, refreshMasterData, loadProducts, loadCategories]
   );
   return (
     <DataContext.Provider value={value}>

@@ -9,7 +9,7 @@ class CategoryService {
       });
       if (error) throw error;
     } catch (error) {
-      console.log('Error in CategoryService->save ', error);
+      //console.log('Error in CategoryService->save ', error);
       throw error;
     }
   }
@@ -21,7 +21,7 @@ class CategoryService {
       if (error) throw error;
       return data;
     } catch (error) {
-      console.log('Error in CategoryService->fetchAll ', error);
+      //console.log('Error in CategoryService->fetchAll ', error);
       throw error;
     }
   }
@@ -36,7 +36,7 @@ class CategoryService {
       });
       if (error) throw error;
     } catch (error) {
-      console.log('Error in CategoryService->delete ', error);
+      //console.log('Error in CategoryService->delete ', error);
       throw error;
     }
   }

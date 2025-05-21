@@ -24,7 +24,7 @@ class ProductService {
       });
       if (error) throw error;
     } catch (error) {
-      console.log('Error in ProductService->save ', error);
+      //console.log('Error in ProductService->save ', error);
       throw error;
     }
   }
@@ -34,7 +34,7 @@ class ProductService {
         return await uploadImage(imageUri, imageName).abortSignal(signal);
       });
     } catch (error) {
-      console.log('saveImage Error=>', error);
+      //console.log('saveImage Error=>', error);
       throw error;
     }
   }
@@ -49,7 +49,7 @@ class ProductService {
         image: product.image ? `${storageUrl}/${product.image}` : null,
       }));
     } catch (error) {
-      console.log('Error in ProductService->fetchAll ', error);
+      //console.log('Error in ProductService->fetchAll ', error);
       throw error;
     }
   }
@@ -64,7 +64,7 @@ class ProductService {
       });
       if (error) throw error;
     } catch (error) {
-      console.log('Error in ProductService->delete ', error);
+      //console.log('Error in ProductService->delete ', error);
       throw error;
     }
   }
