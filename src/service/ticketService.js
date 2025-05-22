@@ -1,7 +1,7 @@
 import ServiceRegistry from './serviceRegistry';
 import { supabase } from './supabase-config';
 
-export const fetchWithTimeout = async (operation, timeout = 10000) => {
+export const fetchWithTimeout = async (operation, timeout = 5000) => {
   const controller = new AbortController();
   const signal = controller.signal;
 

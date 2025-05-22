@@ -161,7 +161,9 @@ function Edit({ fields, table, id = null, handleSave = null }) {
                     setRecord({
                       ...record,
                       [column]:
-                        type === 'numeric' && !Utils.isFloat(text)
+                        type === 'numeric' &&
+                        text !== '' &&
+                        !Utils.isFloat(text)
                           ? record[column]
                           : text,
                     });

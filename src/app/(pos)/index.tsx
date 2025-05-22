@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     //width: '100%',
     alignItems: 'flex-start',
     justifyContent: 'center',
-    //backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFFFFF',
   },
   payBtn: {
     width: '49%',

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import NetInfo from '@react-native-community/netinfo';
 
-const CONNECTIVITY_CHECK_TIMEOUT = 3000;
+const CONNECTIVITY_CHECK_TIMEOUT = 5000;
 
 export const checkInternetConnectivity = async () => {
   try {
