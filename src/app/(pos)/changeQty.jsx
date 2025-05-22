@@ -48,20 +48,20 @@ function ChangeQtyScreen() {
   const increment = async () => {
     setProduct((product) => ({
       ...product,
-      in_stock: product.in_stock - 1,
+      in_stock: parseFloat(product.in_stock) - 1,
     }));
     _setQty((value) => Number(value) + 1);
   };
   const decrement = () => {
     setProduct((product) => ({
       ...product,
-      in_stock: product.in_stock + 1,
+      in_stock: parseFloat(product.in_stock) + 1,
     }));
     _setQty((value) => Number(value) - 1);
   };
   const handleSetQty = (_value) => {
     const value = _value === '' ? 0 : Number(_value);
-    if (product.in_stock + qty - value < 0) {
+    if (parseFloat(product.in_stock) + qty - value < 0) {
       Toast.show({
         type: 'error',
         text1: 'Error',
@@ -71,7 +71,7 @@ function ChangeQtyScreen() {
     } else {
       setProduct((product) => ({
         ...product,
-        in_stock: product.in_stock + qty - value,
+        in_stock: parseFloat(product.in_stock) + qty - value,
       }));
       _setQty(value);
     }

@@ -30,7 +30,7 @@ const useTicketStore = create(
                     qty,
                     product: {
                       ...line.product,
-                      in_stock: line.product.in_stock - diff,
+                      in_stock: parseFloat(line.product.in_stock) - diff,
                     },
                   }
                 : line
@@ -42,7 +42,7 @@ const useTicketStore = create(
               ...state.ticket,
               lines: updatedLines,
               total_amount: updatedLines.reduce(
-                (acc, line) => acc + line.qty * line.product.price,
+                (acc, line) => acc + line.qty * parseFloat(line.product.price),
                 0
               ),
             },
@@ -50,7 +50,7 @@ const useTicketStore = create(
           const { product } = line;
           eventBus.emit(eventName.UPDATE_PRODUCT, {
             ...product,
-            in_stock: product.in_stock - diff,
+            in_stock: parseFloat(product.in_stock) - diff,
           });
           return newTicket;
         });
@@ -68,7 +68,10 @@ const useTicketStore = create(
               index === existingProductIndex
                 ? {
                     ...line,
-                    product: { ...product, in_stock: product.in_stock - 1 },
+                    product: {
+                      ...product,
+                      in_stock: parseFloat(product.in_stock) - 1,
+                    },
                     qty: (line.qty || 1) + 1,
                   }
                 : line
@@ -81,20 +84,24 @@ const useTicketStore = create(
               {
                 id: Utils.uniqueID(),
                 order_id: get().ticket.id,
-                product: { ...product, in_stock: product.in_stock - 1 },
+                product: {
+                  ...product,
+                  in_stock: parseFloat(product.in_stock) - 1,
+                },
                 qty: 1,
               },
             ];
           }
           eventBus.emit(eventName.UPDATE_PRODUCT, {
             ...product,
-            in_stock: product.in_stock - 1,
+            in_stock: parseFloat(product.in_stock) - 1,
           });
           return {
             ticket: {
               ...state.ticket,
               lines: updatedLines,
-              total_amount: state.ticket.total_amount + product.price,
+              total_amount:
+                state.ticket.total_amount + parseFloat(product.price),
             },
           };
         });
@@ -208,7 +215,7 @@ const useTicketStore = create(
         }));
         const products = cloneTicket.lines.map((line) => ({
           ...line.product,
-          in_stock: line.product.in_stock + line.qty,
+          in_stock: parseFloat(line.product.in_stock) + line.qty,
         }));
         eventBus.emit(eventName.UPDATE_PRODUCT, products);
       },
