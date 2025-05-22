@@ -3,7 +3,7 @@ import React, { useState, useLayoutEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Button, Text, Surface, useTheme, Badge } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import ProductList from '../../components/productList';
 import useNetworkStatus from '@/src/hooks/useNetworkStatus';
 import useTicketStore from '@/src/store/useTicketStore';
@@ -31,6 +31,12 @@ function Basket({ onSetBasketCoords }) {
       }
     }, 500);
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      //router.replace('/');
+    }, [])
+  );
   return (
     <View
       ref={basketRef}

@@ -18,10 +18,26 @@ const useTicketStore = create(
       openShift: (initialCash) => {},
       setQty: (lineId, qty) => {
         set((state) => {
-          const updatedLines = state.ticket.lines.map((line) =>
-            line.id === lineId ? { ...line, qty } : line
-          );
-          return {
+          const line = {
+            ...state.ticket.lines.find((line) => line.id === lineId),
+          };
+          const diff = qty - line.qty;
+          const updatedLines = state.ticket.lines
+            .map((line) =>
+              line.id === lineId
+                ? {
+                    ...line,
+                    qty,
+                    product: {
+                      ...line.product,
+                      in_stock: line.product.in_stock - diff,
+                    },
+                  }
+                : line
+            )
+            .filter((line) => line.qty > 0);
+
+          const newTicket = {
             ticket: {
               ...state.ticket,
               lines: updatedLines,
@@ -31,13 +47,12 @@ const useTicketStore = create(
               ),
             },
           };
-        });
-        const product = get().ticket.lines.find(
-          (line) => line.lid === lineId
-        ).product;
-        eventBus.emit(eventName.UPDATE_PRODUCT, {
-          ...product,
-          in_stock: product.in_stock - qty,
+          const { product } = line;
+          eventBus.emit(eventName.UPDATE_PRODUCT, {
+            ...product,
+            in_stock: product.in_stock - diff,
+          });
+          return newTicket;
         });
       },
       addProductToTicket: (product) => {
@@ -51,7 +66,11 @@ const useTicketStore = create(
             // Si el producto ya está, incrementa su cantidad
             updatedLines = state.ticket.lines.map((line, index) =>
               index === existingProductIndex
-                ? { ...line, qty: (line.qty || 1) + 1 }
+                ? {
+                    ...line,
+                    product: { ...product, in_stock: product.in_stock - 1 },
+                    qty: (line.qty || 1) + 1,
+                  }
                 : line
             );
           } else {
@@ -62,12 +81,15 @@ const useTicketStore = create(
               {
                 id: Utils.uniqueID(),
                 order_id: get().ticket.id,
-                product,
+                product: { ...product, in_stock: product.in_stock - 1 },
                 qty: 1,
               },
             ];
           }
-
+          eventBus.emit(eventName.UPDATE_PRODUCT, {
+            ...product,
+            in_stock: product.in_stock - 1,
+          });
           return {
             ticket: {
               ...state.ticket,
@@ -75,10 +97,6 @@ const useTicketStore = create(
               total_amount: state.ticket.total_amount + product.price,
             },
           };
-        });
-        eventBus.emit(eventName.UPDATE_PRODUCT, {
-          ...product,
-          in_stock: product.in_stock - 1,
         });
       },
       // Calcular el monto total del ticket

@@ -12,7 +12,7 @@ import { useTheme } from 'react-native-paper';
 import { useData } from '@/src/context/dataContext';
 import useTicketStore from '@/src/store/useTicketStore';
 import { Utils } from '@/src/utils';
-import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
 
 const { width } = Dimensions.get('window');
 const MARGIN = 2;
@@ -53,6 +53,7 @@ const KeyPadButton = ({
 };
 const KeypadPayment = () => {
   const theme = useTheme();
+  const router = useRouter();
   const targetRef = React.useRef(null);
   const { ticket, addPayment, completeTicket, getTotalPaid } = useTicketStore();
   const [containerWidth, setContainerWidth] = React.useState(50);
@@ -96,9 +97,9 @@ const KeypadPayment = () => {
     try {
       //const created_at = new Date();
       //const cloneTicket = { ...ticket, created_at };
+      router.dismissTo('/');
       completeTicket();
       //syncOrder(cloneTicket);
-      router.back();
     } catch (err) {
       //console.log(err);
     }

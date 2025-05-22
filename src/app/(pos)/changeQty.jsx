@@ -29,7 +29,7 @@ function ChangeQtyScreen() {
   const { ticket, setQty } = useTicketStore();
   const [product, setProduct] = useState();
   const line = ticket.lines.find((l) => l.id === lineId);
-  const [qty, _setQty] = useState(line.qty);
+  const [qty, _setQty] = useState(line ? line.qty : 0);
   useEffect(() => {
     (async () => {
       if (isFocused) {
@@ -37,8 +37,8 @@ function ChangeQtyScreen() {
         setProduct(_product);
       }
     })();
-  }, [isFocused, line.product.id, line.qty]);
-
+  }, [isFocused, line, line?.product.id, line?.qty]);
+  console.log(product);
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: product?.name,
@@ -46,14 +46,22 @@ function ChangeQtyScreen() {
   }, [navigation, lineId, product?.name]);
 
   const increment = async () => {
+    setProduct((product) => ({
+      ...product,
+      in_stock: product.in_stock - 1,
+    }));
     _setQty((value) => Number(value) + 1);
   };
   const decrement = () => {
+    setProduct((product) => ({
+      ...product,
+      in_stock: product.in_stock + 1,
+    }));
     _setQty((value) => Number(value) - 1);
   };
   const handleSetQty = (_value) => {
     const value = _value === '' ? 0 : Number(_value);
-    if (product.in_stock - (value - 1) < 0) {
+    if (product.in_stock + qty - value < 0) {
       Toast.show({
         type: 'error',
         text1: 'Error',
@@ -61,6 +69,10 @@ function ChangeQtyScreen() {
         position: 'bottom',
       });
     } else {
+      setProduct((product) => ({
+        ...product,
+        in_stock: product.in_stock + qty - value,
+      }));
       _setQty(value);
     }
   };
@@ -85,6 +97,7 @@ function ChangeQtyScreen() {
           <Text style={styles.labelBtn}>-</Text>
         </TouchableOpacity>
         <TextInput
+          autoFocus={true}
           style={styles.field}
           label="Cantidad"
           keyboardType="numeric"
@@ -96,11 +109,11 @@ function ChangeQtyScreen() {
             styles.btn,
             {
               backgroundColor: theme.colors.primary,
-              opacity: product?.in_stock - qty < 0 ? 0.4 : 1,
+              opacity: product?.in_stock === 0 ? 0.4 : 1,
             },
           ]}
           onPress={increment}
-          disabled={product?.in_stock - qty < 0}
+          disabled={product?.in_stock === 0}
         >
           <Text style={styles.labelBtn}>+</Text>
         </TouchableOpacity>

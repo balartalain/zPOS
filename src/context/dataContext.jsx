@@ -32,14 +32,14 @@ export function DataProvider({ children }) {
   );
   useEffect(() => {
     eventBus.on(eventName.SYNC_ORDER, async (order) => {
-      console.log('sync order event=>', order);
+      console.log('sync order event=>');
       syncOrder(order);
     });
   }, [syncOrder]);
 
   useEffect(() => {
     (async () => {
-      //syncTimeoutRef.current = setTimeout(async () => await syncLoop(), 1000);
+      syncTimeoutRef.current = setTimeout(async () => await syncLoop(), 1000);
     })();
     return () => {
       if (syncTimeoutRef.current) {
@@ -95,7 +95,7 @@ export function DataProvider({ children }) {
         }
       }
     } catch (error) {
-      //console.log(error);
+      console.log(error);
     } finally {
       //console.log('is syncing false');
       setIsSyncing(false);
