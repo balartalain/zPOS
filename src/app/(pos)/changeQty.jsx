@@ -41,9 +41,18 @@ function ChangeQtyScreen() {
   console.log(product);
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: product?.name,
+      headerTitle: () => (
+        <View>
+          <Text>{product?.name}</Text>
+          <Text
+            style={[
+              product?.in_stock === 0 ? styles.outOfStock : styles.inStock,
+            ]}
+          >{`stock: ${product?.in_stock}`}</Text>
+        </View>
+      ),
     });
-  }, [navigation, lineId, product?.name]);
+  }, [navigation, lineId, product?.name, product?.in_stock]);
 
   const increment = async () => {
     setProduct((product) => ({
@@ -151,5 +160,13 @@ const styles = StyleSheet.create({
     height: width * 0.15,
     justifyContent: 'center',
     //borderRadius: 2,
+  },
+  outOfStock: {
+    color: 'red',
+    textDecorationLine: 'line-through',
+  },
+  inStock: {
+    color: 'green',
+    textDecorationLine: 'none',
   },
 });

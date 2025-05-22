@@ -59,10 +59,10 @@ export function DataProvider({ children }) {
     try {
       const isConnected = await checkInternetConnectivity();
       if (isConnected) {
-        //console.log('Online');
+        console.log('Online');
         await syncData();
       } else {
-        //console.log('Offline');
+        console.log('Offline');
       }
     } finally {
       syncTimeoutRef.current = setTimeout(
@@ -83,12 +83,21 @@ export function DataProvider({ children }) {
         //console.log('is syncing true');
         for (const record of pending) {
           const { id, model, operation } = record;
-          const data = JSON.parse(record.data);
-          const serviceClass = ServiceRegistry.get(model);
-          if (!serviceClass) {
-            throw new Error(`No existe el servicio ${model}`);
+          try {
+            const data = JSON.parse(record.data);
+            const serviceClass = ServiceRegistry.get(model);
+            if (!serviceClass) {
+              throw new Error(`No existe el servicio ${model}`);
+            }
+            await serviceClass[operation](data);
+          } catch (error) {
+            if (error?.code === '23505') {
+              // duplicate key value violates.
+              // Ignore
+            } else {
+              throw error;
+            }
           }
-          await serviceClass[operation](data);
           await db.runAsync('DELETE from pending_operation where id = $id', {
             $id: id,
           });

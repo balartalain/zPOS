@@ -114,7 +114,9 @@ function ProductList({ onPress, basketCoords }) {
                 <Text variant="titleMedium">{item.name}</Text>
                 <Text
                   variant="bodyMedium"
-                  style={[item.in_stock === 0 && styles.outOfStock]}
+                  style={[
+                    item.in_stock === 0 ? styles.outOfStock : styles.inStock,
+                  ]}
                 >
                   stock: {item.in_stock}
                 </Text>
@@ -186,6 +188,10 @@ const styles = StyleSheet.create({
   outOfStock: {
     color: 'red',
     textDecorationLine: 'line-through',
+  },
+  inStock: {
+    color: 'green',
+    textDecorationLine: 'none',
   },
 });
 export default React.memo(ProductList);
