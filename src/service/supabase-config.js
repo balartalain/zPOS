@@ -1,6 +1,7 @@
+import { AppState } from 'react-native';
 import 'react-native-url-polyfill/auto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createClient } from '@supabase/supabase-js';
+import { createClient, processLock } from '@supabase/supabase-js';
 
 // Variables de conexión
 const SUPABASE_URL = 'https://bpkmwpaueehhipiomlnf.supabase.co';
@@ -15,9 +16,16 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     autoRefreshToken: true,
     persistSession: true,
     detectSessionInUrl: false,
+    lock: processLock,
   },
 });
-
+AppState.addEventListener('change', (state) => {
+  if (state === 'active') {
+    supabase.auth.startAutoRefresh();
+  } else {
+    supabase.auth.stopAutoRefresh();
+  }
+});
 // class ProductService {
 //   static async getProducts() {
 //     const { data, error } = await supabase.from('products').select('*');

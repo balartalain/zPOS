@@ -14,9 +14,9 @@ import {
   DefaultTheme as NavigationDefaultTheme,
   ThemeProvider,
 } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import merge from 'deepmerge';
 import { Colors } from '@/src/themes/theme1/colors';
-import Login from '@/src/components/login';
 import useUserStore from '@/src/store/useUserStore';
 import Toast from 'react-native-toast-message';
 import LoadingModal from '@/src/components/loadingModal';
@@ -44,13 +44,16 @@ const CombinedLightTheme = merge(LightTheme, customLightTheme);
 const CombinedDarkTheme = merge(DarkTheme, customDarkTheme);
 
 const RootLayout = () => {
+  const router = useRouter();
   const colorScheme = useColorScheme();
   const paperTheme =
     colorScheme === 'dark' ? CombinedDarkTheme : CombinedLightTheme;
 
-  const { isAuthenticated, logout } = useUserStore();
+  const { session, logout } = useUserStore();
   useEffect(() => {
-    //logout();
+    if (!session) {
+      router.replace('/login');
+    }
   }, []);
 
   //console.log('App=>');
@@ -59,38 +62,34 @@ const RootLayout = () => {
       <PaperProvider theme={paperTheme}>
         <DataProvider>
           <LineAnimated />
-          {!isAuthenticated ? (
-            <Login />
-          ) : (
-            <GestureHandlerRootView style={{ flex: 1 }}>
-              <ThemeProvider value={paperTheme}>
-                <Drawer>
-                  <Drawer.Screen
-                    name="(pos)"
-                    options={{
-                      headerShown: false,
-                      drawerLabel: 'Ir a Venta',
-                    }}
-                  />
-                  <Drawer.Screen
-                    name="+not-found"
-                    options={{ drawerItemStyle: { display: 'none' } }}
-                  />
-                  <Drawer.Screen
-                    name="product"
-                    options={{ headerShown: false, drawerLabel: 'Artículos' }}
-                  />
-                  <Drawer.Screen
-                    name="category"
-                    options={{
-                      headerShown: false,
-                      drawerLabel: 'Categorías',
-                    }}
-                  />
-                </Drawer>
-              </ThemeProvider>
-            </GestureHandlerRootView>
-          )}
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <ThemeProvider value={paperTheme}>
+              <Drawer>
+                <Drawer.Screen
+                  name="(pos)"
+                  options={{
+                    headerShown: false,
+                    drawerLabel: 'Ir a Venta',
+                  }}
+                />
+                <Drawer.Screen
+                  name="+not-found"
+                  options={{ drawerItemStyle: { display: 'none' } }}
+                />
+                <Drawer.Screen
+                  name="product"
+                  options={{ headerShown: false, drawerLabel: 'Artículos' }}
+                />
+                <Drawer.Screen
+                  name="category"
+                  options={{
+                    headerShown: false,
+                    drawerLabel: 'Categorías',
+                  }}
+                />
+              </Drawer>
+            </ThemeProvider>
+          </GestureHandlerRootView>
           <LoadingModal />
           <ProductAnim />
           <Toast config={toastConfig} />

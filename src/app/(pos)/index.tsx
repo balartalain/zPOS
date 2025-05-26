@@ -56,7 +56,7 @@ function Basket({ onSetBasketCoords }) {
             position: 'absolute',
             top: -6,
             right: -3,
-            backgroundColor: theme.colors.tertiary,
+            backgroundColor: theme.colors.secondary,
             zIndex: 1,
           }}
           size={18}
