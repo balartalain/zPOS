@@ -31,7 +31,7 @@ class ProductService {
   static async saveImage({ imageUri, imageName }) {
     try {
       await fetchWithTimeout(async (signal) => {
-        return await uploadImage(imageUri, imageName).abortSignal(signal);
+        return await uploadImage(imageUri, imageName);
       });
     } catch (error) {
       console.log('saveImage Error=>', error);

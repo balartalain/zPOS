@@ -25,6 +25,7 @@ import ProductAnim from '@/src/components/productAnim';
 import { DataProvider } from '@/src/context/dataContext';
 import toastConfig from '../toastConfig';
 import LineAnimated from '@/src/components/lineAnimated';
+import { UserProvider } from '@/src/context/userContext';
 
 const customDarkTheme = {
   ...MD3DarkTheme,
@@ -48,53 +49,60 @@ const RootLayout = () => {
   const colorScheme = useColorScheme();
   const paperTheme =
     colorScheme === 'dark' ? CombinedDarkTheme : CombinedLightTheme;
-
-  const { session, logout } = useUserStore();
-  useEffect(() => {
-    if (!session) {
-      router.replace('/login');
-    }
-  }, []);
-
-  //console.log('App=>');
   return (
     <SQLiteProvider databaseName="zpos.db" onInit={migrateDbIfNeeded}>
-      <PaperProvider theme={paperTheme}>
-        <DataProvider>
-          <LineAnimated />
-          <GestureHandlerRootView style={{ flex: 1 }}>
-            <ThemeProvider value={paperTheme}>
-              <Drawer>
-                <Drawer.Screen
-                  name="(pos)"
-                  options={{
-                    headerShown: false,
-                    drawerLabel: 'Ir a Venta',
-                  }}
-                />
-                <Drawer.Screen
-                  name="+not-found"
-                  options={{ drawerItemStyle: { display: 'none' } }}
-                />
-                <Drawer.Screen
-                  name="product"
-                  options={{ headerShown: false, drawerLabel: 'Artículos' }}
-                />
-                <Drawer.Screen
-                  name="category"
-                  options={{
-                    headerShown: false,
-                    drawerLabel: 'Categorías',
-                  }}
-                />
-              </Drawer>
-            </ThemeProvider>
-          </GestureHandlerRootView>
-          <LoadingModal />
-          <ProductAnim />
-          <Toast config={toastConfig} />
-        </DataProvider>
-      </PaperProvider>
+      <UserProvider>
+        <PaperProvider theme={paperTheme}>
+          <DataProvider>
+            <LineAnimated />
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <ThemeProvider value={paperTheme}>
+                <Drawer>
+                  <Drawer.Screen
+                    name="(pos)"
+                    options={{
+                      headerShown: false,
+                      drawerLabel: 'Ir a Venta',
+                    }}
+                  />
+                  <Drawer.Screen
+                    name="+not-found"
+                    options={{ drawerItemStyle: { display: 'none' } }}
+                  />
+                  <Drawer.Screen
+                    name="product"
+                    options={{ headerShown: false, drawerLabel: 'Artículos' }}
+                  />
+                  <Drawer.Screen
+                    name="category"
+                    options={{
+                      headerShown: false,
+                      drawerLabel: 'Categorías',
+                    }}
+                  />
+                  <Drawer.Screen
+                    name="login"
+                    options={{
+                      headerShown: false,
+                      drawerLabel: 'Iniciar Sessión',
+                    }}
+                  />
+                  <Drawer.Screen
+                    name="logout"
+                    options={{
+                      headerShown: false,
+                      drawerLabel: 'Cerrar Sessión',
+                    }}
+                  />
+                </Drawer>
+              </ThemeProvider>
+            </GestureHandlerRootView>
+            <LoadingModal />
+            <ProductAnim />
+            <Toast config={toastConfig} />
+          </DataProvider>
+        </PaperProvider>
+      </UserProvider>
     </SQLiteProvider>
   );
   async function migrateDbIfNeeded(db: any) {

@@ -1,42 +1,40 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 import { TextInput, Button, useTheme } from 'react-native-paper';
+import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { supabase } from '@/src/service/supabase-config';
 import useUserStore from '@/src/store/useUserStore';
 import useModalStore from '@/src/store/useModalStore';
 import { useData } from '@/src/context/dataContext';
+import { useAuth } from '@/src/context/userContext';
 
 const LoginScreen = () => {
   const { colors } = useTheme();
-  const { setUser } = useUserStore();
+  const router = useRouter();
+  const { setUser, setSession } = useUserStore();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const { showModal, hideModal } = useModalStore();
+  const { signIn, signOut } = useAuth();
   const { refreshMasterData } = useData();
   const handleLogin = async () => {
     try {
-      //syncData();
-      const { error } = await supabase.auth.signInWithPassword({
-        email: username,
-        password: password,
-      });
-      if (error) {
-        throw error;
-      }
-      setLoading(false);
-      showModal({ label: 'Descargando masterdata' });
+      //showModal({ label: 'Iniciando sessión' });
+      await signIn(username, password);
       await refreshMasterData();
-      setUser(username);
-    } catch {
+      router.replace('(pos)');
+    } catch (error) {
+      //if (error.code === 'invalid_credentials') {
       Toast.show({
         type: 'error',
         text1: 'Error',
-        text2: 'Error de conexión',
+        text2: error.message,
         position: 'bottom',
       });
+      //}
     } finally {
-      hideModal();
+      //hideModal();
     }
   };
   return (
