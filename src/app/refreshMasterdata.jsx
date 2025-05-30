@@ -1,25 +1,25 @@
 import React, { useEffect } from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
-import Toast from 'react-native-toast-message';
-import { useAuth } from '@/src/context/userContext';
+import { useData } from '@/src/context/dataContext';
 
-const LogoutScreen = () => {
+const RefreshMasterDataScreen = () => {
   const router = useRouter();
-  const { signOut } = useAuth();
+  const { refreshMasterData } = useData();
 
   useEffect(() => {
     (async () => {
-      signOut();
+      await refreshMasterData();
+      router.replace('(pos)');
     })();
-  }, [router, signOut]);
+  }, [refreshMasterData, router]);
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <ActivityIndicator size="large" color="#0000ff" />
-      <Text>Cerrando sesión...</Text>
+      <Text>Actualizando Master Data...</Text>
     </View>
   );
 };
 
-export default LogoutScreen;
+export default RefreshMasterDataScreen;

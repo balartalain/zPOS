@@ -5,19 +5,26 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const useUserStore = create(
   persist(
     (set, get) => ({
-      session: null,
+      sessionExpired: true,
       user: null,
-      setUser: ({ name, role, email }) => {
+      setUser: ({ id, name, role, email, active = true }) => {
         console.log('setUser');
         set((state) => ({
           user: {
             ...state.user,
+            id,
             name,
             role,
             email,
+            active,
           },
+          sessionExpired: false,
         }));
       },
+      setSessionExpired: (sessionExpired) =>
+        set(() => ({
+          sessionExpired,
+        })),
       setSession: (session) =>
         set((state) => ({
           session,
@@ -25,7 +32,7 @@ const useUserStore = create(
       logout: () =>
         set(() => ({
           user: null,
-          session: null,
+          sessionExpired: true,
         })),
     }),
     {

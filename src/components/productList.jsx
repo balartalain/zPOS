@@ -30,11 +30,11 @@ function ProductList({ onPress, basketCoords }) {
   );
   useEffect(() => {
     (async () => {
-      //console.log('Product List=>loadProducts');
+      console.log('Product List=>loadProducts');
       setProductosFiltrados(await loadProducts());
     })();
     eventBus.on('CHANGED_PRODUCT', async () => {
-      //console.log('Product List=>CHANGED_PRODUCT event');
+      console.log('Product List=>CHANGED_PRODUCT event');
       setProductosFiltrados(await loadProducts());
     });
   }, [loadProducts]);
@@ -87,6 +87,7 @@ function ProductList({ onPress, basketCoords }) {
       style={styles.productImage}
     />
   );
+  console.log(productosFiltrados[0]?.image);
   return (
     <View style={styles.container}>
       {/* Campo de búsqueda */}

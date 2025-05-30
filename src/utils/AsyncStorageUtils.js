@@ -15,7 +15,7 @@ eventBus.on(eventName.UPDATE_CATEGORY, (item) =>
 const AsyncStorageUtils = {
   set: async function (key, items) {
     await AsyncStorage.setItem(key, JSON.stringify(items));
-    eventBus.emit(`CHANGED_${key}.toUpperCase()`, {});
+    eventBus.emit(`CHANGED_${key.toUpperCase()}`, {});
   },
   add: async function (key, item) {
     const storedItems = await AsyncStorage.getItem(key);

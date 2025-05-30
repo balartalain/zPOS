@@ -11,7 +11,6 @@ import { checkStoredState } from '@/src/utils/checkAsyncStorage';
 import { Utils } from '@/src/utils';
 import AsyncStorageUtils from '@/src/utils/AsyncStorageUtils';
 import { useData } from '@/src/context/dataContext';
-import SynchronizeIcon from '@/src/components/synchronizeIcon';
 const { width } = Dimensions.get('window');
 
 function Basket({ onSetBasketCoords }) {
@@ -88,6 +87,7 @@ function TicketScreen() {
     width: 0,
     height: 0,
   });
+
   const { ticket, deleteOrder, addProductToTicket, getTotalAmt } =
     useTicketStore();
   const isStoreClosed = false;
@@ -113,7 +113,9 @@ function TicketScreen() {
   return (
     <View style={{ flex: 1, padding: 10 }}>
       <Surface style={styles.display} elevation={2}>
-        <Text variant="displayMedium">{`Total: ${Utils.formatCurrency(getTotalAmt())}`}</Text>
+        <Text
+          style={{ fontSize: width * 0.1 }}
+        >{`Total: ${Utils.formatCurrency(getTotalAmt())}`}</Text>
       </Surface>
       {isStoreClosed ? (
         <StoreClosed />

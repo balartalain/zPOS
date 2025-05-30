@@ -21,9 +21,7 @@ class TicketService {
   static async save(data) {
     try {
       console.log('order=>', data);
-      const { error } = await fetchWithTimeout(async (signal) => {
-        return await supabase.from('order').insert(data).abortSignal(signal);
-      });
+      const { error } = await supabase.from('order').insert(data);
       if (error) throw error;
     } catch (error) {
       console.log('Error in TicketService->save ', error);
@@ -37,12 +35,7 @@ class TicketService {
         product_id: product.id, // Solo conserva el `id` de `product`
       }));
       console.log('lines=>', lines);
-      const { error } = await fetchWithTimeout(async (signal) => {
-        return await supabase
-          .from('orderline')
-          .insert(lines)
-          .abortSignal(signal);
-      });
+      const { error } = await supabase.from('orderline').insert(lines);
 
       if (error) throw error;
     } catch (error) {
@@ -53,12 +46,8 @@ class TicketService {
   static async savePayments(payments) {
     try {
       console.log('payments=>', payments);
-      const { error } = await fetchWithTimeout(async (signal) => {
-        return await supabase
-          .from('payment')
-          .insert(payments)
-          .abortSignal(signal);
-      });
+      const { error } = await supabase.from('payment').insert(payments);
+
       if (error) throw error;
     } catch (error) {
       console.log('Error in TicketService->savePayments ', error);

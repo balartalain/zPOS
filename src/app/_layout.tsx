@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Drawer from 'expo-router/drawer';
 import { SQLiteDatabase, SQLiteProvider } from 'expo-sqlite';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useColorScheme } from 'react-native';
+import { useColorScheme, View, Text } from 'react-native';
 import {
   MD3LightTheme,
   MD3DarkTheme,
@@ -19,7 +19,6 @@ import merge from 'deepmerge';
 import { Colors } from '@/src/themes/theme1/colors';
 import useUserStore from '@/src/store/useUserStore';
 import Toast from 'react-native-toast-message';
-import LoadingModal from '@/src/components/loadingModal';
 import { removeStoredStore } from '@/src/utils/checkAsyncStorage';
 import ProductAnim from '@/src/components/productAnim';
 import { DataProvider } from '@/src/context/dataContext';
@@ -81,6 +80,13 @@ const RootLayout = () => {
                     }}
                   />
                   <Drawer.Screen
+                    name="refreshMasterdata"
+                    options={{
+                      headerShown: false,
+                      drawerLabel: 'Acrualizar Catálogo',
+                    }}
+                  />
+                  <Drawer.Screen
                     name="login"
                     options={{
                       headerShown: false,
@@ -97,7 +103,6 @@ const RootLayout = () => {
                 </Drawer>
               </ThemeProvider>
             </GestureHandlerRootView>
-            <LoadingModal />
             <ProductAnim />
             <Toast config={toastConfig} />
           </DataProvider>

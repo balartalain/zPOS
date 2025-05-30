@@ -1,9 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Animated, Easing, StyleSheet, Dimensions } from 'react-native';
+import {
+  View,
+  Animated,
+  Easing,
+  StyleSheet,
+  Dimensions,
+  Text,
+} from 'react-native';
 import { useTheme } from 'react-native-paper';
 import useNetWorkStatus from '@/src/hooks/useNetworkStatus';
 import { useSync } from '@/src/context/dataContext';
-
+import useUserStore from '../store/useUserStore';
 const { width } = Dimensions.get('window');
 const LineAnimated = () => {
   const theme = useTheme();
@@ -12,6 +19,8 @@ const LineAnimated = () => {
   const translateX = useRef(new Animated.Value(-width)).current;
   const animationRunning = useRef(null);
   const stopAnimation = useRef(false);
+
+  const { user, session } = useUserStore();
   const animatedLoop = React.useCallback(() => {
     animationRunning.current = Animated.timing(translateX, {
       toValue: width,
@@ -48,7 +57,7 @@ const styles = StyleSheet.create({
   container: {
     position: 'absolute',
     width: '100%',
-    height: 1,
+    height: 2,
     backgroundColor: '#B0BEC5',
     overflow: 'hidden',
     left: 0,
@@ -57,7 +66,7 @@ const styles = StyleSheet.create({
   },
   line: {
     width: '30%',
-    height: 1,
+    height: 2,
     backgroundColor: '#007AFF',
     borderRadius: 2,
   },

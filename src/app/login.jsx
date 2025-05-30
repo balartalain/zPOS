@@ -1,29 +1,36 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Image, TouchableOpacity, Text } from 'react-native';
 import { TextInput, Button, useTheme } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
-import { supabase } from '@/src/service/supabase-config';
 import useUserStore from '@/src/store/useUserStore';
-import useModalStore from '@/src/store/useModalStore';
 import { useData } from '@/src/context/dataContext';
 import { useAuth } from '@/src/context/userContext';
+
+import LoadingModal from '@/src/components/loadingModal';
+import { checkInternetConnectivity } from '@/src/hooks/useNetworkStatus';
 
 const LoginScreen = () => {
   const { colors } = useTheme();
   const router = useRouter();
-  const { setUser, setSession } = useUserStore();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const { showModal, hideModal } = useModalStore();
-  const { signIn, signOut } = useAuth();
+  const { signIn } = useAuth();
   const { refreshMasterData } = useData();
+  const [showModal, setShowModal] = useState(false);
+  const { user } = useUserStore();
+
   const handleLogin = async () => {
     try {
-      //showModal({ label: 'Iniciando sessión' });
-      await signIn(username, password);
-      await refreshMasterData();
-      router.replace('(pos)');
+      setShowModal(true);
+      const isConnected = await checkInternetConnectivity();
+      if (isConnected) {
+        await signIn(username, password);
+        await refreshMasterData();
+        router.replace('(pos)');
+      } else {
+        throw new Error('No tiene conexión');
+      }
     } catch (error) {
       //if (error.code === 'invalid_credentials') {
       Toast.show({
@@ -34,7 +41,7 @@ const LoginScreen = () => {
       });
       //}
     } finally {
-      //hideModal();
+      setShowModal(false);
     }
   };
   return (
@@ -72,10 +79,22 @@ const LoginScreen = () => {
           style={styles.input}
           left={<TextInput.Icon icon="lock" color={colors.primary} />}
         />
-        <Button mode="contained" onPress={handleLogin} style={styles.button}>
-          Iniciar Sesión
-        </Button>
+        <TouchableOpacity
+          onPress={handleLogin}
+          style={[
+            styles.button,
+            { backgroundColor: colors.primary, alignItems: 'center' },
+          ]}
+        >
+          <Text style={{ color: colors.onPrimary }}>Iniciar Sessión</Text>
+        </TouchableOpacity>
+        {user && (
+          <Button mode="outlained" onPress={() => router.replace('(pos)')}>
+            Continuar sin conexión
+          </Button>
+        )}
       </View>
+      <LoadingModal visible={showModal} text="Iniciando sessión..." />
     </View>
   );
 };
@@ -103,7 +122,8 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 20,
-    paddingVertical: 8,
+    paddingVertical: 12,
+    borderRadius: 5,
   },
 });
 
