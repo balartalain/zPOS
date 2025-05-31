@@ -3,7 +3,7 @@ import React, { useState, useLayoutEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Button, Text, Surface, useTheme, Badge } from 'react-native-paper';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import ProductList from '../../components/productList';
 import useNetworkStatus from '@/src/hooks/useNetworkStatus';
 import useTicketStore from '@/src/store/useTicketStore';
@@ -12,6 +12,7 @@ import { Utils } from '@/src/utils';
 import AsyncStorageUtils from '@/src/utils/AsyncStorageUtils';
 import { useData } from '@/src/context/dataContext';
 import SharedButton from '@/src/components/shared/sharedButton';
+import { useHeader } from '@/src/context/headerContext';
 const { width } = Dimensions.get('window');
 
 function Basket({ onSetBasketCoords }) {
@@ -31,12 +32,6 @@ function Basket({ onSetBasketCoords }) {
       }
     }, 500);
   }, []);
-
-  useFocusEffect(
-    React.useCallback(() => {
-      //router.replace('/');
-    }, [])
-  );
   return (
     <View
       ref={basketRef}
@@ -48,7 +43,7 @@ function Basket({ onSetBasketCoords }) {
     >
       <TouchableOpacity
         onPress={() => {
-          router.push('/shoppingCart');
+          router.push('/pos/shoppingCart');
         }}
       >
         <Badge
@@ -80,8 +75,10 @@ function Basket({ onSetBasketCoords }) {
 }
 function TicketScreen() {
   const router = useRouter();
+  const isFocused = useIsFocused();
   const navigation = useNavigation();
   const theme = useTheme();
+  const { setHeaderContent, setHeaderActions } = useHeader();
   const [basketCoords, setBasketCoords] = useState({
     x: 0,
     y: 0,
@@ -94,19 +91,20 @@ function TicketScreen() {
   const isStoreClosed = false;
   //console.log('pos screen');
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      //headerTitleAlign: 'left',
-      headerRight: () => <Basket onSetBasketCoords={setBasketCoords} />,
-    });
-  }, [navigation]);
+  React.useEffect(() => {
+    if (isFocused) {
+      setHeaderContent('Nueva Venta');
+      setHeaderActions(<Basket onSetBasketCoords={setBasketCoords} />);
+    }
+  }, [setHeaderContent, setHeaderActions, isFocused]);
+
   const addProduct = React.useCallback(async (product: any) => {
     await addProductToTicket(product);
     ////console.log(ticket.lines);
   }, []);
 
   const payTicket = () => {
-    router.push('/addPayments');
+    router.push('/pos/addPayments');
   };
   const handleDeleteOrder = async () => {
     deleteOrder();
@@ -162,7 +160,7 @@ function StoreClosed() {
         mode="contained"
         style={styles.payBtn}
         onPress={() => {
-          router.push('/openStore');
+          router.push('/pos/openStore');
         }}
       >
         Abrir la tienda

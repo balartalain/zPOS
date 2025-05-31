@@ -11,23 +11,15 @@ const ProductsLayout = () => {
   const theme = useTheme();
 
   return (
-    <Stack>
+    <Stack
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
       <Stack.Screen
         name="index"
         options={{
-          headerTitle: 'Categorías',
-          headerLeft: () => {
-            return (
-              <Ionicons
-                name="menu"
-                size={24}
-                onPress={() => {
-                  nav.dispatch(DrawerActions.openDrawer());
-                }}
-                style={{ paddingLeft: 0, marginLeft: 0, marginRight: 13 }}
-              />
-            );
-          },
+          headerShown: false,
         }}
       />
       <Stack.Screen

@@ -1,16 +1,54 @@
 import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import React, { useEffect } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { Text, Surface } from 'react-native-paper';
 import SharedView from '@/src/components/shared/sharedView';
 import useTicketStore from '@/src/store/useTicketStore';
 import KeypadPayment from '../../components/keyPadPayment';
 import { Utils } from '@/src/utils';
+import { useHeader } from '@/src/context/headerContext';
 
 export default function PaymentScreen() {
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
   const { ticket, deletePayment, getTotalPaid } = useTicketStore();
+  const { setHeaderActions, setHeaderContent } = useHeader();
+
+  const pending = parseFloat(ticket.total_amount) - parseFloat(getTotalPaid());
+  const label =
+    ticket.change === 0
+      ? `Por pagar ${Utils.formatCurrency(pending)}`
+      : `Cambio ${Utils.formatCurrency(ticket.change)}`;
+
+  const headerContent = React.useMemo(
+    () => (
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-around',
+        }}
+      >
+        <Text
+          style={{ color: 'green', fontSize: 16 }}
+        >{` Total ${Utils.formatCurrency(ticket.total_amount)}`}</Text>
+        <Text
+          style={{
+            fontSize: 16,
+            color: ticket.change >= 0 && pending === 0 ? 'green' : 'red',
+          }}
+        >{` ${label}`}</Text>
+      </View>
+    ),
+    [label, pending, ticket.change, ticket.total_amount]
+  );
+
+  React.useEffect(() => {
+    if (isFocused) {
+      setHeaderContent(headerContent);
+      setHeaderActions(null);
+    }
+  }, [isFocused, setHeaderContent, headerContent, setHeaderActions]);
 
   useEffect(() => {
     navigation.setOptions({

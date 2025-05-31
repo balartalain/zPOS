@@ -23,9 +23,9 @@ import { removeStoredStore } from '@/src/utils/checkAsyncStorage';
 import ProductAnim from '@/src/components/productAnim';
 import { DataProvider } from '@/src/context/dataContext';
 import toastConfig from '../toastConfig';
-import LineAnimated from '@/src/components/lineAnimated';
 import { UserProvider } from '@/src/context/userContext';
-
+import { HeaderProvider } from '@/src/context/headerContext';
+import Header from '@/src/components/header';
 const customDarkTheme = {
   ...MD3DarkTheme,
   roundness: 2,
@@ -53,58 +53,60 @@ const RootLayout = () => {
       <UserProvider>
         <PaperProvider theme={paperTheme}>
           <DataProvider>
-            <LineAnimated />
-            <GestureHandlerRootView style={{ flex: 1 }}>
-              <ThemeProvider value={paperTheme}>
-                <Drawer>
-                  <Drawer.Screen
-                    name="(pos)"
-                    options={{
-                      headerShown: false,
-                      drawerLabel: 'Ir a Venta',
-                    }}
-                  />
-                  <Drawer.Screen
-                    name="+not-found"
-                    options={{ drawerItemStyle: { display: 'none' } }}
-                  />
-                  <Drawer.Screen
-                    name="product"
-                    options={{ headerShown: false, drawerLabel: 'Artículos' }}
-                  />
-                  <Drawer.Screen
-                    name="category"
-                    options={{
-                      headerShown: false,
-                      drawerLabel: 'Categorías',
-                    }}
-                  />
-                  <Drawer.Screen
-                    name="refreshMasterdata"
-                    options={{
-                      headerShown: false,
-                      drawerLabel: 'Acrualizar Catálogo',
-                    }}
-                  />
-                  <Drawer.Screen
-                    name="login"
-                    options={{
-                      headerShown: false,
-                      drawerLabel: 'Iniciar Sessión',
-                    }}
-                  />
-                  <Drawer.Screen
-                    name="logout"
-                    options={{
-                      headerShown: false,
-                      drawerLabel: 'Cerrar Sessión',
-                    }}
-                  />
-                </Drawer>
-              </ThemeProvider>
-            </GestureHandlerRootView>
+            <HeaderProvider>
+              <Header />
+              <GestureHandlerRootView style={{ flex: 1 }}>
+                <ThemeProvider value={paperTheme}>
+                  <Drawer>
+                    <Drawer.Screen
+                      name="pos"
+                      options={{
+                        headerShown: false,
+                        drawerLabel: 'Ir a Venta',
+                      }}
+                    />
+                    <Drawer.Screen
+                      name="+not-found"
+                      options={{ drawerItemStyle: { display: 'none' } }}
+                    />
+                    <Drawer.Screen
+                      name="product"
+                      options={{ headerShown: false, drawerLabel: 'Artículos' }}
+                    />
+                    <Drawer.Screen
+                      name="category"
+                      options={{
+                        headerShown: false,
+                        drawerLabel: 'Categorías',
+                      }}
+                    />
+                    <Drawer.Screen
+                      name="refreshMasterdata"
+                      options={{
+                        headerShown: false,
+                        drawerLabel: 'Acrualizar Catálogo',
+                      }}
+                    />
+                    <Drawer.Screen
+                      name="login"
+                      options={{
+                        headerShown: false,
+                        drawerLabel: 'Iniciar Sessión',
+                      }}
+                    />
+                    <Drawer.Screen
+                      name="logout"
+                      options={{
+                        headerShown: false,
+                        drawerLabel: 'Cerrar Sessión',
+                      }}
+                    />
+                  </Drawer>
+                </ThemeProvider>
+              </GestureHandlerRootView>
+              <Toast config={toastConfig} />
+            </HeaderProvider>
             <ProductAnim />
-            <Toast config={toastConfig} />
           </DataProvider>
         </PaperProvider>
       </UserProvider>

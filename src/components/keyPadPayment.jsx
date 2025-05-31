@@ -97,7 +97,7 @@ const KeypadPayment = () => {
     try {
       //const created_at = new Date();
       //const cloneTicket = { ...ticket, created_at };
-      router.dismissTo('/');
+      router.dismissTo('/pos');
       completeTicket();
       //syncOrder(cloneTicket);
     } catch (err) {

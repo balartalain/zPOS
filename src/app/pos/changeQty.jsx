@@ -14,6 +14,7 @@ import useTicketStore from '@/src/store/useTicketStore';
 import SharedView from '../../components/shared/sharedView';
 import AsyncStorageUtils from '@/src/utils/AsyncStorageUtils';
 import { useData } from '@/src/context/dataContext';
+import { useHeader } from '@/src/context/headerContext';
 
 const { width } = Dimensions.get('window');
 const getProduct = async (productId) => {
@@ -23,13 +24,32 @@ const getProduct = async (productId) => {
 function ChangeQtyScreen() {
   const theme = useTheme();
   const router = useRouter();
-  const navigation = useNavigation();
   const isFocused = useIsFocused();
   const { lineId } = useLocalSearchParams();
   const { ticket, setQty } = useTicketStore();
   const [product, setProduct] = useState();
+  const { setHeaderActions, setHeaderContent } = useHeader();
   const line = ticket.lines.find((l) => l.id === lineId);
   const [qty, _setQty] = useState(line ? line.qty : 0);
+
+  const headerContent = React.useMemo(
+    () => (
+      <View>
+        <Text>{product?.name}</Text>
+        <Text
+          style={[product?.in_stock === 0 ? styles.outOfStock : styles.inStock]}
+        >{`stock: ${product?.in_stock ?? ''}`}</Text>
+      </View>
+    ),
+    [product?.in_stock, product?.name]
+  );
+  React.useEffect(() => {
+    if (isFocused) {
+      setHeaderContent(headerContent);
+      setHeaderActions(null);
+    }
+  }, [isFocused, setHeaderContent, headerContent, setHeaderActions]);
+
   useEffect(() => {
     (async () => {
       if (isFocused) {
@@ -38,21 +58,6 @@ function ChangeQtyScreen() {
       }
     })();
   }, [isFocused, line, line?.product.id, line?.qty]);
-  console.log(product);
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTitle: () => (
-        <View>
-          <Text>{product?.name}</Text>
-          <Text
-            style={[
-              product?.in_stock === 0 ? styles.outOfStock : styles.inStock,
-            ]}
-          >{`stock: ${product?.in_stock}`}</Text>
-        </View>
-      ),
-    });
-  }, [navigation, lineId, product?.name, product?.in_stock]);
 
   const increment = async () => {
     setProduct((product) => ({

@@ -21,7 +21,7 @@ import { useAuth } from './userContext';
 
 const DataContext = createContext(null);
 const SyncContext = createContext(null);
-const SYNCING_TIMEOUT = 10000;
+const SYNCING_TIMEOUT = 5000;
 
 export function DataProvider({ children }) {
   const db = useSQLiteContext();
@@ -62,10 +62,6 @@ export function DataProvider({ children }) {
         if (pending.length > 0) {
           pendingRef.current = true;
           setHasPendingOperations(true);
-          // syncTimeoutRef.current = setTimeout(
-          //   async () => await syncLoop(),
-          //   1000
-          // );
         } else {
           pendingRef.current = false;
           setHasPendingOperations(false);
@@ -75,20 +71,18 @@ export function DataProvider({ children }) {
   }, [db, getPendingOperations, setHasPendingOperations]);
 
   useEffect(() => {
+    console.log('trigger has pending');
     (async () => {
-      pendingRef.current = hasPendingOperations;
       if (
         hasPendingOperations &&
         !sessionExpiredRef.current &&
         isConnected &&
         !syncTimeoutRef.current
       ) {
+        console.log('trigger syncloop');
         //const isActive = await isProfileActive();
         //if (isActive) {
-        syncTimeoutRef.current = setTimeout(
-          async () => await syncLoop(),
-          SYNCING_TIMEOUT
-        );
+        syncTimeoutRef.current = setTimeout(async () => await syncLoop(), 1000);
         //}
       }
       return () => {
@@ -113,7 +107,6 @@ export function DataProvider({ children }) {
   }, []);
   const syncLoop = useCallback(async () => {
     if (pendingRef.current && !sessionExpiredRef.current) {
-      console.log('sync loop ', hasPendingOperations);
       try {
         console.log('Trying to Sync...');
         const isConnected = await checkInternetConnectivity();
@@ -131,9 +124,13 @@ export function DataProvider({ children }) {
         );
       }
     } else {
+      console.log(
+        'synLoop=> ',
+        pendingRef.current && sessionExpiredRef.current
+      );
       syncTimeoutRef.current = null;
     }
-  }, [syncData, hasPendingOperations]);
+  }, [syncData]);
 
   const syncData = useCallback(async () => {
     try {
@@ -152,11 +149,14 @@ export function DataProvider({ children }) {
             }
             await serviceClass[operation](data);
           } catch (error) {
+            console.log(error);
             if (error?.code === '23505') {
               // duplicate key value violates.
               // Ignore
-            }
-            if (error?.code === 'session_expired' || error?.code == '42501') {
+            } else if (
+              error?.code === 'session_expired' ||
+              error?.code == '42501'
+            ) {
               //code == '42501': new row violates row-level security policy
               // Handle session expired error
               sessionExpiredRef.current = true;
@@ -171,6 +171,7 @@ export function DataProvider({ children }) {
           });
         }
       } else {
+        console.log('syncData=>pending false');
         pendingRef.current = false;
         setHasPendingOperations(false);
       }
@@ -194,6 +195,7 @@ export function DataProvider({ children }) {
         `INSERT INTO pending_operation (model, operation, data) VALUES (?, ?, ?)`,
         [model, operation, jsonData]
       );
+      pendingRef.current = true;
       setHasPendingOperations(true);
     },
     [db]
@@ -269,8 +271,17 @@ export function DataProvider({ children }) {
       update,
       syncOrder,
       refreshMasterData,
+      hasPendingOperations,
     }),
-    [create, syncOrder, update, refreshMasterData, loadProducts, loadCategories]
+    [
+      create,
+      syncOrder,
+      update,
+      refreshMasterData,
+      loadProducts,
+      loadCategories,
+      hasPendingOperations,
+    ]
   );
   return (
     <DataContext.Provider value={value}>

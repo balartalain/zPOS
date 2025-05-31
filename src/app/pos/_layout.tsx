@@ -46,28 +46,14 @@ const StacksLayout = () => {
     <ApprovalProvider>
       <Stack
         screenOptions={{
-          headerLeft: (props) => {
-            const { canGoBack } = props;
-            return (
-              <Ionicons
-                name={canGoBack ? 'arrow-back' : 'menu'}
-                size={24}
-                onPress={() => {
-                  canGoBack
-                    ? router.back()
-                    : nav.dispatch(DrawerActions.openDrawer());
-                }}
-                style={{ paddingLeft: 0, marginLeft: 0, marginRight: 13 }}
-              />
-            );
-          },
+          headerShown: false,
         }}
       >
         <Stack.Screen
           name="index"
-          options={{
-            headerTitle: 'Nueva Venta',
-          }}
+          // options={{
+          //   headerTitle: 'Nueva Venta',
+          // }}
         />
         <Stack.Screen
           name="shoppingCart"

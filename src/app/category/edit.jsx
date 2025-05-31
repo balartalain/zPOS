@@ -3,6 +3,8 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 
 import Edit from '@/src/components/editTemplate';
 import CategoryService from '../../service/categoryService';
+import { useIsFocused } from '@react-navigation/native';
+import { useHeader } from '@/src/context/headerContext';
 
 const fields = [
   {
@@ -21,6 +23,16 @@ const fields = [
 ];
 export { fields };
 export default function CategoryEditScreen() {
+  const isFocused = useIsFocused();
+  const { setHeaderContent, setHeaderActions } = useHeader();
+
+  React.useEffect(() => {
+    if (isFocused) {
+      setHeaderContent('Editar la categoría');
+      setHeaderActions(null);
+    }
+  }, [setHeaderContent, setHeaderActions, isFocused]);
+
   const { id } = useLocalSearchParams();
   return (
     <Edit

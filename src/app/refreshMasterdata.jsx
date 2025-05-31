@@ -13,7 +13,7 @@ const RefreshMasterDataScreen = () => {
     (async () => {
       if (isFocused) {
         await refreshMasterData();
-        router.replace('(pos)');
+        router.replace('/pos');
       }
     })();
   }, [isFocused, refreshMasterData, router]);

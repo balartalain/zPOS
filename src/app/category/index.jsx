@@ -1,15 +1,19 @@
 import { FlatList, StyleSheet, Dimensions } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
+import { useIsFocused } from '@react-navigation/native';
 import { Button, Text, TextInput, Card } from 'react-native-paper';
 import SharedView from '@/src/components/shared/sharedView';
 import { useData } from '@/src/context/dataContext';
 import { eventBus, eventName } from '@/src/event/eventBus';
+import { useHeader } from '@/src/context/headerContext';
 import useWhyDidYouUpdate from '@/src/hooks/useWhyDidYouUpdate';
 const { width } = Dimensions.get('window');
 
 function CategoryListScreen() {
   const router = useRouter();
+  const { setHeaderContent, setHeaderActions } = useHeader();
+  const isFocused = useIsFocused();
   const { loadCategories } = useData();
   const [busqueda, setBusqueda] = useState('');
   const [categoriesFilters, setCategoriesFilters] = useState([]);
@@ -22,6 +26,12 @@ function CategoryListScreen() {
       categoriesFilters,
     }
   );
+  React.useEffect(() => {
+    if (isFocused) {
+      setHeaderContent('Categorías');
+      setHeaderActions(null);
+    }
+  }, [setHeaderContent, setHeaderActions, isFocused]);
   useEffect(() => {
     //console.log('Category List mount');
     loadCategories().then((categories) => {

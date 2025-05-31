@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { Text, View, StyleSheet, findNodeHandle } from 'react-native';
-import { useRouter, useFocusEffect, useLocalSearchParams } from 'expo-router';
-
+import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useIsFocused } from '@react-navigation/native';
 import ProductService from '../../service/productService';
+import { useHeader } from '@/src/context/headerContext';
 import Edit from '@/src/components/editTemplate';
 
 const fields = [
@@ -53,15 +54,18 @@ const fields = [
 export { fields };
 export default function ProductEditScreen() {
   const router = useRouter();
+  const isFocused = useIsFocused();
+  const { setHeaderContent, setHeaderActions } = useHeader();
+
+  React.useEffect(() => {
+    if (isFocused) {
+      setHeaderContent('Editar el artículo');
+      setHeaderActions(null);
+    }
+  }, [setHeaderContent, setHeaderActions, isFocused]);
 
   const { id } = useLocalSearchParams();
-  useFocusEffect(
-    React.useCallback(() => {
-      (async () => {
-        //router.replace('/(crud)');
-      })();
-    }, [])
-  );
+
   return (
     <Edit
       fields={fields}

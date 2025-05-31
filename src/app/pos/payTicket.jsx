@@ -16,7 +16,7 @@ export default function PayTicket() {
   }, [navigation]);
   const done = (pm) => {
     completeTicket(pm);
-    router.push('/');
+    router.push('/pos');
   };
   return (
     <SharedView>

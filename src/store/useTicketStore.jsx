@@ -168,10 +168,18 @@ const useTicketStore = create(
           const updatedPayments = state.ticket.payments.filter(
             (p) => p.payment_method !== paymentMethod
           );
+          const totalPaid = updatedPayments.reduce(
+            (acc, p) => acc + p.amount,
+            0
+          );
           return {
             ticket: {
               ...state.ticket,
               payments: updatedPayments,
+              change:
+                totalPaid > state.ticket.total_amount
+                  ? totalPaid - state.ticket.total_amount
+                  : 0,
             },
           };
         });

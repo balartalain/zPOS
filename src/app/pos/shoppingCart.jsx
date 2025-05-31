@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, FlatList, StyleSheet, Dimensions } from 'react-native';
 import { Stack, useNavigation, useRouter } from 'expo-router';
+import { useIsFocused } from '@react-navigation/native';
+
 import {
   Card,
   TextInput,
@@ -12,13 +14,23 @@ import {
 
 import useTicketStore from '@/src/store/useTicketStore';
 import { Utils } from '@/src/utils';
+import { useHeader } from '@/src/context/headerContext';
 
 const { width } = Dimensions.get('window');
 
 export default function ShoppingCartScreen() {
   const router = useRouter();
-  const theme = useTheme();
+  const isFocused = useIsFocused();
   const { ticket, deleteOrder, getTotalAmt } = useTicketStore();
+  const { setHeaderContent, setHeaderActions } = useHeader();
+
+  React.useEffect(() => {
+    if (isFocused) {
+      setHeaderContent('En la cesta');
+      setHeaderActions(null);
+    }
+  }, [setHeaderContent, setHeaderActions, isFocused]);
+
   const handleDeleteOrder = () => {
     deleteOrder();
     router.back();
@@ -38,7 +50,7 @@ export default function ShoppingCartScreen() {
             style={styles.card}
             onPress={() => {
               router.push(
-                `/changeQty?lineId=${item.id}&price=${item.product.price}`
+                `/pos/changeQty?lineId=${item.id}&price=${item.product.price}`
               );
             }}
           >
@@ -66,7 +78,7 @@ export default function ShoppingCartScreen() {
         <Button
           mode="contained"
           style={styles.btn}
-          onPress={() => router.push('/addPayments')}
+          onPress={() => router.push('/pos/addPayments')}
         >
           Pagar
         </Button>

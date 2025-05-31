@@ -27,7 +27,7 @@ const LoginScreen = () => {
       if (isConnected) {
         await signIn(username, password);
         await refreshMasterData();
-        router.replace('(pos)');
+        router.replace('/pos');
       } else {
         throw new Error('No tiene conexión');
       }
@@ -81,7 +81,7 @@ const LoginScreen = () => {
         />
         <SharedButton label="Iniciar Sesión" onPress={handleLogin} />
         {user && (
-          <Button mode="outlained" onPress={() => router.replace('(pos)')}>
+          <Button mode="outlained" onPress={() => router.replace('/pos')}>
             Continuar sin conexión
           </Button>
         )}

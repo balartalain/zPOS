@@ -1,6 +1,6 @@
 import { FlatList, StyleSheet, Image, Dimensions } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import {
@@ -15,16 +15,27 @@ import { useData } from '@/src/context/dataContext';
 import SharedView from '@/src/components/shared/sharedView';
 import { Utils } from '@/src/utils';
 import { eventBus, eventName } from '@/src/event/eventBus';
+import { useHeader } from '@/src/context/headerContext';
 
 const { width } = Dimensions.get('window');
 const NoImageIcon = require('@/assets/images/no-image.png');
 
 function ProductListScreen() {
   const router = useRouter();
+  const isFocused = useIsFocused();
   const theme = useTheme();
   const { loadProducts } = useData();
   const [busqueda, setBusqueda] = useState('');
   const [productosFiltrados, setProductosFiltrados] = useState([]);
+
+  const { setHeaderContent, setHeaderActions } = useHeader();
+
+  React.useEffect(() => {
+    if (isFocused) {
+      setHeaderContent('Artículos');
+      setHeaderActions(null);
+    }
+  }, [setHeaderContent, setHeaderActions, isFocused]);
 
   useEffect(() => {
     (async () => {
