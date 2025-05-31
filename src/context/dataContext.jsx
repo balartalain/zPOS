@@ -16,18 +16,20 @@ import {
 import AsyncStorageUtils from '../utils/AsyncStorageUtils';
 import { checkInternetConnectivity } from '../hooks/useNetworkStatus';
 import { eventBus, eventName } from '@/src/event/eventBus';
-import { supabase } from '@/src/service/supabase-config';
 import useWhyDidYouUpdate from '@/src/hooks/useWhyDidYouUpdate';
 import { useAuth } from './userContext';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
+
 const DataContext = createContext(null);
 const SyncContext = createContext(null);
 const SYNCING_TIMEOUT = 10000;
 
 export function DataProvider({ children }) {
   const db = useSQLiteContext();
-  const { setSessionExpired, sessionExpired, isProfileActive } = useAuth();
+  const { setSessionExpired, sessionExpired, isProfileActive, isConnected } =
+    useAuth();
   const syncTimeoutRef = useRef(null);
+  const pendingRef = useRef(false);
+  const sessionExpiredRef = useRef(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [hasPendingOperations, setHasPendingOperations] = useState(false);
   // useWhyDidYouUpdate(
@@ -38,38 +40,62 @@ export function DataProvider({ children }) {
   useEffect(() => {
     eventBus.on(eventName.SYNC_ORDER, syncOrder);
   }, [syncOrder]);
-
+  useEffect(() => {
+    sessionExpiredRef.current = sessionExpired;
+  }, [sessionExpired]);
   useEffect(() => {
     (async () => {
       const pending = await getPendingOperations();
-      if (pending.length > 0 && !syncTimeoutRef.current) {
+      if (pending.length > 0) {
+        pendingRef.current = true;
         setHasPendingOperations(true);
-        syncTimeoutRef.current = setTimeout(async () => await syncLoop(), 1000);
+        //syncTimeoutRef.current = setTimeout(async () => await syncLoop(), 1000);
       } else {
+        pendingRef.current = false;
         setHasPendingOperations(false);
       }
     })();
     AppState.addEventListener('change', async (state) => {
-      console.log('DataContext->AppState->changed');
-      if (state === 'active' && !syncTimeoutRef.current) {
+      console.log('DataContext->AppState->changed', syncTimeoutRef.current);
+      if (state === 'active') {
         const pending = await getPendingOperations();
         if (pending.length > 0) {
+          pendingRef.current = true;
           setHasPendingOperations(true);
-          syncTimeoutRef.current = setTimeout(
-            async () => await syncLoop(),
-            1000
-          );
+          // syncTimeoutRef.current = setTimeout(
+          //   async () => await syncLoop(),
+          //   1000
+          // );
         } else {
+          pendingRef.current = false;
           setHasPendingOperations(false);
         }
       }
     });
-    return () => {
-      if (syncTimeoutRef.current) {
-        clearTimeout(syncTimeoutRef.current);
+  }, [db, getPendingOperations, setHasPendingOperations]);
+
+  useEffect(() => {
+    (async () => {
+      pendingRef.current = hasPendingOperations;
+      if (
+        hasPendingOperations &&
+        !sessionExpiredRef.current &&
+        isConnected &&
+        !syncTimeoutRef.current
+      ) {
+        //const isActive = await isProfileActive();
+        //if (isActive) {
+        syncTimeoutRef.current = setTimeout(
+          async () => await syncLoop(),
+          SYNCING_TIMEOUT
+        );
+        //}
       }
-    };
-  }, [db, getPendingOperations, syncLoop]);
+      return () => {
+        clearTimeout(syncTimeoutRef.current);
+      };
+    })();
+  }, [hasPendingOperations, syncLoop, isConnected, isProfileActive]);
 
   const getPendingOperations = useCallback(async () => {
     const pending = await db.getAllAsync(
@@ -86,19 +112,15 @@ export function DataProvider({ children }) {
     return products;
   }, []);
   const syncLoop = useCallback(async () => {
-    if (hasPendingOperations && !sessionExpired) {
+    if (pendingRef.current && !sessionExpiredRef.current) {
+      console.log('sync loop ', hasPendingOperations);
       try {
         console.log('Trying to Sync...');
         const isConnected = await checkInternetConnectivity();
-        console.log('isConnected', isConnected);
+        //console.log('isConnected', isConnected);
         if (isConnected) {
-          const isActive = await isProfileActive();
-          if (isActive) {
-            await syncData();
-            console.log('Sync completed');
-          } else {
-            setSessionExpired(true);
-          }
+          await syncData();
+          console.log('Sync completed');
         } else {
           //console.log('Offline');
         }
@@ -111,13 +133,7 @@ export function DataProvider({ children }) {
     } else {
       syncTimeoutRef.current = null;
     }
-  }, [
-    syncData,
-    sessionExpired,
-    isProfileActive,
-    hasPendingOperations,
-    setSessionExpired,
-  ]);
+  }, [syncData, hasPendingOperations]);
 
   const syncData = useCallback(async () => {
     try {
@@ -143,6 +159,7 @@ export function DataProvider({ children }) {
             if (error?.code === 'session_expired' || error?.code == '42501') {
               //code == '42501': new row violates row-level security policy
               // Handle session expired error
+              sessionExpiredRef.current = true;
               setSessionExpired(true);
               throw new Error('Session expired...');
             } else {
@@ -154,6 +171,7 @@ export function DataProvider({ children }) {
           });
         }
       } else {
+        pendingRef.current = false;
         setHasPendingOperations(false);
       }
     } catch (error) {
@@ -220,6 +238,7 @@ export function DataProvider({ children }) {
         await AsyncStorageUtils.update(table, data);
         if (updatedImage) {
           const imageName = `${data.name.replaceAll(' ', '-')}_${Date.now()}.jpeg`;
+
           saveImage(table, data.image, imageName);
           data.image = imageName;
         }

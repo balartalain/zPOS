@@ -26,7 +26,9 @@ export default function ShoppingCartScreen() {
   return (
     <View style={{ flex: 1, padding: 10 }}>
       <Surface style={styles.surface} elevation={2}>
-        <Text variant="displayMedium">{`Total: ${Utils.formatCurrency(getTotalAmt())}`}</Text>
+        <Text
+          style={{ fontSize: width * 0.1 }}
+        >{`Total: ${Utils.formatCurrency(getTotalAmt())}`}</Text>
       </Surface>
       <FlatList
         data={ticket.lines}
@@ -79,7 +81,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     marginBottom: 10,
     width: '100%',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'center',
     backgroundColor: '#FFFFFF',
   },

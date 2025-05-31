@@ -5,7 +5,6 @@ import { supabase, storageUrl } from './supabase-config';
 export async function uploadImage(imageUri, imageName) {
   const arraybuffer = await fetch(imageUri).then((res) => res.arrayBuffer());
   //const fileExt = imageUri?.split('.').pop()?.toLowerCase() ?? 'jpeg';
-
   const { data, error: uploadError } = await supabase.storage
     .from('files')
     .upload(imageName, arraybuffer, {
@@ -37,8 +36,8 @@ class ProductService {
   static async fetchAll() {
     try {
       const { data, error } = await supabase.from('product').select();
-
       if (error) throw error;
+      console.log('fetch product', data.length);
       return data.map((product) => ({
         ...product,
         image: product.image ? `${storageUrl}/${product.image}` : null,

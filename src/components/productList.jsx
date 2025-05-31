@@ -87,7 +87,7 @@ function ProductList({ onPress, basketCoords }) {
       style={styles.productImage}
     />
   );
-  console.log(productosFiltrados[0]?.image);
+  // console.log(productosFiltrados[0]?.image);
   return (
     <View style={styles.container}>
       {/* Campo de búsqueda */}

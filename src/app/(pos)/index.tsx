@@ -11,6 +11,7 @@ import { checkStoredState } from '@/src/utils/checkAsyncStorage';
 import { Utils } from '@/src/utils';
 import AsyncStorageUtils from '@/src/utils/AsyncStorageUtils';
 import { useData } from '@/src/context/dataContext';
+import SharedButton from '@/src/components/shared/sharedButton';
 const { width } = Dimensions.get('window');
 
 function Basket({ onSetBasketCoords }) {
@@ -131,16 +132,16 @@ function TicketScreen() {
             justifyContent: 'space-around',
           }}
         >
-          <Button
-            mode="contained"
-            style={styles.payBtn}
+          <SharedButton
+            label="Limpiar Cesta"
             onPress={handleDeleteOrder}
-          >
-            Limpiar Cesta
-          </Button>
-          <Button mode="contained" style={styles.payBtn} onPress={payTicket}>
-            Pagar
-          </Button>
+            styles={styles.payBtn}
+          />
+          <SharedButton
+            label="Pagar"
+            onPress={payTicket}
+            styles={styles.payBtn}
+          />
         </View>
       )}
     </View>

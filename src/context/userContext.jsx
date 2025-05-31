@@ -3,8 +3,6 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useState,
-  useRef,
 } from 'react';
 import { AppState } from 'react-native';
 import { supabase } from '@/src/service/supabase-config';
@@ -110,7 +108,7 @@ export function UserProvider({ children }) {
 
   useEffect(() => {
     if (!user || sessionExpired) {
-      //router.replace('login');
+      router.replace('login');
     }
     //} else {
     // const { expires_at } = session;

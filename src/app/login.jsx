@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 import { TextInput, Button, useTheme } from 'react-native-paper';
 import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
@@ -9,7 +9,7 @@ import { useAuth } from '@/src/context/userContext';
 
 import LoadingModal from '@/src/components/loadingModal';
 import { checkInternetConnectivity } from '@/src/hooks/useNetworkStatus';
-
+import SharedButton from '../components/shared/sharedButton';
 const LoginScreen = () => {
   const { colors } = useTheme();
   const router = useRouter();
@@ -79,15 +79,7 @@ const LoginScreen = () => {
           style={styles.input}
           left={<TextInput.Icon icon="lock" color={colors.primary} />}
         />
-        <TouchableOpacity
-          onPress={handleLogin}
-          style={[
-            styles.button,
-            { backgroundColor: colors.primary, alignItems: 'center' },
-          ]}
-        >
-          <Text style={{ color: colors.onPrimary }}>Iniciar Sessión</Text>
-        </TouchableOpacity>
+        <SharedButton label="Iniciar Sesión" onPress={handleLogin} />
         {user && (
           <Button mode="outlained" onPress={() => router.replace('(pos)')}>
             Continuar sin conexión

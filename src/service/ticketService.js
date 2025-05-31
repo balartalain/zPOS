@@ -20,7 +20,7 @@ export const fetchWithTimeout = async (operation, timeout = 5000) => {
 class TicketService {
   static async save(data) {
     try {
-      console.log('order=>', data);
+      console.log('order=>', data.id);
       const { error } = await supabase.from('order').insert(data);
       if (error) throw error;
     } catch (error) {
@@ -34,7 +34,7 @@ class TicketService {
         ...line,
         product_id: product.id, // Solo conserva el `id` de `product`
       }));
-      console.log('lines=>', lines);
+      //console.log('lines=>', lines);
       const { error } = await supabase.from('orderline').insert(lines);
 
       if (error) throw error;
@@ -45,7 +45,7 @@ class TicketService {
   }
   static async savePayments(payments) {
     try {
-      console.log('payments=>', payments);
+      //console.log('payments=>', payments);
       const { error } = await supabase.from('payment').insert(payments);
 
       if (error) throw error;
