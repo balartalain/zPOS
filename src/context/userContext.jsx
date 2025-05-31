@@ -31,7 +31,7 @@ export function UserProvider({ children }) {
       }
     })();
     AppState.addEventListener('change', async (state) => {
-      console.log('AppState changed:', state);
+      console.log('AppState->UserContext->changed:', state);
       if (state === 'active') {
         if (user && isConnected) {
           const active = await isProfileActive(user.id);
@@ -41,7 +41,7 @@ export function UserProvider({ children }) {
         }
       }
     });
-  }, [user, isConnected, isProfileActive, router, signOut]);
+  }, [user, isConnected, isProfileActive, signOut]);
   const signIn = useCallback(
     async (email, password) => {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -110,7 +110,7 @@ export function UserProvider({ children }) {
 
   useEffect(() => {
     if (!user || sessionExpired) {
-      router.replace('login');
+      //router.replace('login');
     }
     //} else {
     // const { expires_at } = session;

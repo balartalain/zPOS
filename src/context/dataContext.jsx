@@ -42,7 +42,7 @@ export function DataProvider({ children }) {
   useEffect(() => {
     (async () => {
       const pending = await getPendingOperations();
-      if (pending.length > 0) {
+      if (pending.length > 0 && !syncTimeoutRef.current) {
         setHasPendingOperations(true);
         syncTimeoutRef.current = setTimeout(async () => await syncLoop(), 1000);
       } else {
@@ -50,7 +50,8 @@ export function DataProvider({ children }) {
       }
     })();
     AppState.addEventListener('change', async (state) => {
-      if (state === 'active') {
+      console.log('DataContext->AppState->changed');
+      if (state === 'active' && !syncTimeoutRef.current) {
         const pending = await getPendingOperations();
         if (pending.length > 0) {
           setHasPendingOperations(true);
@@ -107,6 +108,8 @@ export function DataProvider({ children }) {
           SYNCING_TIMEOUT
         );
       }
+    } else {
+      syncTimeoutRef.current = null;
     }
   }, [
     syncData,
