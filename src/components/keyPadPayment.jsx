@@ -13,7 +13,7 @@ import { useData } from '@/src/context/dataContext';
 import useTicketStore from '@/src/store/useTicketStore';
 import { Utils } from '@/src/utils';
 import { useRouter } from 'expo-router';
-
+import SharedText from '@/src/components/shared/sharedText';
 const { width } = Dimensions.get('window');
 const MARGIN = 2;
 

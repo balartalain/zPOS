@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, FlatList, StyleSheet, Dimensions } from 'react-native';
 import { Stack, useNavigation, useRouter } from 'expo-router';
 import { useIsFocused } from '@react-navigation/native';
+import SharedText from '@/src/components/shared/sharedText';
 
 import {
   Card,
@@ -37,10 +38,11 @@ export default function ShoppingCartScreen() {
   };
   return (
     <View style={{ flex: 1, padding: 10 }}>
-      <Surface style={styles.surface} elevation={2}>
-        <Text
-          style={{ fontSize: width * 0.1 }}
-        >{`Total: ${Utils.formatCurrency(getTotalAmt())}`}</Text>
+      <Surface style={styles.display} elevation={2}>
+        <SharedText
+          h2
+          title={`Total: ${Utils.formatCurrency(getTotalAmt())}`}
+        />
       </Surface>
       <FlatList
         data={ticket.lines}
@@ -88,11 +90,11 @@ export default function ShoppingCartScreen() {
 }
 
 const styles = StyleSheet.create({
-  surface: {
-    paddingTop: 20,
-    paddingBottom: 20,
+  display: {
+    paddingVertical: 20,
+    paddingLeft: 10,
     marginBottom: 10,
-    width: '100%',
+    //width: '100%',
     alignItems: 'flex-start',
     justifyContent: 'center',
     backgroundColor: '#FFFFFF',

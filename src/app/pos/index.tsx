@@ -13,6 +13,7 @@ import AsyncStorageUtils from '@/src/utils/AsyncStorageUtils';
 import { useData } from '@/src/context/dataContext';
 import SharedButton from '@/src/components/shared/sharedButton';
 import { useHeader } from '@/src/context/headerContext';
+import SharedText from '@/src/components/shared/sharedText';
 const { width } = Dimensions.get('window');
 
 function Basket({ onSetBasketCoords }) {
@@ -112,9 +113,10 @@ function TicketScreen() {
   return (
     <View style={{ flex: 1, padding: 10 }}>
       <Surface style={styles.display} elevation={2}>
-        <Text
-          style={{ fontSize: width * 0.1 }}
-        >{`Total: ${Utils.formatCurrency(getTotalAmt())}`}</Text>
+        <SharedText
+          h2
+          title={`Total: ${Utils.formatCurrency(getTotalAmt())}`}
+        />
       </Surface>
       {isStoreClosed ? (
         <StoreClosed />

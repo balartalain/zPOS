@@ -8,6 +8,7 @@ import useTicketStore from '@/src/store/useTicketStore';
 import KeypadPayment from '../../components/keyPadPayment';
 import { Utils } from '@/src/utils';
 import { useHeader } from '@/src/context/headerContext';
+import SharedText from '@/src/components/shared/sharedText';
 
 const { width } = Dimensions.get('window');
 
@@ -26,22 +27,21 @@ export default function PaymentScreen() {
     () => (
       <View
         style={{
-          flexDirection: 'row',
-          justifyContent: 'space-around',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
         }}
       >
-        <Text
-          style={{ color: 'green', fontSize: width * 0.04 }}
-        >{` Total ${Utils.formatCurrency(ticket.total_amount)}`}</Text>
-        <Text
+        <SharedText h5 title="Efectuar el pago" />
+        <SharedText
+          h6
+          title={`${label}`}
           style={{
-            fontSize: width * 0.04,
             color: ticket.change >= 0 && pending === 0 ? 'green' : 'red',
           }}
-        >{` ${label}`}</Text>
+        />
       </View>
     ),
-    [label, pending, ticket.change, ticket.total_amount]
+    [label, pending, ticket.change]
   );
 
   React.useEffect(() => {
@@ -76,12 +76,12 @@ export default function PaymentScreen() {
                 borderBottomWidth: 0.5,
               }}
             >
-              <Text style={{ flex: 1, fontSize: width * 0.038 }}>
-                {p.payment_method}
-              </Text>
-              <Text style={{ marginRight: 8, fontSize: width * 0.038 }}>
-                {Utils.formatCurrency(p.amount)}
-              </Text>
+              <SharedText h6 style={{ flex: 1 }} title={p.payment_method} />
+              <SharedText
+                h6
+                style={{ marginRight: 8 }}
+                title={Utils.formatCurrency(p.amount)}
+              />
               <TouchableOpacity
                 onPress={() => handleDeletePayment(p.payment_method)}
               >
