@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Animated } from 'react-native';
+import { Animated, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Appbar } from 'react-native-paper';
@@ -14,12 +14,25 @@ export default function Header() {
   const navigation = useNavigation();
   const router = useRouter();
   const isConnected = useNetworkStatus();
-  //const { hasPendingOperations } = useData();
+  const { hasPendingOperations } = useData();
   const isSyncing = useSync();
+  const [color, setColor] = useState();
   //const [isSyncing] = useState(true);
   const { headerContent, headerActions } = useHeader();
   const pathname = usePathname();
   const rotateAnim = React.useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const defaultColor = isConnected ? 'green' : 'red';
+    if (hasPendingOperations) {
+      const interval = setInterval(() => {
+        setColor((prev) => (prev === 'orange' ? defaultColor : 'orange'));
+      }, 500);
+      return () => clearInterval(interval);
+    } else {
+      setColor(defaultColor);
+    }
+  }, [hasPendingOperations, isConnected]);
 
   React.useEffect(() => {
     //console.log('anim');
@@ -56,18 +69,20 @@ export default function Header() {
       )}
       <Appbar.Content title={headerContent} />
       {headerActions}
-      {!isSyncing && (
-        <Ionicons
-          name={`cloud-${!isConnected ? 'offline-' : ''}outline`}
-          size={22}
-          color={`${isConnected ? 'green' : 'red'}`}
-        />
-      )}
-      {isSyncing && (
-        <Animated.View style={{ transform: [{ rotate: rotation }] }}>
-          <Ionicons name="sync" size={22} color="green" />
-        </Animated.View>
-      )}
+      <View style={{ marginLeft: 5, marginRight: 10 }}>
+        {!isSyncing && (
+          <Ionicons
+            name={`cloud-${!isConnected ? 'offline-' : ''}outline`}
+            size={22}
+            color={color}
+          />
+        )}
+        {isSyncing && (
+          <Animated.View style={{ transform: [{ rotate: rotation }] }}>
+            <Ionicons name="sync" size={22} color="green" />
+          </Animated.View>
+        )}
+      </View>
     </Appbar.Header>
   );
 }

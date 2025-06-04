@@ -105,18 +105,13 @@ export function UserProvider({ children }) {
     },
     [user?.id]
   );
-
-  useEffect(() => {
-    if (!user || sessionExpired) {
-      router.replace('login');
+  const getSession = useCallback(async () => {
+    const { data, error } = await supabase.auth.getSession();
+    if (error) {
+      console.log('Error in getSession=>', error);
     }
-    //} else {
-    // const { expires_at } = session;
-    // if (expires_at * 1000 < Date.now()) {
-    //   router.replace('login/session_expired');
-    // }
-    //}
-  }, [user, router, sessionExpired]);
+    return data?.session || null;
+  }, []);
 
   // useEffect(() => {
   //   //console.log('UserProvider mounted');
@@ -139,6 +134,7 @@ export function UserProvider({ children }) {
       setSessionExpired,
       sessionExpired,
       isConnected,
+      getSession,
     }),
     [
       signIn,
@@ -147,6 +143,7 @@ export function UserProvider({ children }) {
       setSessionExpired,
       sessionExpired,
       isConnected,
+      getSession,
     ]
   );
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>;

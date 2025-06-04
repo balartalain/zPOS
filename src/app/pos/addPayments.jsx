@@ -1,4 +1,4 @@
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import React, { useEffect } from 'react';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -9,8 +9,9 @@ import KeypadPayment from '../../components/keyPadPayment';
 import { Utils } from '@/src/utils';
 import { useHeader } from '@/src/context/headerContext';
 
+const { width } = Dimensions.get('window');
+
 export default function PaymentScreen() {
-  const navigation = useNavigation();
   const isFocused = useIsFocused();
   const { ticket, deletePayment, getTotalPaid } = useTicketStore();
   const { setHeaderActions, setHeaderContent } = useHeader();
@@ -30,11 +31,11 @@ export default function PaymentScreen() {
         }}
       >
         <Text
-          style={{ color: 'green', fontSize: 16 }}
+          style={{ color: 'green', fontSize: width * 0.04 }}
         >{` Total ${Utils.formatCurrency(ticket.total_amount)}`}</Text>
         <Text
           style={{
-            fontSize: 16,
+            fontSize: width * 0.04,
             color: ticket.change >= 0 && pending === 0 ? 'green' : 'red',
           }}
         >{` ${label}`}</Text>
@@ -49,51 +50,6 @@ export default function PaymentScreen() {
       setHeaderActions(null);
     }
   }, [isFocused, setHeaderContent, headerContent, setHeaderActions]);
-
-  useEffect(() => {
-    navigation.setOptions({
-      //headerTitleAlign: 'left',
-      // headerLeft: () => (
-      //   <Ionicons
-      //     name="arrow-back"
-      //     size={24}
-      //     style={{ marginLeft: 0, marginRight: 10 }}
-      //     onPress={() => navigation.goBack()}
-      //   />
-      // ),
-      headerStyle: {
-        //backgroundColor: '#f4511e',
-        //textAlign: 'left',
-      },
-      //headerTitleStyle: { fontSize: 6 },
-      headerTitle: () => {
-        const pending =
-          parseFloat(ticket.total_amount) - parseFloat(getTotalPaid());
-        const label =
-          ticket.change === 0
-            ? `Por pagar ${Utils.formatCurrency(pending)}`
-            : `Cambio ${Utils.formatCurrency(ticket.change)}`;
-        return (
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-            }}
-          >
-            <Text
-              style={{ color: 'green', fontSize: 16 }}
-            >{` Total ${Utils.formatCurrency(ticket.total_amount)}`}</Text>
-            <Text
-              style={{
-                fontSize: 16,
-                color: ticket.change >= 0 && pending === 0 ? 'green' : 'red',
-              }}
-            >{` ${label}`}</Text>
-          </View>
-        );
-      },
-    });
-  }, [navigation, ticket.total_amount, getTotalPaid, ticket.change]);
 
   const handleDeletePayment = (pm) => {
     deletePayment(pm);
@@ -114,14 +70,16 @@ export default function PaymentScreen() {
               key={index}
               style={{
                 flexDirection: 'row',
-                width: '50%',
+                width: '55%',
                 paddingLeft: 8,
                 paddingVertical: 8,
                 borderBottomWidth: 0.5,
               }}
             >
-              <Text style={{ flex: 1 }}>{p.payment_method}</Text>
-              <Text style={{ marginRight: 8 }}>
+              <Text style={{ flex: 1, fontSize: width * 0.038 }}>
+                {p.payment_method}
+              </Text>
+              <Text style={{ marginRight: 8, fontSize: width * 0.038 }}>
                 {Utils.formatCurrency(p.amount)}
               </Text>
               <TouchableOpacity

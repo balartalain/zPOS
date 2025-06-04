@@ -101,6 +101,13 @@ const RootLayout = () => {
                         drawerLabel: 'Cerrar Sessión',
                       }}
                     />
+                    <Drawer.Screen
+                      name="index"
+                      options={{
+                        headerShown: false,
+                        drawerItemStyle: { display: 'none' },
+                      }}
+                    />
                   </Drawer>
                 </ThemeProvider>
               </GestureHandlerRootView>
