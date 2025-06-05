@@ -9,6 +9,7 @@ import { usePathname } from 'expo-router';
 import { useHeader } from '../context/headerContext';
 import useNetworkStatus from '@/src/hooks/useNetworkStatus';
 import { useData, useSync } from '../context/dataContext';
+import adjust from '@/src/utils/adjust';
 
 export default function Header() {
   const navigation = useNavigation();
@@ -67,7 +68,10 @@ export default function Header() {
           onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
         />
       )}
-      <Appbar.Content title={headerContent} />
+      <Appbar.Content
+        title={headerContent}
+        titleStyle={{ fontSize: adjust(16) }}
+      />
       {headerActions}
       <View style={{ marginLeft: 5, marginRight: 10 }}>
         {!isSyncing && (

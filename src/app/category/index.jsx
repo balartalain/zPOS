@@ -9,6 +9,7 @@ import { eventBus, eventName } from '@/src/event/eventBus';
 import { useHeader } from '@/src/context/headerContext';
 import useWhyDidYouUpdate from '@/src/hooks/useWhyDidYouUpdate';
 import SharedButton from '../../components/shared/sharedButton';
+import SharedText from '../../components/shared/sharedText';
 
 const { width } = Dimensions.get('window');
 
@@ -76,13 +77,12 @@ function CategoryListScreen() {
         renderItem={({ item }) => (
           <Card
             style={styles.card}
-            contentStyle={styles.innerCard}
             onPress={() => {
               router.push('/category/edit?id=' + item.id);
             }}
           >
             <Card.Content style={styles.contentCard}>
-              <Text variant="titleMedium">{item.name}</Text>
+              <SharedText title={item.name} />
             </Card.Content>
           </Card>
         )}
@@ -106,18 +106,11 @@ const styles = StyleSheet.create({
   },
   card: {
     marginBottom: 10,
-    minHeight: 60,
   },
-  innerCard: {
-    flex: 1,
-    flexDirection: 'row',
-    //justifyContent: 'space-between',
-    //alignItems: 'center',
-  },
+
   contentCard: {
-    paddingLeft: 0,
-    paddingBottom: 0,
-    marginLeft: 10,
+    flex: 1,
+    padding: 0,
     justifyContent: 'center',
   },
   emptyText: {

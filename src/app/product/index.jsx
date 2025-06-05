@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Image } from 'react-native';
+import { FlatList, StyleSheet, Image, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
@@ -9,6 +9,7 @@ import { Utils } from '@/src/utils';
 import { eventBus, eventName } from '@/src/event/eventBus';
 import { useHeader } from '@/src/context/headerContext';
 import SharedButton from '../../components/shared/sharedButton';
+import SharedText from '../../components/shared/sharedText';
 
 const NoImageIcon = require('@/assets/images/no-image.png');
 
@@ -80,20 +81,28 @@ function ProductListScreen() {
               router.push('/product/edit?id=' + item.id);
             }}
           >
-            <Card.Title
-              style={{ paddingLeft: 5, minHeight: 0, paddingVertical: 10 }}
-              left={() => <LeftContentCard product={item} />}
-            />
             <Card.Content style={styles.contentCard}>
-              <Text variant="titleMedium">
-                {item.name} - {Utils.formatCurrency(item.price)}
-              </Text>
-              <Text
-                variant="bodyMedium"
-                style={[item.in_stock === 0 && styles.outOfStock]}
+              <LeftContentCard product={item} />
+              <View>
+                <SharedText title={item.name} h6 />
+                <SharedText
+                  title={`stock: ${item.in_stock}`}
+                  p
+                  style={[
+                    { marginTop: 2 },
+                    item.in_stock === 0 ? styles.outOfStock : styles.inStock,
+                  ]}
+                />
+              </View>
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: 'flex-end',
+                  justifyContent: 'center',
+                }}
               >
-                stock: {item.in_stock}
-              </Text>
+                <SharedText h6 title={Utils.formatCurrency(item.price)} />
+              </View>
             </Card.Content>
           </Card>
         )}
@@ -120,8 +129,9 @@ const styles = StyleSheet.create({
   productImage: {
     width: 50,
     height: 50,
-    //marginRight: 12,
-    backgroundColor: '#ccc',
+    marginRight: 10,
+    //borderRadius: 4,
+    //backgroundColor: '#ccc',
     resizeMode: 'cover',
   },
   innerCard: {
@@ -131,10 +141,12 @@ const styles = StyleSheet.create({
     //alignItems: 'center',
   },
   contentCard: {
+    flex: 1,
+    flexDirection: 'row',
+    paddingVertical: 5,
     paddingLeft: 0,
-    paddingBottom: 0,
     marginLeft: 10,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
   },
   emptyText: {
     textAlign: 'center',
@@ -145,6 +157,10 @@ const styles = StyleSheet.create({
   outOfStock: {
     color: 'red',
     textDecorationLine: 'line-through',
+  },
+  inStock: {
+    color: 'green',
+    textDecorationLine: 'none',
   },
 });
 export default ProductListScreen;

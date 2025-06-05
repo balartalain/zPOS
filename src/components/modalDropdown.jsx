@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { Text, Button, useTheme } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import SharedButton from './shared/sharedButton';
 
 const ModalDropdown = ({ table, initialId, onSelect }) => {
   const theme = useTheme();
@@ -76,9 +77,12 @@ const ModalDropdown = ({ table, initialId, onSelect }) => {
                 )}
               />
             )}
-            <Button style={styles.closeButton} onPress={toggleModal}>
-              Close
-            </Button>
+            <SharedButton
+              outlined
+              label="Cerrar"
+              style={styles.closeButton}
+              onPress={toggleModal}
+            />
           </View>
         </View>
       </Modal>
@@ -113,6 +117,9 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     marginTop: 10,
+    alignSelf: 'center',
+    paddingVertical: 5,
+    paddingHorizontal: 20,
   },
   closeText: {
     color: 'white',

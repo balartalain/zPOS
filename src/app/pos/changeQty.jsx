@@ -16,6 +16,7 @@ import AsyncStorageUtils from '@/src/utils/AsyncStorageUtils';
 import { useData } from '@/src/context/dataContext';
 import { useHeader } from '@/src/context/headerContext';
 import SharedButton from '../../components/shared/sharedButton';
+import SharedText from '../../components/shared/sharedText';
 
 const { width } = Dimensions.get('window');
 const getProduct = async (productId) => {
@@ -36,10 +37,12 @@ function ChangeQtyScreen() {
   const headerContent = React.useMemo(
     () => (
       <View>
-        <Text>{product?.name}</Text>
-        <Text
+        <SharedText h6 title={product?.name} />
+        <SharedText
+          p
+          title={`stock: ${product?.in_stock ?? ''}`}
           style={[product?.in_stock === 0 ? styles.outOfStock : styles.inStock]}
-        >{`stock: ${product?.in_stock ?? ''}`}</Text>
+        />
       </View>
     ),
     [product?.in_stock, product?.name]

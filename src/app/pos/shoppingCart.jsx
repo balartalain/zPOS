@@ -56,12 +56,10 @@ export default function ShoppingCartScreen() {
             }}
           >
             <Card.Content style={styles.contentCard}>
-              <Text variant="titleMedium">
-                {item.product.name} x {item.qty}
-              </Text>
-              <Text variant="titleMedium">
-                {Utils.formatCurrency(item.product.price * item.qty)}
-              </Text>
+              <SharedText title={`${item.product.name} x ${item.qty}`} />
+              <SharedText
+                title={Utils.formatCurrency(item.product.price * item.qty)}
+              />
             </Card.Content>
           </Card>
         )}

@@ -7,6 +7,7 @@ import useProductAnimStore from '../store/useProductAnimStore';
 import { useData } from '../context/dataContext';
 import { eventBus } from '../event/eventBus';
 import { Utils } from '@/src/utils';
+import SharedText from './shared/sharedText';
 import useWhyDidYouUpdate from '@/src/hooks/useWhyDidYouUpdate';
 const NoImageIcon = require('@/assets/images/no-image.png');
 
@@ -112,15 +113,15 @@ function ProductList({ onPress, basketCoords }) {
             <Card.Content style={styles.contentCard}>
               <LeftContentCard product={item} />
               <View>
-                <Text variant="titleMedium">{item.name}</Text>
-                <Text
-                  variant="bodyMedium"
+                <SharedText title={item.name} h6 />
+                <SharedText
+                  title={`stock: ${item.in_stock}`}
+                  p
                   style={[
+                    { marginTop: 2 },
                     item.in_stock === 0 ? styles.outOfStock : styles.inStock,
                   ]}
-                >
-                  stock: {item.in_stock}
-                </Text>
+                />
               </View>
               <View
                 style={{
@@ -129,9 +130,7 @@ function ProductList({ onPress, basketCoords }) {
                   justifyContent: 'center',
                 }}
               >
-                <Text variant="titleMedium">
-                  {Utils.formatCurrency(item.price)}
-                </Text>
+                <SharedText h6 title={Utils.formatCurrency(item.price)} />
               </View>
             </Card.Content>
           </Card>

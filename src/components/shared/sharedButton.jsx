@@ -7,6 +7,7 @@ export default function SharedButton({
   label,
   onPress,
   style,
+  outlined = false,
   disabled = false,
   textVariant = 'h6',
   textStyles = {},
@@ -20,8 +21,13 @@ export default function SharedButton({
   const h5 = textVariant === 'h5';
   const h6 = textVariant === 'h6';
   const p = textVariant === 'p';
+  const defaultButtonStyle = {
+    backgroundColor: outlined ? 'transparent' : colors.primary,
+    borderColor: outlined ? colors.primary : 'transparent',
+    borderWidth: outlined ? 1 : 0,
+  };
   const combinedStyle = StyleSheet.flatten([
-    { backgroundColor: colors.primary },
+    defaultButtonStyle,
     _styles.button,
     style,
   ]);
@@ -39,7 +45,13 @@ export default function SharedButton({
         h5={h5}
         h6={h6}
         p={p}
-        style={[_styles.textStyles, { color: colors.onPrimary, ...textStyles }]}
+        style={[
+          _styles.textStyles,
+          {
+            color: outlined ? colors.primary : colors.onPrimary,
+            ...textStyles,
+          },
+        ]}
         title={label}
       />
     </TouchableOpacity>
