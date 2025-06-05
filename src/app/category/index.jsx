@@ -8,6 +8,8 @@ import { useData } from '@/src/context/dataContext';
 import { eventBus, eventName } from '@/src/event/eventBus';
 import { useHeader } from '@/src/context/headerContext';
 import useWhyDidYouUpdate from '@/src/hooks/useWhyDidYouUpdate';
+import SharedButton from '../../components/shared/sharedButton';
+
 const { width } = Dimensions.get('window');
 
 function CategoryListScreen() {
@@ -90,21 +92,15 @@ function CategoryListScreen() {
       {categoriesFilters.length === 0 && (
         <Text style={styles.emptyText}>No se encontraron categorias</Text>
       )}
-      <Button
-        mode="contained"
+      <SharedButton
         style={styles.addBtn}
+        label="Agregar"
         onPress={() => router.push('/category/add')}
-      >
-        Agregar
-      </Button>
+      />
     </SharedView>
   );
 }
 const styles = StyleSheet.create({
-  addBtn: {
-    height: width * 0.15,
-    justifyContent: 'center',
-  },
   input: {
     marginBottom: 20,
   },

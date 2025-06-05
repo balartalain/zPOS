@@ -14,6 +14,8 @@ import ModalDropdown from '@/src/components/modalDropdown';
 import { Utils } from '@/src/utils';
 import AsyncStorageUtils from '../utils/AsyncStorageUtils';
 import { useData } from '@/src/context/dataContext';
+import SharedButton from './shared/sharedButton';
+
 const { width } = Dimensions.get('window');
 const copyImageToLocalDir = async (fromUri, toUri, oldUri) => {
   try {
@@ -219,9 +221,7 @@ function Edit({ fields, table, id = null, handleSave = null }) {
         })}
 
       <View style={{ flex: 1 }}></View>
-      <Button style={styles.btn} mode="contained" onPress={save}>
-        Guardar
-      </Button>
+      <SharedButton label="guardar" onPress={save} />
     </SharedView>
   );
 }
@@ -234,11 +234,6 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     //marginRight: 12,
-  },
-  btn: {
-    height: width * 0.15,
-    justifyContent: 'center',
-    //padding: 10,
   },
 });
 

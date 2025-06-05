@@ -127,7 +127,7 @@ function TicketScreen() {
         <View
           style={{
             marginTop: 5,
-            height: width * 0.15,
+            //height: width * 0.15,
             flexDirection: 'row',
             justifyContent: 'space-around',
           }}
@@ -135,12 +135,14 @@ function TicketScreen() {
           <SharedButton
             label="Limpiar Cesta"
             onPress={handleDeleteOrder}
-            styles={styles.payBtn}
+            style={styles.payBtn}
+            textVariant="h6"
           />
           <SharedButton
             label="Pagar"
             onPress={payTicket}
-            styles={styles.payBtn}
+            style={styles.payBtn}
+            textVariant="h6"
           />
         </View>
       )}

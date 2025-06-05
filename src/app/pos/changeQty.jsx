@@ -15,6 +15,7 @@ import SharedView from '../../components/shared/sharedView';
 import AsyncStorageUtils from '@/src/utils/AsyncStorageUtils';
 import { useData } from '@/src/context/dataContext';
 import { useHeader } from '@/src/context/headerContext';
+import SharedButton from '../../components/shared/sharedButton';
 
 const { width } = Dimensions.get('window');
 const getProduct = async (productId) => {
@@ -95,9 +96,9 @@ function ChangeQtyScreen() {
     setQty(line.id, qty);
   };
   return (
-    <SharedView style={styles.container}>
+    <SharedView>
       <View style={{ flexDirection: 'row' }}>
-        <TouchableOpacity
+        <SharedButton
           style={[
             styles.btn,
             {
@@ -105,11 +106,10 @@ function ChangeQtyScreen() {
               opacity: qty === 0 ? 0.4 : 1,
             },
           ]}
+          label="-"
           onPress={decrement}
           disabled={qty === 0}
-        >
-          <Text style={styles.labelBtn}>-</Text>
-        </TouchableOpacity>
+        />
         <TextInput
           autoFocus={true}
           style={styles.field}
@@ -118,7 +118,7 @@ function ChangeQtyScreen() {
           value={String(qty)}
           onChangeText={handleSetQty}
         />
-        <TouchableOpacity
+        <SharedButton
           style={[
             styles.btn,
             {
@@ -126,28 +126,21 @@ function ChangeQtyScreen() {
               opacity: product?.in_stock === 0 ? 0.4 : 1,
             },
           ]}
+          label="+"
           onPress={increment}
           disabled={product?.in_stock === 0}
-        >
-          <Text style={styles.labelBtn}>+</Text>
-        </TouchableOpacity>
+        />
       </View>
       <View style={{ flex: 1 }}></View>
-      <Button mode="contained" style={styles.doneBtn} onPress={handlePressDone}>
-        Aceptar
-      </Button>
+      <SharedButton label="Aceptar" onPress={handlePressDone} />
     </SharedView>
   );
 }
 export default ChangeQtyScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 10,
-  },
   btn: {
-    width: '15%',
+    width: '16%',
     aspectRatio: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -158,13 +151,9 @@ const styles = StyleSheet.create({
   },
   field: {
     flex: 1,
-    marginHorizontal: 5,
+    marginHorizontal: 2,
     textAlign: 'center',
-  },
-  doneBtn: {
-    height: width * 0.15,
-    justifyContent: 'center',
-    //borderRadius: 2,
+    height: 'auto',
   },
   outOfStock: {
     color: 'red',

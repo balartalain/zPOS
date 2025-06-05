@@ -1,29 +1,20 @@
-import { FlatList, StyleSheet, Image, Dimensions } from 'react-native';
+import { FlatList, StyleSheet, Image } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import {
-  Button,
-  Text,
-  Surface,
-  useTheme,
-  TextInput,
-  Card,
-} from 'react-native-paper';
+import { Text, TextInput, Card } from 'react-native-paper';
 import { useData } from '@/src/context/dataContext';
 import SharedView from '@/src/components/shared/sharedView';
 import { Utils } from '@/src/utils';
 import { eventBus, eventName } from '@/src/event/eventBus';
 import { useHeader } from '@/src/context/headerContext';
+import SharedButton from '../../components/shared/sharedButton';
 
-const { width } = Dimensions.get('window');
 const NoImageIcon = require('@/assets/images/no-image.png');
 
 function ProductListScreen() {
   const router = useRouter();
   const isFocused = useIsFocused();
-  const theme = useTheme();
   const { loadProducts } = useData();
   const [busqueda, setBusqueda] = useState('');
   const [productosFiltrados, setProductosFiltrados] = useState([]);
@@ -112,21 +103,14 @@ function ProductListScreen() {
       {productosFiltrados.length === 0 && (
         <Text style={styles.emptyText}>No se encontraron productos</Text>
       )}
-      <Button
-        mode="contained"
-        style={styles.addBtn}
+      <SharedButton
+        label="Agregar"
         onPress={() => router.push('/product/add')}
-      >
-        Agregar
-      </Button>
+      />
     </SharedView>
   );
 }
 const styles = StyleSheet.create({
-  addBtn: {
-    height: width * 0.15,
-    justifyContent: 'center',
-  },
   input: {
     marginBottom: 20,
   },

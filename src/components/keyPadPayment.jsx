@@ -14,19 +14,15 @@ import useTicketStore from '@/src/store/useTicketStore';
 import { Utils } from '@/src/utils';
 import { useRouter } from 'expo-router';
 import SharedText from '@/src/components/shared/sharedText';
+import SharedButton from './shared/sharedButton';
+
 const { width } = Dimensions.get('window');
 const MARGIN = 2;
 
-const KeyPadButton = ({
-  text,
-  style,
-  disabled = false,
-  textStyle = {},
-  onPress,
-}) => {
+const KeyPadButton = ({ text, style, disabled = false, onPress }) => {
   const theme = useTheme();
   return (
-    <TouchableOpacity
+    <SharedButton
       disabled={disabled}
       style={[
         {
@@ -36,19 +32,9 @@ const KeyPadButton = ({
           ...style,
         },
       ]}
+      label={text}
       onPress={onPress}
-    >
-      <Text
-        style={{
-          fontSize: width * 0.05,
-          fontWeight: 450,
-          ...textStyle,
-          color: theme.colors.onPrimary,
-        }}
-      >
-        {text}
-      </Text>
-    </TouchableOpacity>
+    />
   );
 };
 const KeypadPayment = () => {
@@ -132,7 +118,6 @@ const KeypadPayment = () => {
             opacity: pending > 0 ? 1 : 0.4,
           }}
           text={'Transfer'}
-          textStyle={{ fontSize: width * 0.048, fontWeight: 450 }}
           onPress={() => handlePressAddPayment('Transfer')}
           disabled={pending === 0 || amount === ''}
         />
@@ -172,6 +157,7 @@ const KeypadPayment = () => {
               marginLeft: marginBottom,
               justifyContent: 'center',
               alignItems: 'center',
+              borderRadius: 5,
               backgroundColor: theme.colors.primary,
               opacity: pending > 0 ? 1 : 0.4,
             }}

@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, FlatList, StyleSheet, Dimensions } from 'react-native';
 import { Stack, useNavigation, useRouter } from 'expo-router';
 import { useIsFocused } from '@react-navigation/native';
-import SharedText from '@/src/components/shared/sharedText';
-
 import {
   Card,
   TextInput,
@@ -12,7 +10,8 @@ import {
   Surface,
   useTheme,
 } from 'react-native-paper';
-
+import SharedText from '@/src/components/shared/sharedText';
+import SharedButton from '../../components/shared/sharedButton';
 import useTicketStore from '@/src/store/useTicketStore';
 import { Utils } from '@/src/utils';
 import { useHeader } from '@/src/context/headerContext';
@@ -74,16 +73,16 @@ export default function ShoppingCartScreen() {
           justifyContent: 'space-around',
         }}
       >
-        <Button mode="contained" style={styles.btn} onPress={handleDeleteOrder}>
-          Limpiar Cesta
-        </Button>
-        <Button
-          mode="contained"
+        <SharedButton
           style={styles.btn}
+          onPress={handleDeleteOrder}
+          label="Limpiar Cesta"
+        />
+        <SharedButton
+          style={styles.btn}
+          label="Pagar"
           onPress={() => router.push('/pos/addPayments')}
-        >
-          Pagar
-        </Button>
+        />
       </View>
     </View>
   );
@@ -109,7 +108,6 @@ const styles = StyleSheet.create({
   },
   btn: {
     width: '49%',
-    height: width * 0.15,
     justifyContent: 'center',
   },
 });
